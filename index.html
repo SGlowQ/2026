@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026高考倒计时 - 加油助力</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c1445, #1a237e, #283593);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* 粒子背景 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-top: 2rem;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #bbdefb;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 4rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .countdown-box {
+            background: rgba(25, 118, 210, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem 1.5rem;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        
+        .countdown-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(to bottom, #e0f7fa, #80deea);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        
+        .countdown-label {
+            font-size: 1.1rem;
+            color: #e3f2fd;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .motivation-container {
+            background: rgba(21, 101, 192, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin: 4rem 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .motivation-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+        
+        .motivation-header h2 {
+            font-size: 2.2rem;
+            color: #bbdefb;
+        }
+        
+        .motivation-header i {
+            font-size: 2rem;
+            color: #4fc3f7;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .scrolling-names {
+            display: flex;
+            animation: scroll 180s linear infinite;
+            white-space: nowrap;
+            width:  fit-content;
+            will-change: transform;
+        }
+        
+        .name-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 180px;
+            height: 80px;
+            background: rgba(41, 182, 246, 0.2);
+            border-radius: 12px;
+            margin: 0 10px;
+            font-size: 1.4rem;
+            font-weight: 500;
+            padding: 0 20px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .name-item::after {
+            content: "加油!";
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
+            font-size: 0.9rem;
+            color: #80deea;
+            font-weight: 400;
+        }
+        
+        .name-item:hover {
+            transform: translateY(-5px);
+            background: rgba(41, 182, 246, 0.3);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .name-item:hover::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                rgba(79, 172, 254, 0.3), 
+                rgba(0, 242, 254, 0.3));
+            z-index: -1;
+            border-radius: 12px;
+        }
+        
+        .motivation-text {
+            font-size: 1.8rem;
+            text-align: center;
+            margin: 3rem auto;
+            max-width: 800px;
+            padding: 1.5rem;
+            background: rgba(25, 118, 210, 0.2);
+            border-radius: 16px;
+            animation: pulse 2s infinite;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            color: #90caf9;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0.4); }
+            70% { box-shadow: 0 0 0 15px rgba(41, 182, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0); }
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .countdown-box {
+                min-width: 120px;
+                padding: 1.5rem 1rem;
+            }
+            
+            .countdown-value {
+                font-size: 2.5rem;
+            }
+            
+            .name-item {
+                min-width: 150px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+            
+        }
+        
+        @media (max-width: 480px) {
+            .countdown-box {
+                min-width: 80px;
+                padding: 1rem 0.5rem;
+            }
+            
+            .countdown-value {
+                font-size: 2rem;
+            }
+            
+            .countdown-label {
+                font-size: 0.9rem;
+            }
+            
+            .name-item {
+                min-width: 130px;
+                height: 60px;
+                font-size: 1.1rem;
+            }
+            
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    <div class="container">
+        <header>
+            <h1>2026高考倒计时</h1>
+        </header>
+        
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <div class="countdown-value" id="days">365</div>
+                <div class="countdown-label">天</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="hours">00</div>
+                <div class="countdown-label">时</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="minutes">00</div>
+                <div class="countdown-label">分</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="seconds">00</div>
+                <div class="countdown-label">秒</div>
+            </div>
+        </div>
+        
+        <div class="motivation-text">
+<div id="hitokoto">加油哦</div>
+        </div>
+        
+        <div class="motivation-container">
+            <div class="motivation-header">
+                <i class="fas fa-users"></i>
+                <h2>全体同学加油</h2>
+                <i class="fas fa-heart"></i>
+            </div>
+            
+            <div class="scrolling-names" id="scrollingNames">
+                <!-- 名字将由JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        
+        <footer>
+            <p>©2025高考倒计时 | 为2026届考生加油</p>
+            <p>每一天的努力，都在拉近与梦想的距离</p>
+        </footer>
+    </div>
+    
+    <!-- 粒子库 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // 设置高考日期（2026年6月7日）
+        const examDate = new Date('June 7, 2026 00:00:00').getTime();
+        
+        // 更新倒计时
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = examDate - now;
+            
+            // 计算天、时、分、秒
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // 更新显示
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
+        }
+        
+        // 初始化粒子背景
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.1, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#4fc3f7",
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 1,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.3 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初始化一言
+            function updateHitokoto() {
+                fetch('https://international.v1.hitokoto.cn')
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('hitokoto').innerText = data.hitokoto;
+                    })
+                    .catch(console.error);
+            }
+            
+            // 立即执行一次
+            updateHitokoto();
+            // 每10秒刷新一次
+            setInterval(updateHitokoto, 10000);
+        });
+            // Fisher-Yates 洗牌算法
+            function shuffleArray(array) {
+                const newArray = [...array]; // 创建副本避免修改原数组
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 交换元素
+                }
+                return newArray;
+            }
+        
+        // 学生名单
+        const students = [
+            "张永沛", "雷俊杰", "陈馨怡", "殷俊强", "郑奎", "李依婷", "王俊楠",
+            "贺梦菲", "黄金婷", "兰雨檐", "肖涵", "陈慧丽", "崔雯", "马英宸",
+            "阮方钰", "袁卓峰", "徐啟锐", "刘一凡", "李健", "韦南楠",
+            "阮心怡", "杨玉艺", "贺鹏城", "刘艺栋", "陈晨", "樊灵",
+            "毛振宇", "徐馨", "索俊俊", "陈鑫", "徐一帆", "刘晨阳",
+            "吴金昊", "赵国彰", "阮玮", "代艳兴", "熊娜", "查钰钒",
+            "程琳琳", "柯贤威", "茹官旺", "毛静雯", "朱治锦", "杨起浩",
+            "樵世诚", "熊娅妮", "黄海棠", "程修均", "张维哲", "徐可欣",
+            "田林玉", "夏增婷", "吴昊昊", "周笠", "任鹏飞", "谢昌农",
+            "程凯", "朱海英", "黄佳辉", "戴正浩", "曹旖诺", "谢易航",
+            "巩玉蓉", "张钰箐"
+        ];
+        
+const shuffledStudents = shuffleArray(students);
+console.log("打乱后的名单:", shuffledStudents);
+
+ // 生成滚动名单
+function generateScrollingNames() {
+    const container = document.getElementById('scrollingNames');
+    container.innerHTML = '';
+    
+    // 先打乱顺序
+    const shuffled = shuffleArray(students);
+    
+    // 生成两倍名单（无缝滚动需要）
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < 2; i++) {
+        shuffled.forEach(student => {
+            const nameElement = document.createElement('div');
+            nameElement.className = 'name-item';
+            nameElement.textContent = student;
+            container.appendChild(nameElement);
+                });
+            }
+        }
+        
+        // 初始更新
+        updateCountdown();
+        generateScrollingNames();
+        
+        // 每秒更新一次
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
