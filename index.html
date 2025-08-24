@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026高考倒计时 - 加油助力</title>
+    <title>2026高考倒计时×随机点名</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -282,6 +282,18 @@
             }
             
         }
+
+        /* 在原有按钮样式基础上增加禁用和动画效果 */
+        #lotteryBtn {
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+        #lotteryBtn:disabled {
+            background: #b0bec5 !important;
+            color: #eee !important;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -289,7 +301,7 @@
     <div id="particles-js"></div>
     <div class="container">
         <header>
-            <h1>2026高考倒计时</h1>
+            <h1>2026高考倒计时×随机点名</h1>
         </header>
         
         <div class="countdown-container">
@@ -321,11 +333,13 @@
                 <i class="fas fa-users"></i>
                 <h2>全体同学加油</h2>
                 <i class="fas fa-heart"></i>
+                <button id="lotteryBtn" style="margin-left:20px;padding:8px 20px;font-size:1.1rem;border-radius:8px;background:#4fc3f7;color:#fff;border:none;cursor:pointer;">抽奖</button>
             </div>
             
             <div class="scrolling-names" id="scrollingNames">
                 <!-- 名字将由JavaScript动态生成 -->
             </div>
+            <div id="winner" style="text-align:center;font-size:3rem;color:#00ff00;margin-top:1.5rem;display:none;"></div>
         </div>
         
         
@@ -480,28 +494,85 @@ console.log("打乱后的名单:", shuffledStudents);
 function generateScrollingNames() {
     const container = document.getElementById('scrollingNames');
     container.innerHTML = '';
-    
-    // 先打乱顺序
-    const shuffled = shuffleArray(students);
-    
     // 生成两倍名单（无缝滚动需要）
-    const fragment = document.createDocumentFragment();
     for (let i = 0; i < 2; i++) {
-        shuffled.forEach(student => {
+        shuffledStudents.forEach(student => {
             const nameElement = document.createElement('div');
             nameElement.className = 'name-item';
             nameElement.textContent = student;
             container.appendChild(nameElement);
-                });
-            }
+        });
+    }
+}
+
+    // 初始更新
+    updateCountdown();
+    generateScrollingNames();
+
+    // 每秒更新一次倒计时
+    setInterval(updateCountdown, 1000);
+
+    // 抽奖效果
+    const lotteryBtn = document.getElementById('lotteryBtn');
+    const scrollingNames = document.getElementById('scrollingNames');
+    const winnerDiv = document.getElementById('winner');
+    let isRolling = false;
+
+    lotteryBtn.addEventListener('click', function () {
+        if (isRolling) return;
+        isRolling = true;
+        winnerDiv.style.display = 'none';
+
+        // 按钮禁用并变暗
+        lotteryBtn.disabled = true;
+
+        // 随机选一个名字
+        const winnerIndex = Math.floor(Math.random() * shuffledStudents.length);
+
+        // 滚动参数
+        let speed = 100; // 初始速度（ms）
+        let currentIndex = 0;
+        let rounds = 0;
+        let maxRounds = 1; 
+        let timer;
+
+        // 高亮函数
+        function highlight(index) {
+            scrollingNames.childNodes.forEach((el, i) => {
+                el.style.background = i === index ? 'linear-gradient(90deg,#00ff22,#00bfff)' : '';
+                el.style.color = i === index ? '#fff' : '';
+                el.style.fontWeight = i === index ? 'bold' : '';
+            });
         }
-        
-        // 初始更新
-        updateCountdown();
-        generateScrollingNames();
-        
-        // 每秒更新一次
-        setInterval(updateCountdown, 1000);
+
+        function roll() {
+            highlight(currentIndex);
+            currentIndex = (currentIndex + 1) % shuffledStudents.length;
+            rounds += currentIndex === 0 ? 1 : 0;
+
+            // 加速阶段
+            if (rounds < 1) {
+                speed = Math.max(1, speed - 2);
+            }
+            // 减速阶段
+            else if (rounds >= maxRounds && currentIndex === winnerIndex) {
+                clearTimeout(timer);
+                highlight(winnerIndex);
+                winnerDiv.innerHTML = `🎉 恭喜 <b>${shuffledStudents[winnerIndex]}</b> 被选中！`;
+                winnerDiv.style.display = 'block';
+                isRolling = false;
+                // 抽奖结束，按钮恢复亮色和可点击
+                lotteryBtn.disabled = false;
+                return;
+            } else if (rounds >= 1) {
+                speed = Math.min(100, speed + 6);
+            }
+
+            timer = setTimeout(roll, speed);
+        }
+
+        roll();
+    });
     </script>
 </body>
 </html>
