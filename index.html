@@ -7,298 +7,40 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-          ::-webkit-scrollbar {
-         display: none;
-         }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Noto Sans SC', sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0c1445, #1a237e, #283593);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        /* 粒子背景 */
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-            z-index: 2;
-        }
-        
-        header {
-            text-align: center;
-            animation: fadeIn 5s ease-out;
-        }
-        
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #ff00f7, #d0ff00);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #bbdefb;
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        .countdown-container {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 4rem 0;
-            flex-wrap: wrap;
-        }
-        
-        .countdown-box {
-            background: rgba(25, 118, 210, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem 1.5rem;
-            min-width: 150px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        
-        .countdown-value {
-            font-size: 3.5rem;
-            font-weight: 700;
-            background: linear-gradient(to bottom, #e0f7fa, #80deea);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
-        }
-        
-        .countdown-label {
-            font-size: 1.1rem;
-            color: #e3f2fd;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        
-        .motivation-container {
-            background: rgba(21, 101, 192, 0.15);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 2rem;
-            margin: 4rem 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .motivation-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 2rem;
-        }
-        
-        .motivation-header h2 {
-            font-size: 2.2rem;
-            color: #bbdefb;
-        }
-        
-        .motivation-header i {
-            font-size: 2rem;
-            color: #4fc3f7;
-            animation: pulse 1.5s infinite;
-        }
-        
-        /* 新增一言渐变效果 */
-        #hitokoto {
-            background: linear-gradient(to bottom, #00ff22, #00bfff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 2.4rem;
-            font-weight: 700;
-            margin-bottom: 0.8rem;
-        }
-
-        .scrolling-names {
-            display: flex;
-            animation: scroll 180s linear infinite;
-            white-space: nowrap;
-            width:  fit-content;
-            will-change: transform;
-        }
-        
-        .name-item {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 180px;
-            height: 80px;
-            background: rgba(41, 182, 246, 0.2);
-            border-radius: 12px;
-            margin: 0 10px;
-            font-size: 1.4rem;
-            font-weight: 500;
-            padding: 0 20px;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .name-item::after {
-            content: "加油!";
-            position: absolute;
-            bottom: 5px;
-            right: 10px;
-            font-size: 0.9rem;
-            color: #00ff00;
-            font-weight: 400;
-        }
-        
-        .name-item:hover {
-            transform: translateY(-5px);
-            background: rgba(41, 182, 246, 0.3);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .name-item:hover::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, 
-                rgba(79, 172, 254, 0.3), 
-                rgba(0, 242, 254, 0.3));
-            z-index: -1;
-            border-radius: 12px;
-        }
-        
-        .motivation-text {
-            font-size: 1.8rem;
-            text-align: center;
-            margin: 3rem auto;
-            width: auto;
-            padding: 1.5rem;
-            background: rgba(25, 118, 210, 0.2);
-            border-radius: 16px;
-            animation: pulse 2s infinite;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 2rem;
-            margin-top: 3rem;
-            color: #90caf9;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* 动画效果 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(41, 182, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0); }
-        }
-        
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .countdown-box {
-                min-width: 120px;
-                padding: 1.5rem 1rem;
-            }
-            
-            .countdown-value {
-                font-size: 2.5rem;
-            }
-            
-            .name-item {
-                min-width: 150px;
-                height: 70px;
-                font-size: 1.2rem;
-            }
-            
-        }
-        
-        @media (max-width: 480px) {
-            .countdown-box {
-                min-width: 80px;
-                padding: 1rem 0.5rem;
-            }
-            
-            .countdown-value {
-                font-size: 2rem;
-            }
-            
-            .countdown-label {
-                font-size: 0.9rem;
-            }
-            
-            .name-item {
-                min-width: 130px;
-                height: 60px;
-                font-size: 1.1rem;
-            }
-            
-        }
-
-        /* 在原有按钮样式基础上增加禁用和动画效果 */
-        #lotteryBtn {
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-        #lotteryBtn:disabled {
-            background: #b0bec5 !important;
-            color: #eee !important;
-            cursor: not-allowed;
-            box-shadow: none;
-            opacity: 0.7;
-        }
+        /* 样式保持不变，与原始代码相同 */
+        ::-webkit-scrollbar { display: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Noto Sans SC', sans-serif; }
+        body { background: linear-gradient(135deg, #0c1445, #1a237e, #283593); color: #fff; min-height: 100vh; overflow-x: hidden; position: relative; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; z-index: 2; }
+        header { text-align: center; animation: fadeIn 5s ease-out; }
+        h1 { font-size: 3.5rem; margin-bottom: 1rem; background: linear-gradient(to right, #ff00f7, #d0ff00); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); }
+        .subtitle { font-size: 1.2rem; color: #bbdefb; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+        .countdown-container { display: flex; justify-content: center; gap: 1.5rem; margin: 4rem 0; flex-wrap: wrap; }
+        .countdown-box { background: rgba(25, 118, 210, 0.15); backdrop-filter: blur(10px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 2rem 1.5rem; min-width: 150px; text-align: center; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .countdown-value { font-size: 3.5rem; font-weight: 700; background: linear-gradient(to bottom, #e0f7fa, #80deea); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        .countdown-label { font-size: 1.1rem; color: #e3f2fd; text-transform: uppercase; letter-spacing: 2px; }
+        .motivation-container { background: rgba(21, 101, 192, 0.15); backdrop-filter: blur(10px); border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); padding: 2rem; margin: 4rem 0; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; position: relative; }
+        .motivation-header { display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 2rem; }
+        .motivation-header h2 { font-size: 2.2rem; color: #bbdefb; }
+        .motivation-header i { font-size: 2rem; color: #4fc3f7; animation: pulse 1.5s infinite; }
+        #hitokoto { background: linear-gradient(to bottom, #00ff22, #00bfff); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.4rem; font-weight: 700; margin-bottom: 0.8rem; }
+        .scrolling-names { display: flex; animation: scroll 180s linear infinite; white-space: nowrap; width: fit-content; will-change: transform; }
+        .name-item { display: inline-flex; align-items: center; justify-content: center; min-width: 180px; height: 80px; background: rgba(41, 182, 246, 0.2); border-radius: 12px; margin: 0 10px; font-size: 1.4rem; font-weight: 500; padding: 0 20px; position: relative; overflow: hidden; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        .name-item::after { content: "加油!"; position: absolute; bottom: 5px; right: 10px; font-size: 0.9rem; color: #00ff00; font-weight: 400; }
+        .name-item:hover { transform: translateY(-5px); background: rgba(41, 182, 246, 0.3); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); }
+        .name-item:hover::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(45deg, rgba(79, 172, 254, 0.3), rgba(0, 242, 254, 0.3)); z-index: -1; border-radius: 12px; }
+        .motivation-text { font-size: 1.8rem; text-align: center; margin: 3rem auto; width: auto; padding: 1.5rem; background: rgba(25, 118, 210, 0.2); border-radius: 16px; animation: pulse 2s infinite; }
+        footer { text-align: center; padding: 2rem; margin-top: 3rem; color: #90caf9; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(41, 182, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(41, 182, 246, 0); } }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @media (max-width: 768px) { h1 { font-size: 2.5rem; } .countdown-box { min-width: 120px; padding: 1.5rem 1rem; } .countdown-value { font-size: 2.5rem; } .name-item { min-width: 150px; height: 70px; font-size: 1.2rem; } }
+        @media (max-width: 480px) { .countdown-box { min-width: 80px; padding: 1rem 0.5rem; } .countdown-value { font-size: 2rem; } .countdown-label { font-size: 0.9rem; } .name-item { min-width: 130px; height: 60px; font-size: 1.1rem; } }
+        #lotteryBtn { transition: background 0.3s, box-shadow 0.3s; }
+        #lotteryBtn:disabled { background: #b0bec5 !important; color: #eee !important; cursor: not-allowed; box-shadow: none; opacity: 0.7; }
     </style>
 </head>
 <body>
-    <!-- 粒子背景 -->
-    <div id="particles-js"></div>
     <div class="container">
         <header>
             <h1>2026高考倒计时×随机点名</h1>
@@ -324,8 +66,8 @@
         </div>
         
         <div class="motivation-text">
-        <div id="hitokoto">加油哦</div>
-        <div id="from">『一言』正在加载中~</div>
+            <div id="hitokoto">加油哦</div>
+            <div id="from">『一言』正在加载中~</div>
         </div>
         
         <div class="motivation-container">
@@ -335,6 +77,7 @@
                 <i class="fas fa-heart"></i>
                 <button id="lotteryBtn" style="margin-left:20px;padding:8px 20px;font-size:1.1rem;border-radius:8px;background:#4fc3f7;color:#fff;border:none;cursor:pointer;">抽奖</button>
             </div>
+            <div id="upInfo" style="text-align:center;margin-bottom:1.5rem;font-size:1.2rem;"></div>
             
             <div class="scrolling-names" id="scrollingNames">
                 <!-- 名字将由JavaScript动态生成 -->
@@ -342,15 +85,11 @@
             <div id="winner" style="text-align:center;font-size:3rem;color:#00ff00;margin-top:1.5rem;display:none;"></div>
         </div>
         
-        
         <footer>
             <p>©2025高考倒计时 | 为2026届考生加油</p>
             <p>每一天的努力，都在拉近与梦想的距离</p>
         </footer>
     </div>
-    
-    <!-- 粒子库 -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <script>
         // 设置高考日期（2026年6月7日）
@@ -374,45 +113,6 @@
             document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
         }
         
-        // 初始化粒子背景
-        particlesJS("particles-js", {
-            particles: {
-                number: { value: 80, density: { enable: true, value_area: 800 } },
-                color: { value: "#ffffff" },
-                shape: { type: "circle" },
-                opacity: { value: 0.1, random: true },
-                size: { value: 3, random: true },
-                line_linked: {
-                    enable: true,
-                    distance: 150,
-                    color: "#4fc3f7",
-                    opacity: 0.1,
-                    width: 1
-                },
-                move: {
-                    enable: true,
-                    speed: 1,
-                    direction: "none",
-                    random: true,
-                    straight: false,
-                    out_mode: "out",
-                    bounce: false
-                }
-            },
-            interactivity: {
-                detect_on: "canvas",
-                events: {
-                    onhover: { enable: true, mode: "grab" },
-                    onclick: { enable: true, mode: "push" },
-                    resize: true
-                },
-                modes: {
-                    grab: { distance: 140, line_linked: { opacity: 0.3 } },
-                    push: { particles_nb: 4 }
-                }
-            },
-            retina_detect: true
-        });
         document.addEventListener('DOMContentLoaded', function () {
             // 初始化一言
             let isUpdating = false;
@@ -462,15 +162,16 @@
                 clearInterval(intervalId);
             });
         });
-            // Fisher-Yates 洗牌算法
-            function shuffleArray(array) {
-                const newArray = [...array]; // 创建副本避免修改原数组
-                for (let i = newArray.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 交换元素
-                }
-                return newArray;
+        
+        // Fisher-Yates 洗牌算法
+        function shuffleArray(array) {
+            const newArray = [...array]; // 创建副本避免修改原数组
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 交换元素
             }
+            return newArray;
+        }
         
         // 学生名单
         const students = [
@@ -484,95 +185,254 @@
             "樵世诚", "熊娅妮", "黄海棠", "程修均", "张维哲", "徐可欣",
             "张钰箐", "夏增婷", "吴昊昊", "周笠", "任鹏飞", "谢昌农",
             "程凯", "朱海英", "黄佳辉", "曹旖诺", "谢易航","巩玉蓉"
-            
         ];
         
-const shuffledStudents = shuffleArray(students);
-console.log("打乱后的名单:", shuffledStudents);
+        // 随机选UP角色
+        function pickUPs(arr, count) {
+            const copy = [...arr];
+            const result = [];
+            for (let i = 0; i < count; i++) {
+                const idx = Math.floor(Math.random() * copy.length);
+                result.push(copy[idx]);
+                copy.splice(idx, 1);
+            }
+            return result;
+        }
 
- // 生成滚动名单
-function generateScrollingNames() {
-    const container = document.getElementById('scrollingNames');
-    container.innerHTML = '';
-    // 生成两倍名单（无缝滚动需要）
-    for (let i = 0; i < 2; i++) {
-        shuffledStudents.forEach(student => {
-            const nameElement = document.createElement('div');
-            nameElement.className = 'name-item';
-            nameElement.textContent = student;
-            container.appendChild(nameElement);
-        });
-    }
-}
+        // 页面刷新时随机UP（不保存到localStorage）
+        let fiveStarUP = pickUPs(students, 1)[0];
+        let fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
 
-    // 初始更新
-    updateCountdown();
-    generateScrollingNames();
+        // 展示UP信息
+        function updateUPDisplay() {
+            document.getElementById('upInfo').innerHTML = `
+                <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
+                <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveStarUP}</span>
+                <br>
+                <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
+                ${fourStarUPs.map(name => `<span style="background:linear-gradient(90deg,#A259FF,#8F5AFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;margin-right:10px;">${name}</span>`).join('')}
+            `;
+        }
+        
+        updateUPDisplay();
+        
+        const shuffledStudents = shuffleArray(students);
+        console.log("打乱后的名单:", shuffledStudents);
 
-    // 每秒更新一次倒计时
-    setInterval(updateCountdown, 1000);
-
-    // 抽奖效果
-    const lotteryBtn = document.getElementById('lotteryBtn');
-    const scrollingNames = document.getElementById('scrollingNames');
-    const winnerDiv = document.getElementById('winner');
-    let isRolling = false;
-
-    lotteryBtn.addEventListener('click', function () {
-        if (isRolling) return;
-        isRolling = true;
-        winnerDiv.style.display = 'none';
-
-        // 按钮禁用并变暗
-        lotteryBtn.disabled = true;
-
-        // 随机选一个名字
-        const winnerIndex = Math.floor(Math.random() * shuffledStudents.length);
-
-        // 滚动参数
-        let speed = 100; // 初始速度（ms）
-        let currentIndex = 0;
-        let rounds = 0;
-        let maxRounds = 1; 
-        let timer;
-
-        // 高亮函数
-        function highlight(index) {
-            scrollingNames.childNodes.forEach((el, i) => {
-                el.style.background = i === index ? 'linear-gradient(90deg,#00ff22,#00bfff)' : '';
-                el.style.color = i === index ? '#fff' : '';
-                el.style.fontWeight = i === index ? 'bold' : '';
+        function generateScrollingNames() {
+            const container = document.getElementById('scrollingNames');
+            container.innerHTML = '';
+            // 生成两倍名单
+            const doubleList = [...shuffledStudents, ...shuffledStudents];
+            doubleList.forEach(student => {
+                const nameElement = document.createElement('div');
+                nameElement.className = 'name-item';
+                nameElement.textContent = student;
+                container.appendChild(nameElement);
             });
         }
 
-        function roll() {
-            highlight(currentIndex);
-            currentIndex = (currentIndex + 1) % shuffledStudents.length;
-            rounds += currentIndex === 0 ? 1 : 0;
+        // 稀有度配置
+        const rarityConfig = [
+            { name: '⭐⭐⭐⭐⭐', color: 'linear-gradient(90deg,#FFD700,#FFA500)', textColor: '#fff', chance: 0.006 },
+            { name: '⭐⭐⭐⭐', color: 'linear-gradient(90deg,#A259FF,#8F5AFF)', textColor: '#fff', chance: 0.051 },
+            { name: '⭐⭐⭐', color: 'linear-gradient(90deg,#00bfff,#1e90ff)', textColor: '#fff', chance: 0.943 }
+        ];
 
-            // 加速阶段
-            if (rounds < 1) {
-                speed = Math.max(1, speed - 2);
-            }
-            // 减速阶段
-            else if (rounds >= maxRounds && currentIndex === winnerIndex) {
-                clearTimeout(timer);
-                highlight(winnerIndex);
-                winnerDiv.innerHTML = `🎉 恭喜 <b>${shuffledStudents[winnerIndex]}</b> 被选中！`;
-                winnerDiv.style.display = 'block';
-                isRolling = false;
-                // 抽奖结束，按钮恢复亮色和可点击
-                lotteryBtn.disabled = false;
-                return;
-            } else if (rounds >= 1) {
-                speed = Math.min(100, speed + 6);
-            }
+        // 初始更新
+        updateCountdown();
+        generateScrollingNames();
 
-            timer = setTimeout(roll, speed);
+        // 每秒更新一次倒计时
+        setInterval(updateCountdown, 1000);
+
+        // 抽奖效果
+        const lotteryBtn = document.getElementById('lotteryBtn');
+        const scrollingNames = document.getElementById('scrollingNames');
+        const winnerDiv = document.getElementById('winner');
+        let isRolling = false;
+
+        // 获取当天key（只用于抽奖次数）
+        function getTodayKey(key) {
+            const today = new Date();
+            return key + '_' + today.getFullYear() + '_' + today.getMonth() + '_' + today.getDate();
         }
 
-        roll();
-    });
+        // 获取保底次数
+        function getPity(key, defaultValue = 0) {
+            const todayKey = getTodayKey(key);
+            const value = localStorage.getItem(todayKey);
+            return value ? parseInt(value) : defaultValue;
+        }
+
+        // 设置保底次数
+        function setPity(key, value) {
+            const todayKey = getTodayKey(key);
+            localStorage.setItem(todayKey, value);
+        }
+
+        // 初始化保底（只保存抽奖次数，不保存UP）
+        let totalDraws = getPity('totalDraws', 0);
+        let fiveStarPity = getPity('fiveStarPity', 0);
+        let fourStarPity = getPity('fourStarPity', 0);
+
+        // 抽奖按钮文本显示抽奖次数
+        function updateLotteryBtnText() {
+            lotteryBtn.innerText = `抽奖（已抽${totalDraws}次）`;
+        }
+        updateLotteryBtnText();
+
+        lotteryBtn.addEventListener('click', function () {
+            if (isRolling) return;
+            isRolling = true;
+            winnerDiv.style.display = 'none';
+            lotteryBtn.disabled = true;
+
+            const winnerIndex = Math.floor(Math.random() * scrollingNames.childNodes.length);
+
+            // 固定滚动总时长为5秒
+            const totalTime = 5000; // 毫秒
+            const totalSteps = 60; // 总步数
+            const interval = totalTime / totalSteps;
+
+            let currentIndex = 0;
+            let step = 0;
+            let lastTime = null;
+
+            function highlightRolling(index) {
+                scrollingNames.childNodes.forEach((el, i) => {
+                    if (i === index) {
+                        el.style.background = 'linear-gradient(90deg,#00eaff,#00ff99)';
+                        el.style.color = '#222';
+                        el.style.fontWeight = 'bold';
+                        el.style.boxShadow = '0 0 16px 6px #00eaff';
+                        el.style.border = '2px solid #00ff99';
+                    } else {
+                        el.style.background = '';
+                        el.style.color = '';
+                        el.style.fontWeight = '';
+                        el.style.boxShadow = '';
+                        el.style.border = '';
+                    }
+                });
+            }
+
+            function roll(now) {
+                if (!lastTime) lastTime = now;
+                if (step < totalSteps) {
+                    if (now - lastTime >= interval) {
+                        highlightRolling(currentIndex);
+                        currentIndex = (currentIndex + 1) % scrollingNames.childNodes.length;
+                        step++;
+                        lastTime = now;
+                    }
+                    requestAnimationFrame(roll);
+                } else {
+                    // 保底机制
+                    let rarityIndex = 2; // 默认三星
+                    totalDraws++;
+                    fiveStarPity++;
+                    fourStarPity++;
+
+                    if (fiveStarPity >= 90) {
+                        rarityIndex = 0; // 五星保底
+                        fiveStarPity = 0;
+                        fourStarPity = 0;
+                    } else if (fourStarPity >= 10) {
+                        rarityIndex = 1; // 四星保底
+                        fourStarPity = 0;
+                    } else {
+                        const rand = Math.random();
+                        if (rand < rarityConfig[0].chance) {
+                            rarityIndex = 0;
+                            fiveStarPity = 0;
+                            fourStarPity = 0;
+                        } else if (rand < rarityConfig[0].chance + rarityConfig[1].chance) {
+                            rarityIndex = 1;
+                            fourStarPity = 0;
+                        }
+                    }
+
+                    // 保存抽奖次数（不保存UP）
+                    setPity('totalDraws', totalDraws);
+                    setPity('fiveStarPity', fiveStarPity);
+                    setPity('fourStarPity', fourStarPity);
+
+                    updateLotteryBtnText();
+
+                    // 先决定中奖人（使用当前UP，而不是保存的UP）
+                    let winnerName = '';
+                    let isUP = false;
+                    if (rarityIndex === 0) { // 五星
+                        if (Math.random() < 0.5) {
+                            winnerName = fiveStarUP;
+                            isUP = true;
+                        } else {
+                            const candidates = students.filter(s => s !== fiveStarUP);
+                            winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                        }
+                    } else if (rarityIndex === 1) { // 四星
+                        if (Math.random() < 0.5) {
+                            winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
+                            isUP = true;
+                        } else {
+                            const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+                            winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                        }
+                    } else { // 三星
+                        const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+                        winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                    }
+
+                    // 在滚动区找到中奖人的位置
+                    let winnerPos = -1;
+                    for (let i = 0; i < scrollingNames.childNodes.length; i++) {
+                        if (scrollingNames.childNodes[i].textContent === winnerName) {
+                            winnerPos = i;
+                            break;
+                        }
+                    }
+                    if (winnerPos === -1) winnerPos = 0;
+
+                    // 高亮中奖人
+                    scrollingNames.childNodes.forEach((el, i) => {
+                        if (i === winnerPos) {
+                            el.style.background = rarityConfig[rarityIndex].color;
+                            el.style.color = rarityConfig[rarityIndex].textColor;
+                            el.style.fontWeight = 'bold';
+                            el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
+                                                rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
+                                                '0 0 16px 6px #00bfff';
+                            el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
+                                            rarityIndex === 1 ? '3px solid #A259FF' :
+                                            '3px solid #00bfff';
+                        } else {
+                            el.style.background = '';
+                            el.style.color = '';
+                            el.style.fontWeight = '';
+                            el.style.boxShadow = '';
+                            el.style.border = '';
+                        }
+                    });
+
+                    let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
+
+                    winnerDiv.innerHTML = `
+                        <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
+                            ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
+                        </span>
+                        <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">${winnerName}</span><br>
+                        <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜被抽中🎉</span>
+                    `;
+                    winnerDiv.style.display = 'block';
+                    isRolling = false;
+                    lotteryBtn.disabled = false;
+                }
+            }
+            requestAnimationFrame(roll);
+        });
+
+
     </script>
 </body>
 </html>
