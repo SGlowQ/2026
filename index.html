@@ -312,7 +312,7 @@
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
-            z-index: 100;
+            z-index: 3;
             backdrop-filter: blur(5px);
             transition: all 0.3s ease;
         }
@@ -329,7 +329,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
+            z-index: 5;
             display: none;
             justify-content: center;
             align-items: center;
@@ -543,7 +543,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
+            z-index: 5;
             display: none;
             justify-content: center;
             align-items: center;
@@ -602,10 +602,163 @@
             background: #4fc3f7;
             border-radius: 10px;
         }
+
+        /* 五星特效容器 - 初始状态全屏黑色 */
+        .wish-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 6;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-out;
+        }
+
+        /* 激活状态 */
+        .wish-effect.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+
+        /* 金光迸发效果 */
+        .golden-light {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.8) 40%, rgba(255, 215, 0, 0.9) 70%);
+            opacity: 0;
+            transform: scale(0);
+            filter: blur(10px);
+        }
+
+        /* 金光放大动画 */
+        @keyframes goldenLightAnimation {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(8);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(15);
+            }
+        }
+
+
+        /* 角色名称展示 */
+        .character-name {
+            position: relative;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(50px) scale(3);
+            /* 初始状态：放大3倍 */
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 7;
+        }
+
+        .character-name.revealed {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            /* 最终状态：正常大小 */
+        }
+
+        .name-text {
+            font-size: 10rem;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
+                0 0 40px rgba(255, 215, 0, 0.6),
+                0 0 60px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700, #ffaa00);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShine 4s ease infinite;
+        }
+
+        @keyframes textShine {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .stars {
+            font-size: 4rem;
+            color: #ffd700;
+            letter-spacing: 5px;
+            margin-top: 15px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+        }
+
+        /* 继续按钮 */
+        .wish-continue-btn {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 1s ease, transform 0.3s ease, background 0.3s ease;
+            z-index: 8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wish-continue-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .wish-effect.active .wish-continue-btn {
+            opacity: 1;
+        }
     </style>
 </head>
 
 <body>
+    <!-- 五星抽中特效容器 -->
+    <div id="wishEffect" class="wish-effect">
+        <!-- 金光迸发效果 -->
+        <div class="golden-light"></div>
+        <!-- 角色名称展示 -->
+        <div class="character-name">
+            <span class="name-text"></span>
+            <div class="stars">★★★★★</div>
+        </div>
+        <!-- 继续按钮 -->
+        <button class="wish-continue-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     <div class="container">
         <header>
             <h1>2026高考倒计时×随机点名</h1>
@@ -1318,6 +1471,7 @@
 
                                         // 保存大保底状态
                                         localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
+                                        showFiveStarEffect(winnerName);
                                     } else if (rarityIndex === 1) { // 四星
                                         // 重置四星保底计数器
                                         fourStarPity = 0;
@@ -1390,7 +1544,57 @@
                                             el.style.border = '';
                                         }
                                     });
+                                    // 显示五星大特效
+                                    function showFiveStarEffect(name) {
+                                        const effectContainer = document.getElementById('wishEffect');
+                                        const goldenLight = effectContainer.querySelector('.golden-light');
+                                        const characterName = effectContainer.querySelector('.character-name');
+                                        const nameText = effectContainer.querySelector('.name-text');
 
+                                        // 设置角色名称
+                                        nameText.textContent = name;
+
+                                        // 显示特效容器
+                                        effectContainer.classList.add('active');
+
+                                        // 动画序列
+                                        setTimeout(() => {
+
+                                            // 金光迸发
+                                            setTimeout(() => {
+                                                goldenLight.style.animation = 'goldenLightAnimation 2s ease-out forwards';
+                                                goldenLight.style.opacity = '1';
+
+                                                // 显示角色名称
+                                                setTimeout(() => {
+                                                    characterName.classList.add('revealed');
+                                                }, 0);
+                                            }, 500);
+                                        });
+                                    }
+
+                                    // 关闭五星特效
+                                    document.querySelector('.wish-continue-btn').addEventListener('click', function () {
+                                        const effectContainer = document.getElementById('wishEffect');
+                                        const goldenLight = effectContainer.querySelector('.golden-light');
+                                        const characterName = effectContainer.querySelector('.character-name');
+
+                                        // 重置所有动画
+                                        goldenLight.style.animation = 'none';
+                                        goldenLight.style.opacity = '0';
+                                        characterName.classList.remove('revealed');
+
+                                        // 隐藏容器
+                                        effectContainer.classList.remove('active');
+
+                                        // 继续正常流程
+                                        isRolling = false;
+                                        lotteryBtn.disabled = false;
+                                    });
+
+                                    // 在抽到五星时调用此函数
+                                    // 替换您现有的五星处理代码，改为调用：
+                                    // showFiveStarEffect(winnerName);
                                     let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
 
                                     winnerDiv.innerHTML = `
@@ -1411,6 +1615,8 @@
                             }
                             requestAnimationFrame(roll);
                         });
+
+
                     </script>
 </body>
 
