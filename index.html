@@ -24,6 +24,10 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Noto Sans SC', sans-serif;
+            -webkit-user-select: none; /* Chrome, Safari, Opera */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
         }
 
         body {
@@ -960,6 +964,10 @@
                     </div>
 
                     <script>
+                        //禁止右键
+                        document.addEventListener('contextmenu', function(event) {
+                        event.preventDefault();
+                        });
                         // 设置高考日期（2026年6月7日）
                         const examDate = new Date('June 7, 2026 00:00:00').getTime();
 
