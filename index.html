@@ -9,6 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <audio id="fiveStarSound" preload="auto">
+        <source src="a.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
     <style>
         /* 样式保持不变，与原始代码相同 */
         ::-webkit-scrollbar {
@@ -1037,6 +1041,7 @@
                             });
                         });
 
+
                         // 获取元素
                         const announcementBtn = document.getElementById('announcement-btn');
                         const announcementContainer = document.getElementById('announcement-container');
@@ -1130,7 +1135,7 @@
 
                         // 稀有度配置
                         const rarityConfig = [
-                            { name: '⭐⭐⭐⭐⭐', color: 'linear-gradient(90deg,#FFD700,#FFA500)', textColor: '#fff', chance: 0.006 },
+                            { name: '⭐⭐⭐⭐⭐', color: 'linear-gradient(90deg,#FFD700,#FFA500)', textColor: '#000', chance: 0.006 },
                             { name: '⭐⭐⭐⭐', color: 'linear-gradient(90deg,#A259FF,#8F5AFF)', textColor: '#fff', chance: 0.051 },
                             { name: '⭐⭐⭐', color: 'linear-gradient(90deg,#00bfff,#1e90ff)', textColor: '#fff', chance: 0.943 }
                         ];
@@ -1544,12 +1549,32 @@
                                             el.style.border = '';
                                         }
                                     });
+                                    // 在页面加载完成后预加载音频
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const audio = document.getElementById('fiveStarSound');
+                                        audio.muted = true; // 先静音
+                                        audio.play().then(() => {
+                                            audio.pause();
+                                            audio.currentTime = 0;
+                                            audio.muted = false; // 解除静音
+                                        }).catch(error => {
+                                            console.log('音频预加载失败:', error);
+                                        });
+                                    });
+
                                     // 显示五星大特效
                                     function showFiveStarEffect(name) {
                                         const effectContainer = document.getElementById('wishEffect');
                                         const goldenLight = effectContainer.querySelector('.golden-light');
                                         const characterName = effectContainer.querySelector('.character-name');
                                         const nameText = effectContainer.querySelector('.name-text');
+
+                                        // 播放五星音效
+                                        const audio = document.getElementById('fiveStarSound');
+                                        audio.currentTime = 0; // 重置音频到开头
+                                        audio.play().catch(error => {
+                                            console.log('音频自动播放被阻止，需要用户交互:', error);
+                                        });
 
                                         // 设置角色名称
                                         nameText.textContent = name;
