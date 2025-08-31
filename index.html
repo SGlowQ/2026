@@ -24,18 +24,40 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Noto Sans SC', sans-serif;
-            -webkit-user-select: none; /* Chrome, Safari, Opera */
-            -moz-user-select: none; /* Firefox */
-            -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
+            -webkit-user-select: none;
+            /* Chrome, Safari, Opera */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* Internet Explorer/Edge */
+            user-select: none;
+            /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
         }
 
         body {
-            background: linear-gradient(135deg, #0c1445, #1a237e, #283593);
+            /* 设置背景图片 */
+            background-image: url('https://t.alcy.cc/ysz');
+            /* 让背景图覆盖整个屏幕 */
+            background-size: cover;
+            /* 背景图居中 */
+            background-position: center center;
+            background-attachment: fixed;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
+        }
+
+        /* 添加半透明覆盖层 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(12, 20, 69, 0.7);
+            /* 半透明深蓝色 */
         }
 
         .container {
@@ -79,7 +101,7 @@
 
         .countdown-box {
             background: rgba(25, 118, 210, 0.15);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 2rem 1.5rem;
@@ -108,7 +130,7 @@
 
         .motivation-container {
             background: rgba(21, 101, 192, 0.15);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(5px);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 2rem;
@@ -144,6 +166,7 @@
             font-size: 2.4rem;
             font-weight: 700;
             margin-bottom: 0.8rem;
+            transition: opacity 0.5s ease;
         }
 
         .scrolling-names {
@@ -206,9 +229,9 @@
             margin: 3rem auto;
             width: auto;
             padding: 1.5rem;
+            backdrop-filter: blur(5px);
             background: rgba(25, 118, 210, 0.2);
             border-radius: 16px;
-            animation: pulse 2s infinite;
         }
 
         footer {
@@ -231,19 +254,6 @@
             }
         }
 
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 0 0 0 rgba(41, 182, 246, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 15px rgba(41, 182, 246, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(41, 182, 246, 0);
-            }
-        }
 
         @keyframes scroll {
             0% {
@@ -345,14 +355,15 @@
         }
 
         .history-content {
-            background: linear-gradient(135deg, #1a237e, #283593);
+            /*background: linear-gradient(135deg, #1a237e, #283593);*/
             width: 90%;
             max-width: 800px;
             max-height: 80vh;
             overflow: hidden;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(12, 20, 69, 0.3);
+            /* 半透明深蓝色 */
             position: relative;
         }
 
@@ -559,14 +570,15 @@
         }
 
         .announcement-content {
-            background: linear-gradient(135deg, #1a237e, #283593);
+            /*background: linear-gradient(135deg, #1a237e, #283593);*/
             width: 90%;
             max-width: 60rem;
             max-height: 80vh;
             overflow: hidden;
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(12, 20, 69, 0.3);
+            /* 半透明深蓝色 */
             position: relative;
         }
 
@@ -644,24 +656,29 @@
             background: radial-gradient(circle, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.8) 40%, rgba(255, 215, 0, 0.9) 70%);
             opacity: 0;
             transform: scale(0);
-            filter: blur(10px);
+            filter: blur(5px);
         }
 
         /* 金光放大动画 */
         @keyframes goldenLightAnimation {
             0% {
                 opacity: 0;
-                transform: scale(0);
+                transform: scale(5);
             }
 
-            50% {
+            40% {
                 opacity: 1;
-                transform: scale(8);
+                transform: scale(10);
+            }
+
+            70% {
+                opacity: 1;
+                transform: scale(5);
             }
 
             100% {
                 opacity: 0;
-                transform: scale(15);
+                transform: scale(50);
             }
         }
 
@@ -760,7 +777,7 @@
         <!-- 角色名称展示 -->
         <div class="character-name">
             <span class="name-text"></span>
-            <div class="stars">★★★★★</div>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
         </div>
         <!-- 继续按钮 -->
         <button class="wish-continue-btn">
@@ -825,7 +842,7 @@
         </div>
 
         <footer>
-            <p>©2025高考倒计时 | 为2026届考生加油</p>
+            <p>©2025星梦捕光 | 为2026届考生加油</p>
             <p>每一天的努力，都在拉近与梦想的距离</p>
         </footer>
     </div>
@@ -965,8 +982,8 @@
 
                     <script>
                         //禁止右键
-                        document.addEventListener('contextmenu', function(event) {
-                        event.preventDefault();
+                        document.addEventListener('contextmenu', function (event) {
+                            event.preventDefault();
                         });
                         // 设置高考日期（2026年6月7日）
                         const examDate = new Date('June 7, 2026 00:00:00').getTime();
@@ -1003,31 +1020,36 @@
                                         const from = data.from ? `『${data.from}』` : '';
                                         const fromWho = data.from_who ? `${data.from_who}` : '';
 
-                                        // 淡出效果
-                                        let opacity = 1;
-                                        const container = document.querySelector('.motivation-text');
-                                        const fadeOut = setInterval(() => {
-                                            opacity -= 0.05;
-                                            container.style.opacity = opacity;
-                                            if (opacity <= 0) {
-                                                clearInterval(fadeOut);
+                                        // 淡出效果 - 仅针对文本元素
+                                        const hitokotoElement = document.getElementById('hitokoto');
+                                        const fromElement = document.getElementById('from');
 
-                                                document.getElementById('hitokoto').innerText = hitokoto;
-                                                document.getElementById('from').innerText = from + fromWho;
-                                                document.getElementById('from').style.fontSize = '20px';
-                                                // 淡入效果
-                                                const fadeIn = setInterval(() => {
-                                                    opacity += 0.05;
-                                                    container.style.opacity = opacity;
-                                                    if (opacity >= 1) clearInterval(fadeIn);
-                                                }, 20);
-                                            }
-                                        }, 20);
+                                        // 使用更平滑的CSS transition实现淡出
+                                        hitokotoElement.style.transition = 'opacity 0.5s ease';
+                                        fromElement.style.transition = 'opacity 0.5s ease';
+                                        hitokotoElement.style.opacity = 0;
+                                        fromElement.style.opacity = 0;
+
+                                        // 等待淡出完成后再更新内容
+                                        setTimeout(() => {
+                                            // 更新文本内容
+                                            hitokotoElement.innerText = hitokoto;
+                                            fromElement.innerText = from + fromWho;
+                                            fromElement.style.fontSize = '20px';
+
+                                            // 淡入效果
+                                            hitokotoElement.style.opacity = 1;
+                                            fromElement.style.opacity = 1;
+
+                                            // 动画完成后重置transition属性
+                                            setTimeout(() => {
+                                                hitokotoElement.style.transition = '';
+                                                fromElement.style.transition = '';
+                                                isUpdating = false;
+                                            }, 500);
+                                        }, 500);
                                     })
-                                    .catch(console.error)
-                                    .finally(() => {
-                                        isUpdating = false;
-                                    });
+                                    .catch(console.error);
                             }
 
                             // 立即执行一次
