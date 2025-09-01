@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026高考倒计时×随机点名</title>
     <link rel="shortcut icon" href="favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap"
-        rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <audio id="fiveStarSound" preload="auto">
         <source src="a.mp3" type="audio/mpeg">
@@ -19,11 +18,33 @@
             display: none;
         }
 
+        @font-face {
+            font-family: 'Elements';
+            src: url('genshin-icon.ttf') format('truetype');
+        }
+
+        :root {
+            --pyro: #ff6752;
+            /* 火 */
+            --hydro: #4fc3f7;
+            /* 水 */
+            --anemo: #73e6c2;
+            /* 风 */
+            --electro: #b388ff;
+            /* 雷 */
+            --dendro: #a0d84f;
+            /* 草 */
+            --cryo: #99d9ea;
+            /* 冰 */
+            --geo: #ffcc29;
+            /* 岩 */
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Noto Sans SC', sans-serif;
+            font-family: sans-serif;
             -webkit-user-select: none;
             /* Chrome, Safari, Opera */
             -moz-user-select: none;
@@ -310,6 +331,7 @@
             transition: background 0.3s, box-shadow 0.3s;
             transition: all 0.3s ease;
         }
+
         #lotteryBtn:hover {
             background: #00aeff !important;
             box-shadow: 0 4px 15px rgba(41, 182, 246, 0.4);
@@ -659,22 +681,22 @@
         @keyframes goldenLightAnimation {
             0% {
                 opacity: 0;
-                transform: scale(5);
+                transform: scale(5)translateZ(0);
             }
 
             40% {
                 opacity: 1;
-                transform: scale(10);
+                transform: scale(10)translateZ(0);
             }
 
             70% {
                 opacity: 1;
-                transform: scale(5);
+                transform: scale(5)translateZ(0);
             }
 
             100% {
                 opacity: 0;
-                transform: scale(50);
+                transform: scale(50)translateZ(0);
             }
         }
 
@@ -761,6 +783,24 @@
 
         .wish-effect.active .wish-continue-btn {
             opacity: 1;
+        }
+
+        #upInfo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* 水平居中 */
+            gap: 0.6rem;
+            /* 行间距 */
+        }
+
+        .up-line {
+            display: flex;
+            align-items: center;
+            /* 图标与文字垂直居中 */
+            justify-content: center;
+            gap: 0.4rem;
+            /* 图标与文字间距 */
         }
     </style>
 </head>
@@ -1099,7 +1139,18 @@
                             return newArray;
                         }
 
-                        // 学生名单
+                        // 元素图标表
+                        const elementMap = [
+                            { char: '\ue001', color: 'var(--pyro)' }, // 火
+                            { char: '\ue002', color: 'var(--hydro)' }, // 水
+                            { char: '\ue003', color: 'var(--anemo)' }, // 风
+                            { char: '\ue004', color: 'var(--electro)' }, // 雷
+                            { char: '\ue005', color: 'var(--dendro)' }, // 草
+                            { char: '\ue006', color: 'var(--cryo)' }, // 冰
+                            { char: '\ue007', color: 'var(--geo)' }  // 岩
+                        ];
+
+                        // 2. 生成带随机元素图标的名字数组（洗牌前完成）
                         const students = [
                             "张永沛", "雷俊杰", "陈馨怡", "殷俊强", "郑奎", "李依婷", "王俊楠",
                             "贺梦菲", "黄金婷", "兰雨檐", "肖涵", "陈慧丽", "崔雯", "马英宸",
@@ -1111,7 +1162,10 @@
                             "樵世诚", "熊娅妮", "黄海棠", "程修均", "张维哲", "徐可欣",
                             "张钰箐", "夏增婷", "吴昊昊", "周笠", "任鹏飞", "谢昌农",
                             "程凯", "朱海英", "黄佳辉", "曹旖诺", "谢易航", "巩玉蓉"
-                        ];
+                        ].map((name, idx) => {
+                            const el = elementMap[idx % elementMap.length];
+                            return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${name}`;
+                        });
 
                         // 随机选UP角色
                         function pickUPs(arr, count) {
@@ -1131,13 +1185,26 @@
 
                         // 展示UP信息
                         function updateUPDisplay() {
+                            const fiveIcon = fiveStarUP.match(/<i[^>]*>.*?<\/i>/)[0];
+                            const fiveText = fiveStarUP.replace(/<i[^>]*>.*?<\/i>/, '');
+
+                            const fourHtml = fourStarUPs.map(n => {
+                                const icon = n.match(/<i[^>]*>.*?<\/i>/)[0];
+                                const txt = n.replace(/<i[^>]*>.*?<\/i>/, '');
+                                return `${icon}<span style="background:linear-gradient(90deg,#A259FF,#8F5AFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${txt}</span>`;
+                            }).join('&nbsp;&nbsp;&nbsp;&nbsp;');   // 2. 四星三人之间增加 4 个空格
+
                             document.getElementById('upInfo').innerHTML = `
-                <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
-                <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveStarUP}</span>
-                <br>
-                <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
-                ${fourStarUPs.map(name => `<span style="background:linear-gradient(90deg,#A259FF,#8F5AFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;margin-right:10px;">${name}</span>`).join('')}
-            `;
+                            <div class="up-line">
+                                <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
+                                ${fiveIcon}
+                                <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveText}</span>
+                            </div>
+                            <div class="up-line">
+                                <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
+                                ${fourHtml}
+                            </div>
+                        `;
                         }
 
                         updateUPDisplay();
@@ -1153,7 +1220,7 @@
                             doubleList.forEach(student => {
                                 const nameElement = document.createElement('div');
                                 nameElement.className = 'name-item';
-                                nameElement.textContent = student;
+                                nameElement.innerHTML = student;
                                 container.appendChild(nameElement);
                             });
                         }
@@ -1208,10 +1275,10 @@
 
                         // 更新保底信息显示
                         function updatePityDisplay() {
-                            document.getElementById('fiveStarPityCount').textContent = fiveStarPity;
-                            document.getElementById('fourStarPityCount').textContent = fourStarPity;
-                            document.getElementById('fiveStarGuarantee').textContent = isGuaranteed5StarUP ? "已激活" : "未激活";
-                            document.getElementById('fourStarGuarantee').textContent = isGuaranteed4StarUP ? "已激活" : "未激活";
+                            document.getElementById('fiveStarPityCount').innerHTML = fiveStarPity;
+                            document.getElementById('fourStarPityCount').innerHTML = fourStarPity;
+                            document.getElementById('fiveStarGuarantee').innerHTML = isGuaranteed5StarUP ? "已激活" : "未激活";
+                            document.getElementById('fourStarGuarantee').innerHTML = isGuaranteed4StarUP ? "已激活" : "未激活";
 
                             // 根据状态改变颜色
                             document.getElementById('fiveStarGuarantee').style.color = isGuaranteed5StarUP ? "#00ff00" : "#ffeb3b";
@@ -1297,7 +1364,7 @@
 
                                 const groupTitle = document.createElement('div');
                                 groupTitle.className = 'group-title';
-                                groupTitle.textContent = `第 ${i + 1} 组`;
+                                groupTitle.innerHTML = `第 ${i + 1} 组`;
 
                                 groupHeader.appendChild(groupTitle);
                                 group.appendChild(groupHeader);
@@ -1310,28 +1377,28 @@
 
                                     const nameSpan = document.createElement('span');
                                     nameSpan.className = 'item-name';
-                                    nameSpan.textContent = record.name;
+                                    nameSpan.innerHTML = record.name;
 
                                     const raritySpan = document.createElement('span');
                                     raritySpan.className = 'item-rarity';
 
                                     if (record.rarity === 0) {
                                         raritySpan.classList.add('five-star');
-                                        raritySpan.textContent = '五星' + (record.isUP ? ' UP!' : '');
+                                        raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '');
                                         nameSpan.style.color = '#FFD700';  // 金色
                                     } else if (record.rarity === 1) {
                                         raritySpan.classList.add('four-star');
-                                        raritySpan.textContent = '四星' + (record.isUP ? ' UP!' : '');
+                                        raritySpan.innerHTML = '四星' + (record.isUP ? ' UP!' : '');
                                         nameSpan.style.color = '#A259FF';  // 紫色
                                     } else {
                                         raritySpan.classList.add('three-star');
-                                        raritySpan.textContent = '三星';
+                                        raritySpan.innerHTML = '三星';
                                         nameSpan.style.color = '#03a9f4';  // 保持原蓝色
                                     }
 
                                     const timeSpan = document.createElement('span');
                                     timeSpan.className = 'item-time';
-                                    timeSpan.textContent = record.time;
+                                    timeSpan.innerHTML = record.time;
 
                                     item.appendChild(nameSpan);
                                     item.appendChild(raritySpan);
@@ -1404,8 +1471,8 @@
                             const winnerIndex = Math.floor(Math.random() * scrollingNames.childNodes.length);
 
                             // 固定滚动总时长为5秒
-                            const totalTime = 2000; // 毫秒
-                            const totalSteps = 244; // 总步数
+                            const totalTime = 61; // 毫秒
+                            const totalSteps = 61; // 总步数
                             const interval = totalTime / totalSteps;
 
                             let currentIndex = 0;
@@ -1547,7 +1614,7 @@
                                     // 在滚动区找到中奖人的位置
                                     let winnerPos = -1;
                                     for (let i = 0; i < scrollingNames.childNodes.length; i++) {
-                                        if (scrollingNames.childNodes[i].textContent === winnerName) {
+                                        if (scrollingNames.childNodes[i].innerHTML === winnerName) {
                                             winnerPos = i;
                                             break;
                                         }
@@ -1602,7 +1669,7 @@
                                         });
 
                                         // 设置角色名称
-                                        nameText.textContent = name;
+                                        nameText.innerHTML = name;
 
                                         // 显示特效容器
                                         effectContainer.classList.add('active');
@@ -1647,13 +1714,23 @@
                                     // showFiveStarEffect(winnerName);
                                     let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
 
+                                    // 只改这一行：把图标放大并去掉发光
+                                    const bigIconName = winnerName
+                                        .replace(
+                                            /(<i[^>]*style="[^"]*font-size:)[^;]+/,
+                                            '$12.5rem;text-shadow:none;font-weight:normal'
+                                        );   // 放大、去发光、去加粗
+
                                     winnerDiv.innerHTML = `
-                        <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
-                            ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
-                        </span>
-                        <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">${winnerName}</span><br>
-                        <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜被抽中🎉</span>
-                    `;
+                                    <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
+                                        ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
+                                    </span>
+                                    <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">
+                                        ${bigIconName}
+                                    </span>
+                                    <br>
+                                    <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜被抽中🎉</span>
+                                    `;
 
                                     // 添加历史记录
                                     addHistoryRecord(winnerName, rarityIndex, isUP);
