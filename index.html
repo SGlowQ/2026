@@ -1162,10 +1162,11 @@
                             "樵世诚", "熊娅妮", "黄海棠", "程修均", "张维哲", "徐可欣",
                             "张钰箐", "夏增婷", "吴昊昊", "周笠", "任鹏飞", "谢昌农",
                             "程凯", "朱海英", "黄佳辉", "曹旖诺", "谢易航", "巩玉蓉"
-                        ].map((name, idx) => {
-                            const el = elementMap[idx % elementMap.length];
-                            return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${name}`;
-                        });
+                      ].map((name) => {
+                           const randomIndex = Math.floor(Math.random() * elementMap.length);
+                           const el = elementMap[randomIndex];
+                           return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${name}`;
+                       });
 
                         // 随机选UP角色
                         function pickUPs(arr, count) {
