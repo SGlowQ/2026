@@ -399,7 +399,7 @@
             font-size: 2rem;
         }
 
-        .close-btn {
+        。close-btn {
             position: absolute;
             top: 15px;
             right: 15px;
@@ -414,65 +414,65 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: all 0.3s ease;
+            transition: 全部 0.3s ease;
         }
 
-        .close-btn:hover {
+        。close-btn:hover {
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .history-slider {
+        。history-slider {
             overflow: hidden;
             position: relative;
         }
 
-        .history-slides {
+        。history-slides {
             display: flex;
             transition: transform 0.5s ease;
         }
 
-        .history-group {
+        。history-group {
             min-width: 100%;
             padding: 0 10px;
             box-sizing: border-box;
         }
 
-        .group-header {
+        。group-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
             padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255， 255, 255, 0.2);
         }
 
-        .group-title {
+        。group-title {
             font-size: 1.2rem;
             color: #bbdefb;
         }
 
-        .group-date {
+        。group-date {
             font-size: 0.9rem;
             color: #90caf9;
         }
 
-        .history-item {
+        。history-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 15px;
             margin: 8px 0;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0， 0, 0, 0.2);
             border-radius: 10px;
         }
 
 
-        .item-name {
+        。item-name {
             font-size: 1.1rem;
             font-weight: 500;
         }
 
-        .item-rarity {
+        。item-rarity {
             font-weight: bold;
         }
 
@@ -632,7 +632,7 @@
         }
 
         /* 滚动条样式 */
-        .announcement-scroll::-webkit-scrollbar {
+        。announcement-scroll::-webkit-scrollbar {
             width: 5px;
         }
 
@@ -642,7 +642,7 @@
         }
 
         /* 五星特效容器 - 初始状态全屏黑色 */
-        .wish-effect {
+        。wish-effect {
             position: fixed;
             top: 0;
             left: 0;
@@ -659,14 +659,14 @@
         }
 
         /* 激活状态 */
-        .wish-effect.active {
+        。wish-effect。active {
             opacity: 1;
             pointer-events: all;
         }
 
 
         /* 金光迸发效果 */
-        .golden-light {
+        。golden-light {
             position: absolute;
             width: 100px;
             height: 100px;
@@ -856,7 +856,7 @@
                 <div>四星必中本期UP状态: <span id="fourStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
                 <div class="motivation-header">
                     <button class="announcement-btn" id="announcement-btn">
-                        公告与说明
+                        反馈与说明
                     </button>
                     <i class="fas fa-users"></i>
                     <h2>全体同学加油</h2>
@@ -1360,15 +1360,15 @@
                                 const group = document.createElement('div');
                                 group.className = 'history-group';
 
-                                const groupHeader = document.createElement('div');
+                                const groupHeader = document。createElement('div');
                                 groupHeader.className = 'group-header';
 
                                 const groupTitle = document.createElement('div');
                                 groupTitle.className = 'group-title';
                                 groupTitle.innerHTML = `第 ${i + 1} 组`;
 
-                                groupHeader.appendChild(groupTitle);
-                                group.appendChild(groupHeader);
+                                groupHeader。appendChild(groupTitle);
+                                group。appendChild(groupHeader);
 
                                 // 添加组内记录
                                 for (let j = i * 5; j < Math.min((i + 1) * 5, history.length); j++) {
@@ -1377,45 +1377,45 @@
                                     item.className = 'history-item';
 
                                     const nameSpan = document.createElement('span');
-                                    nameSpan.className = 'item-name';
+                                    nameSpan。className = 'item-name';
                                     nameSpan.innerHTML = record.name;
 
                                     const raritySpan = document.createElement('span');
-                                    raritySpan.className = 'item-rarity';
+                                    raritySpan。className = 'item-rarity';
 
                                     if (record.rarity === 0) {
                                         raritySpan.classList.add('five-star');
-                                        raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '');
+                                        raritySpan。innerHTML = '五星' + (record.isUP ? ' UP!' : '');
                                         nameSpan.style.color = '#FFD700';  // 金色
                                     } else if (record.rarity === 1) {
                                         raritySpan.classList.add('four-star');
-                                        raritySpan.innerHTML = '四星' + (record.isUP ? ' UP!' : '');
+                                        raritySpan。innerHTML = '四星' + (record.isUP ? ' UP!' : '');
                                         nameSpan.style.color = '#A259FF';  // 紫色
                                     } else {
                                         raritySpan.classList.add('three-star');
                                         raritySpan.innerHTML = '三星';
-                                        nameSpan.style.color = '#03a9f4';  // 保持原蓝色
+                                        nameSpan。style。color = '#03a9f4';  // 保持原蓝色
                                     }
 
                                     const timeSpan = document.createElement('span');
-                                    timeSpan.className = 'item-time';
+                                    timeSpan。className = 'item-time';
                                     timeSpan.innerHTML = record.time;
 
                                     item.appendChild(nameSpan);
-                                    item.appendChild(raritySpan);
+                                    item。appendChild(raritySpan);
                                     item.appendChild(timeSpan);
 
                                     group.appendChild(item);
                                 }
 
-                                slidesContainer.appendChild(group);
+                                slidesContainer。appendChild(group);
                             }
 
                             // 重置到第一页
                             goToSlide(0);
 
                             // 显示弹窗
-                            document.getElementById('history-container').style.display = 'flex';
+                            document。getElementById('history-container')。style.display = 'flex';
                             return;
                         }
 
@@ -1425,11 +1425,11 @@
 
                             currentSlide = index;
                             const slidesContainer = document.getElementById('history-slides');
-                            slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+                            slidesContainer。style。transform = `translateX(-${currentSlide * 100}%)`;
 
                             // 更新按钮状态
-                            document.getElementById('prev-btn').disabled = currentSlide === 0;
-                            document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+                            document。getElementById('prev-btn')。disabled = currentSlide === 0;
+                            document。getElementById('next-btn')。disabled = currentSlide === totalSlides - 1;
 
                             // 更新分页点
                             const dots = document.querySelectorAll('.slider-dot');
@@ -1747,5 +1747,6 @@
 
                     </script>
 </body>
+
 
 </html>
