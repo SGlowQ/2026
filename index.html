@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026高考倒计时×随机点名</title>
+    <title>2026高考倒计时×抽卡点名</title>
     <link rel="shortcut icon" href="favicon.ico">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -403,6 +403,7 @@
             background: rgba(12, 20, 69);
             /* 半透明深蓝色 */
             position: relative;
+            overflow: auto;
         }
 
         .history-title {
@@ -832,18 +833,23 @@
             <i class="fas fa-times"></i>
         </button>
     </div>
-    <div style="position:absolute; right:32px; top:32px; z-index:10;">
+    <div style="position:absolute; left:32px; top:32px; z-index:0;">
+            <img src="favicon.png" 
+                style="width:150px; height:150px; border-radius:10px;cursor:none">
+        </a>
+    </div>
+    <div style="position:fixed; right:10px; top:10px; z-index:0;">
         <a href="https://sglowq.github.io/2026/2026.png" target="_blank" title="点击查看二维码">
             <img src="2026.png" alt="二维码"
-                style="width:150px; height:150px; border-radius:10px;cursor:pointer;opacity:0.2">
+                style="width:5rem; height:5rem; border-radius:10px;cursor:pointer;opacity:0.2">
         </a>
     </div>
     <div class="container">
         <header>
-            <h1>2026高考倒计时×随机点名</h1>
+            <h1>2026高考倒计时×抽卡点名</h1>
         </header>
         <div class="countdown-box" id="daysBox">
-            <div class="countdown-value" id="days">365</div>
+            <div class="countdown-value" id="days">365天</div>
         </div>
         <div class="countdown-container">
             <div class="countdown-box">
@@ -951,7 +957,7 @@
 
                 <div class="announcement-item">
                     <h3><i class="fas fa-quote-left"></i> 一言功能说明</h3>
-                    <p>页面中的励志语句来自「一言」API，每10秒自动更新一次。</p>
+                    <p>页面中的励志语句来自「一言」API，每20秒自动更新一次。</p>
                     <ul>
                         <li>数据来源：hitokoto.cn 提供的开放API</li>
                         <li>更新频率：20秒/次</li>
@@ -960,7 +966,7 @@
                 </div>
 
                 <div class="announcement-item">
-                    <h3><i class="fas fa-dice"></i> 抽奖机制详细说明</h3>
+                    <h3><i class="fas fa-dice"></i> 抽卡机制详细说明</h3>
                     <p>本抽奖系统模拟了『原神』抽卡机制，包含保底机制和UP角色设定。</p>
                     <h4>概率分布</h4>
                     <ul>
