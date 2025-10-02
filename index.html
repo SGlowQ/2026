@@ -23,35 +23,6 @@
             src: url('genshin-icon.ttf') format('truetype');
         }
 
-        /* 全屏视频容器样式 */
-        .video-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.5s ease;
-        }
-
-        .video-container.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .video-player {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
         :root {
             --pyro: #ff6752;
             /* 火 */
@@ -848,13 +819,6 @@
 </head>
 
 <body>
-    <!-- 全屏视频容器 -->
-    <div class="video-container" id="videoContainer">
-        <video class="video-player" id="videoPlayer" muted playsinline preload="auto">
-            <!-- 视频源将由JavaScript动态设置 -->
-            您的浏览器不支持视频播放。
-        </video>
-    </div>
     <button id="fullscreen-btn" style="
     position:fixed;
     left:24px;
@@ -932,7 +896,7 @@
         </div>
         <div class="motivation-container">
             <div id="pityInfo" style="text-align:center; font-size:1rem; color:#bbdefb;">
-                必中五星: <span id="fiveStarPityCount">0</span>/90 | 
+                必中五星: <span id="fiveStarPityCount">0</span>/90 |
                 必中四星: <span id="fourStarPityCount">0</span>/10
                 <div>五星必中本期UP状态: <span id="fiveStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
                 <div>四星必中本期UP状态: <span id="fourStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
@@ -995,7 +959,7 @@
             <h2 class="announcement-title">本网页简介</h2>
             <div class="announcement-scroll">
                 <div class="announcement-item">
-                    <h3><i class="fas fa-lightbulb"></i>问卷</h3>
+                    <h3><i class="fas fa-lightbulb"></i>问卷</h4>
                         <a
                             href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__jMrgodUMlc5UDVMWUxFRElIVFBQNlNMQVVQTU02VS4u">
                             <button class="announcement-btn">点击进入问卷</button>
@@ -1091,146 +1055,10 @@
                 </div>
 
                 <script>
-                    // 视频URL数组 - 替换为您自己的7个静音视频URL
-                    const videoUrls = [
-                        "1.mp4",  // 星期一
-                        "2.mp4",  // 星期二
-                        "3.mp4",  // 星期三
-                        "4.mp4",  // 星期四
-                        "5.mp4",  // 星期五
-                        "6.mp4",  // 星期六
-                        "7.mp4"   // 星期日
-                    ];
-
-                    // 获取当前星期几 (1-7，1为星期一)
-                    function getCurrentDay() {
-                        const today = new Date().getDay();
-                        return today === 0 ? 7 : today; // 将星期日(0)转换为7
-                    }
-
-                    // 静默预加载状态变量
-                    let videoPreloaded = false;
-                    let preloadAttempts = 0;
-                    const maxPreloadAttempts = 3;
-
-                    // 静默预加载视频函数
-                    function silentPreloadVideo() {
-                        const currentDay = getCurrentDay();
-                        const videoPlayer = document.getElementById('videoPlayer');
-                        
-                        // 设置视频源
-                        videoPlayer.src = videoUrls[currentDay - 1];
-                        
-                        console.log("开始静默预加载视频...");
-
-                        // 监听可以播放事件
-                        videoPlayer.addEventListener('canplaythrough', function() {
-                            videoPreloaded = true;
-                            console.log("视频预加载完成，可以播放");
-                        });
-
-                        // 监听加载进度
-                        videoPlayer.addEventListener('progress', function() {
-                            if (videoPlayer.buffered.length > 0) {
-                                const bufferedEnd = videoPlayer.buffered.end(videoPlayer.buffered.length - 1);
-                                const duration = videoPlayer.duration;
-                                
-                                if (duration > 0) {
-                                    const preloadProgress = Math.round((bufferedEnd / duration) * 100);
-                                    console.log(`视频预加载进度: ${preloadProgress}%`);
-                                    
-                                    // 如果预加载完成
-                                    if (preloadProgress >= 80) {
-                                        videoPreloaded = true;
-                                        console.log("视频预加载基本完成");
-                                    }
-                                }
-                            }
-                        });
-
-                        // 监听错误事件
-                        videoPlayer.addEventListener('error', function() {
-                            console.log("视频加载失败，尝试重新加载");
-                            preloadAttempts++;
-                            
-                            if (preloadAttempts < maxPreloadAttempts) {
-                                // 延迟后重试
-                                setTimeout(silentPreloadVideo, 2000);
-                            } else {
-                                console.log("视频加载多次失败，跳过视频播放");
-                                videoPreloaded = true; // 标记为已预加载，跳过视频
-                            }
-                        });
-
-                        // 开始加载视频
-                        videoPlayer.load();
-                    }
-
-                    // 播放视频函数
-                    function playVideo() {
-                        if (!videoPreloaded) {
-                            console.log("视频尚未完全预加载，跳过播放");
-                            return;
-                        }
-
-                        const videoContainer = document.getElementById('videoContainer');
-                        const videoPlayer = document.getElementById('videoPlayer');
-
-                        // 显示视频容器
-                        videoContainer.classList.add('show');
-
-                        // 尝试自动播放
-                        const playPromise = videoPlayer.play();
-
-                        if (playPromise !== undefined) {
-                            playPromise.catch(error => {
-                                console.log("自动播放失败:", error);
-                                // 如果自动播放失败，等待用户交互后重试
-                                const playAfterInteraction = () => {
-                                    videoPlayer.play();
-                                    document.removeEventListener('click', playAfterInteraction);
-                                    document.removeEventListener('touchstart', playAfterInteraction);
-                                };
-
-                                document.addEventListener('click', playAfterInteraction);
-                                document.addEventListener('touchstart', playAfterInteraction);
-                            });
-                        }
-                    }
-
-                    // 关闭视频
-                    function closeVideo() {
-                        const videoContainer = document.getElementById('videoContainer');
-                        const videoPlayer = document.getElementById('videoPlayer');
-
-                        videoContainer.classList.remove('show');
-                        videoPlayer.pause();
-                        videoPlayer.currentTime = 0;
-                    }
-
-                    // 页面加载后开始静默预加载
-                    window.addEventListener('load', () => {
-                        // 延迟一点时间开始预加载，确保页面完全加载
-                        setTimeout(silentPreloadVideo, 500);
-                        
-                        // 设置一个超时，如果预加载时间过长，也尝试播放
-                        setTimeout(() => {
-                            if (!videoPreloaded) {
-                                console.log("预加载超时，尝试播放视频");
-                                videoPreloaded = true;
-                                playVideo();
-                            }
-                        }, 10000); // 10秒超时
-                    });
-
-                    // 视频播放结束时自动关闭
-                    document.getElementById('videoPlayer').addEventListener('ended', closeVideo);
-                    
                     //禁止右键
                     document.addEventListener('contextmenu', function (event) {
                         event.preventDefault();
                     });
-                    
                     // 设置高考日期（2026年6月7日）
                     const examDate = new Date('June 7, 2026 00:00:00').getTime();
 
