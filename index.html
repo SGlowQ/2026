@@ -23,6 +23,35 @@
             src: url('genshin-icon.ttf') format('truetype');
         }
 
+        /* 全屏视频容器样式 */
+        .video-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .video-container.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .video-player {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         :root {
             --pyro: #ff6752;
             /* 火 */
@@ -97,7 +126,7 @@
         h1 {
             font-size: 3.5rem;
             margin-bottom: 1rem;
-            background:linear-gradient(220.55deg, #00E0EE 0%, #AD00FE 100%);
+            background: linear-gradient(220.55deg, #00E0EE 0%, #AD00FE 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -158,7 +187,7 @@
 
         #daysBox .countdown-value {
             font-size: 10rem;
-            opacity:0.5;
+            opacity: 0.5;
         }
 
         .motivation-container {
@@ -409,7 +438,7 @@
         .history-title {
             text-align: center;
             margin-bottom: 25px;
-            color: #ffeb3b;
+            color: #ffffff;
             font-size: 2rem;
         }
 
@@ -569,7 +598,7 @@
             font-style: italic;
         }
 
-        /* 问卷与说明按钮样式 */
+        /* 问卷与简介按钮样式 */
         .announcement-btn {
             background: rgba(255, 255, 255, 0.2);
             color: white;
@@ -616,7 +645,7 @@
         .announcement-title {
             text-align: center;
             margin-bottom: 25px;
-            color: #ffeb3b;
+            color: #ffffff;
             font-size: 2rem;
         }
 
@@ -819,6 +848,34 @@
 </head>
 
 <body>
+    <!-- 全屏视频容器 -->
+    <div class="video-container" id="videoContainer">
+        <video class="video-player" id="videoPlayer" muted playsinline>
+            <!-- 视频源将由JavaScript动态设置 -->
+            您的浏览器不支持视频播放。
+        </video>
+    </div>
+    <button id="fullscreen-btn" style="
+    position:fixed;
+    left:24px;
+    bottom:24px;
+    z-index:9;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:rgba(25,118,210,0.85);
+    color:#fff;
+    border:none;
+    box-shadow:0 4px 16px rgba(0,0,0,0.18);
+    font-size:2rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.3s;
+">
+        <i class="fas fa-expand"></i>
+    </button>
     <!-- 五星抽中特效容器 -->
     <div id="wishEffect" class="wish-effect">
         <!-- 金光迸发效果 -->
@@ -834,11 +891,10 @@
         </button>
     </div>
     <div style="position:absolute; left:16px; top:16px; z-index:0;">
-            <img src="favicon.png" 
-                style="width:120px; height:120px;cursor:none">
+        <img src="favicon.png" style="width:120px; height:120px;cursor:none">
         </a>
     </div>
-    <div style="position:fixed; right:10px; top:10px; z-index:0;">
+    <div style="position:fixed; right:10px; top:10px; z-index:1;">
         <a href="https://sglowq.github.io/2026/2026.png" target="_blank" title="点击查看二维码">
             <img src="2026.png" alt="二维码"
                 style="width:5rem; height:5rem; border-radius:10px;cursor:pointer;opacity:0.2">
@@ -882,7 +938,7 @@
                 <div>四星必中本期UP状态: <span id="fourStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
                 <div class="motivation-header">
                     <button class="announcement-btn" id="announcement-btn">
-                        问卷与说明
+                        问卷与简介
                     </button>
                     <i class="fas fa-users"></i>
                     <h2>全体同学加油</h2>
@@ -936,7 +992,7 @@
             <button class="close-btn" id="announcement-close-btn">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="announcement-title">本网页说明</h2>
+            <h2 class="announcement-title">本网页简介</h2>
             <div class="announcement-scroll">
                 <div class="announcement-item">
                     <h3><i class="fas fa-lightbulb"></i>问卷</h4>
@@ -1035,6 +1091,72 @@
                 </div>
 
                 <script>
+                    // 视频URL数组 - 替换为您自己的7个静音视频URL
+                    const videoUrls = [
+                        "1.mp4",  // 星期一
+                        "2.mp4",  // 星期二
+                        "3.mp4",  // 星期三
+                        "4.mp4",  // 星期四
+                        "5.mp4",  // 星期五
+                        "6.mp4",  // 星期六
+                        "7.mp4"   // 星期日
+                    ];
+
+                    // 获取当前星期几 (1-7，1为星期一)
+                    function getCurrentDay() {
+                        const today = new Date().getDay();
+                        return today === 0 ? 7 : today; // 将星期日(0)转换为7
+                    }
+
+                    // 播放视频函数
+                    function playVideo() {
+                        const currentDay = getCurrentDay();
+                        const videoContainer = document.getElementById('videoContainer');
+                        const videoPlayer = document.getElementById('videoPlayer');
+
+                        // 设置视频源
+                        videoPlayer.src = videoUrls[currentDay - 1];
+
+                        // 显示视频容器
+                        videoContainer.classList.add('show');
+
+                        // 尝试自动播放
+                        const playPromise = videoPlayer.play();
+
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                console.log("自动播放失败:", error);
+                                // 如果自动播放失败，等待用户交互后重试
+                                const playAfterInteraction = () => {
+                                    videoPlayer.play();
+                                    document.removeEventListener('click', playAfterInteraction);
+                                    document.removeEventListener('touchstart', playAfterInteraction);
+                                };
+
+                                document.addEventListener('click', playAfterInteraction);
+                                document.addEventListener('touchstart', playAfterInteraction);
+                            });
+                        }
+                    }
+
+                    // 关闭视频
+                    function closeVideo() {
+                        const videoContainer = document.getElementById('videoContainer');
+                        const videoPlayer = document.getElementById('videoPlayer');
+
+                        videoContainer.classList.remove('show');
+                        videoPlayer.pause();
+                        videoPlayer.currentTime = 0;
+                    }
+
+                    // 页面加载后开始播放
+                    window.addEventListener('load', () => {
+                        // 延迟一点时间开始播放，确保页面完全加载
+                        setTimeout(playVideo, 500);
+                    });
+
+                    // 视频播放结束时自动关闭
+                    document.getElementById('videoPlayer').addEventListener('ended', closeVideo);
                     //禁止右键
                     document.addEventListener('contextmenu', function (event) {
                         event.preventDefault();
@@ -1042,7 +1164,21 @@
                     // 设置高考日期（2026年6月7日）
                     const examDate = new Date('June 7, 2026 00:00:00').getTime();
 
-
+                    const fullscreenBtn = document.getElementById('fullscreen-btn');
+                    fullscreenBtn.addEventListener('click', function () {
+                        if (!document.fullscreenElement) {
+                            document.documentElement.requestFullscreen();
+                            fullscreenBtn.innerHTML = '<i class="fas fa-compress"></i>';
+                        } else {
+                            document.exitFullscreen();
+                            fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                        }
+                    });
+                    document.addEventListener('fullscreenchange', function () {
+                        if (!document.fullscreenElement) {
+                            fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
+                        }
+                    });
 
                     // 更新倒计时
                     function updateCountdown() {
@@ -1137,12 +1273,12 @@
                     const announcementContainer = document.getElementById('announcement-container');
                     const announcementCloseBtn = document.getElementById('announcement-close-btn');
 
-                    // 显示问卷与说明
+                    // 显示问卷与简介
                     announcementBtn.addEventListener('click', function () {
                         announcementContainer.style.display = 'flex';
                     });
 
-                    // 关闭问卷与说明
+                    // 关闭问卷与简介
                     announcementCloseBtn.addEventListener('click', function () {
                         announcementContainer.style.display = 'none';
                     });
@@ -1365,7 +1501,7 @@
                             name: name,
                             rarity: rarity,
                             isUP: isUP,
-                            date: dateStr, 
+                            date: dateStr,
                             time: timeStr
                         };
 
