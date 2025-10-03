@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026高考倒计时×抽卡点名</title>
+    <title>2026高考倒计时×祈愿点名</title>
     <link rel="shortcut icon" href="favicon.ico">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -17,6 +17,20 @@
         ::-webkit-scrollbar {
             display: none;
         }
+
+        /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+  appearance: none;
+}
 
         @font-face {
             font-family: 'Elements';
@@ -77,8 +91,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(12, 20, 69, 0.7);
-            /* 半透明深蓝色 */
+            background: rgba(0, 0, 0, 0.5);
+
         }
 
         .container {
@@ -400,8 +414,7 @@
             overflow: hidden;
             padding: 30px;
             border-radius: 20px;
-            background: rgba(12, 20, 69);
-            /* 半透明深蓝色 */
+            background: rgba(0, 0, 0, 0.5);
             position: relative;
             overflow: auto;
         }
@@ -609,7 +622,7 @@
             overflow: hidden;
             padding: 30px;
             border-radius: 20px;
-            background: rgba(12, 20, 69);
+            background: rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
@@ -738,27 +751,13 @@
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
                 0 0 40px rgba(255, 215, 0, 0.6),
                 0 0 60px rgba(255, 215, 0, 0.4);
-            background: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700, #ffaa00);
+            background:  #ffd700;
             background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textShine 4s ease infinite;
         }
 
-        @keyframes textShine {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
-        }
 
         .stars {
             font-size: 4rem;
@@ -815,6 +814,7 @@
             gap: 0.4rem;
             /* 图标与文字间距 */
         }
+        
     </style>
 </head>
 
@@ -840,7 +840,7 @@
 ">
         <i class="fas fa-expand"></i>
     </button>
-    <!-- 五星抽中特效容器 -->
+    <!-- 五星祈中特效容器 -->
     <div id="wishEffect" class="wish-effect">
         <!-- 金光迸发效果 -->
         <div class="golden-light"></div>
@@ -866,7 +866,7 @@
     </div>
     <div class="container">
         <header>
-            <h1>2026高考倒计时×抽卡点名</h1>
+            <h1>2026高考倒计时×祈愿点名</h1>
         </header>
         <div class="countdown-box" id="daysBox">
             <div class="countdown-value" id="days">365天</div>
@@ -908,7 +908,7 @@
                     <h2>全体同学加油</h2>
                     <i class="fas fa-heart"></i>
                     <button id="lotteryBtn"
-                        style="margin-left:20px;padding:8px 20px;font-size:1.1rem;border-radius:8px;background:#4fc3f7;color:#fff;border:none;cursor:pointer;">抽奖</button>
+                        style="margin-left:20px;padding:8px 20px;font-size:1.1rem;border-radius:8px;background:#4fc3f7;color:#fff;border:none;cursor:pointer;">祈愿</button>
                     <!-- 历史记录按钮 -->
                     <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
                 </div>
@@ -934,7 +934,7 @@
             <button class="close-btn" id="close-btn">
                 <i class="fas fa-times"></i>
             </button>
-            <h2 class="history-title">当周抽卡历史记录</h2>
+            <h2 class="history-title">当周祈愿历史记录</h2>
             <div class="history-slider">
                 <div class="history-slides" id="history-slides">
                     <!-- 历史记录内容将通过JavaScript动态生成 -->
@@ -986,21 +986,21 @@
                 </div>
 
                 <div class="announcement-item">
-                    <h3><i class="fas fa-dice"></i> 抽卡机制详细说明</h3>
-                    <p>本抽奖系统模拟了『原神』抽卡机制，包含保底机制和UP角色设定。</p>
+                    <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
+                    <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。</p>
                     <h4>概率分布</h4>
                     <ul>
-                        <li><span class="five-star">五星</span>概率：0.6% (每90抽必出五星)</li>
-                        <li><span class="four-star">四星</span>概率：5.1% (每10抽必出四星)</li>
+                        <li><span class="five-star">五星</span>概率：0.6% (每90祈愿可能出五星)</li>
+                        <li><span class="four-star">四星</span>概率：5.1% (每10祈愿可能出四星)</li>
                         <li><span class="three-star">三星</span>概率：94.3%</li>
                     </ul>
 
                     <h4>保底机制</h4>
                     <ul>
-                        <li><strong><span class="five-star">五星</span>保底</strong>：连续89抽未出<span
-                                class="five-star">五星</span>时，第90抽必出<span class="five-star">五星</span></li>
-                        <li><strong><span class="four-star">四星</span>保底</strong>：连续9抽未出<span
-                                class="four-star">四星</span>时，第10抽必出<span class="four-star">四星</span></li>
+                        <li><strong><span class="five-star">五星</span>保底</strong>：连续89次祈愿未出<span
+                                class="five-star">五星</span>时，第90次祈愿必出<span class="five-star">五星</span></li>
+                        <li><strong><span class="four-star">四星</span>保底</strong>：连续9次祈愿未出<span
+                                class="four-star">四星</span>时，第10次祈愿必出<span class="four-star">四星</span></li>
                         <li><strong><span class="five-star">五星UP</span>机制（状态不清空）</strong>：当获得<span
                                 class="five-star">五星</span>时，有50%概率为当期UP角色；若未获得UP角色，则下一次<span
                                 class="five-star">五星</span>必定为UP角色</li>
@@ -1013,15 +1013,15 @@
                     <ul>
                         <li>每次页面刷新会随机选择1名<span class="five-star">五星UP</span>角色和3名<span class="four-star">四星UP</span>角色
                         </li>
-                        <li>UP角色从班级同学名单中随机抽取。</li>
+                        <li>UP角色从班级同学名单中随机取出。</li>
                         <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
                     </ul>
 
                     <h4>其他规则</h4>
                     <ul>
-                        <li>抽奖次数和小保底计数每周重置（基于浏览器本地存储）</li>
-                        <li>大保底状态（必出UP）会持续到抽中UP角色为止</li>
-                        <li>每次抽奖会记录在抽卡历史记录中，可按日期查看</li>
+                        <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
+                        <li>大保底状态（必出UP）会持续到获得UP角色为止</li>
+                        <li>每次祈愿会记录在祈愿历史记录中，可按日期查看</li>
                         <li>注意：除了本期的<span class="four-star">四星UP</span>和<span
                                 class="five-star">五星UP</span>固定，其余的人都有可能重复成为普通的<span class="five-star">五星</span>、<span
                                 class="four-star">四星</span>以及<span class="three-star">三星</span></li>
@@ -1041,10 +1041,10 @@
 
                 <div class="announcement-item">
                     <h3><i class="fas fa-history"></i> 历史记录功能</h3>
-                    <p>抽奖历史记录功能允许查看当周的所有抽奖结果。</p>
+                    <p>祈愿历史记录功能允许查看当周的所有祈愿结果。</p>
                     <ul>
                         <li>查看方式：点击右侧历史记录按钮（回溯时钟图标）</li>
-                        <li>记录内容：包含抽中角色、稀有度和抽奖时间</li>
+                        <li>记录内容：包含祈中角色、稀有度和祈愿时间</li>
                         <li>分组显示：每5条记录为一组，支持跳转</li>
                         <li>数据存储：使用浏览器本地存储，仅保存当周记录。</li>
 
@@ -1297,13 +1297,13 @@
                     generateScrollingNames();
 
 
-                    // 抽奖效果
+                    // 祈愿效果
                     const lotteryBtn = document.getElementById('lotteryBtn');
                     const scrollingNames = document.getElementById('scrollingNames');
                     const winnerDiv = document.getElementById('winner');
                     let isRolling = false;
 
-                    // 获取当天key（只用于抽奖次数）
+                    // 获取当天key（只用于祈愿次数）
                     function getTodayKey(key) {
                         const today = new Date();
                         return key + '_' + today.getFullYear() + '_' + today.getMonth() + '_' + today.getDate();
@@ -1317,7 +1317,7 @@
                         return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7);
                     }
 
-                    // 获取本周key（用于抽奖次数和保底）
+                    // 获取本周key（用于祈愿次数和保底）
                     function getWeekKey(key) {
                         const today = new Date();
                         const week = getWeekNumber(today);
@@ -1344,7 +1344,7 @@
                         localStorage.setItem(weekKey, value);
                     }
 
-                    // 初始化保底（只保存抽奖次数，不保存UP）
+                    // 初始化保底（只保存祈愿次数，不保存UP）
                     let totalDraws = getPity('totalDraws', 0);
                     let fiveStarPity = getPity('fiveStarPity', 0);
                     let fourStarPity = getPity('fourStarPity', 0);
@@ -1369,9 +1369,9 @@
                     updatePityDisplay();
 
 
-                    // 抽奖按钮文本显示抽奖次数
+                    // 祈愿按钮文本显示祈愿次数
                     function updateLotteryBtnText() {
-                        lotteryBtn.innerText = `抽奖（已抽${totalDraws}次）`;
+                        lotteryBtn.innerText = `祈愿（累计${totalDraws}次）`;
                     }
                     updateLotteryBtnText();
 
@@ -1416,7 +1416,7 @@
                         slidesContainer.innerHTML = '';
 
                         if (history.length === 0) {
-                            slidesContainer.innerHTML = '<div class="no-history">本周暂无抽卡记录</div>';
+                            slidesContainer.innerHTML = '<div class="no-history">本周暂无祈愿记录</div>';
                             document.getElementById('prev-btn').disabled = true;
                             document.getElementById('next-btn').disabled = true;
                             document.getElementById('history-container').style.display = 'flex';
@@ -1491,7 +1491,7 @@
                         // 生成输入框和跳转按钮的HTML
                         const pageJumpHTML = `
                                 <input type="number" id="page-input" min="1" max="${totalSlides}" value="1"
-                                    style="width:auto;height:36px;border:1px solid #90caf9;border-radius:8px;padding:0 8px;
+                                    style="width:108px;height:36px;text-align:center;border:1px solid #90caf9;border-radius:8px;padding:0 8px;
                                     font-size:1rem;background:rgba(255,255,255,0.08);color:#fff;outline:none;transition:border 0.2s;">
                                 <button id="jump-btn" class="slider-btn" style="margin:0 10px;height:36px;width:60px;border-radius:8px;font-size:1rem;background:#4fc3f7;color:#fff;">跳转</button>
                             `;
@@ -1654,7 +1654,7 @@
                                     }
                                 }
 
-                                // 保存抽奖次数（不保存UP）
+                                // 保存祈愿次数（不保存UP）
                                 setPity('totalDraws', totalDraws);
                                 setPity('fiveStarPity', fiveStarPity);
                                 setPity('fourStarPity', fourStarPity);
@@ -1719,10 +1719,10 @@
                                     winnerName = candidates[Math.floor(Math.random() * candidates.length)];
                                 }
                                 updatePityDisplay();
-                                // 在抽奖结束后也调用此函数更新显示
-                                // 在抽奖逻辑的最后添加:
+                                // 在祈愿结束后也调用此函数更新显示
+                                // 在祈愿逻辑的最后添加:
                                 // updatePityDisplay();
-                                // 保存抽奖次数和保底计数
+                                // 保存祈愿次数和保底计数
                                 setPity('totalDraws', totalDraws);
                                 setPity('fiveStarPity', fiveStarPity);
                                 setPity('fourStarPity', fourStarPity);
@@ -1828,7 +1828,7 @@
                                     lotteryBtn.disabled = false;
                                 });
 
-                                // 在抽到五星时调用此函数
+                                // 在抽中五星角色时调用此函数
                                 // 替换您现有的五星处理代码，改为调用：
                                 // showFiveStarEffect(winnerName);
                                 let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
@@ -1848,7 +1848,7 @@
                                         ${bigIconName}
                                     </span>
                                     <br>
-                                    <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜被抽中🎉</span>
+                                    <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜🎉</span>
                                     `;
 
                                 // 添加历史记录
