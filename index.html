@@ -206,7 +206,7 @@ input[type="number"] {
         }
 
         #hitokoto {
-            background: linear-gradient(to bottom, #da75ff, #6a82fb);
+            background: linear-gradient(90deg, #da75ff, #6a82fb);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -819,11 +819,25 @@ input[type="number"] {
 </head>
 
 <body>
+    <!-- 五星祈中特效容器 -->
+    <div id="wishEffect" class="wish-effect">
+        <!-- 金光迸发效果 -->
+        <div class="golden-light"></div>
+        <!-- 角色名称展示 -->
+        <div class="character-name">
+            <span class="name-text"></span>
+            <div class="stars">⭐⭐⭐⭐⭐</div>
+        </div>
+        <!-- 继续按钮 -->
+        <button class="wish-continue-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     <button id="fullscreen-btn" style="
     position:fixed;
     left:24px;
     bottom:24px;
-    z-index:9;
+    z-index:5;
     width:56px;
     height:56px;
     border-radius:50%;
@@ -840,25 +854,11 @@ input[type="number"] {
 ">
         <i class="fas fa-expand"></i>
     </button>
-    <!-- 五星祈中特效容器 -->
-    <div id="wishEffect" class="wish-effect">
-        <!-- 金光迸发效果 -->
-        <div class="golden-light"></div>
-        <!-- 角色名称展示 -->
-        <div class="character-name">
-            <span class="name-text"></span>
-            <div class="stars">⭐⭐⭐⭐⭐</div>
-        </div>
-        <!-- 继续按钮 -->
-        <button class="wish-continue-btn">
-            <i class="fas fa-times"></i>
-        </button>
-    </div>
     <div style="position:absolute; left:16px; top:16px; z-index:0;">
         <img src="favicon.png" style="width:120px; height:120px;cursor:none">
         </a>
     </div>
-    <div style="position:fixed; right:10px; top:10px; z-index:1;">
+    <div style="position:fixed; right:10px; top:10px; z-index:5;">
         <a href="https://sglowq.github.io/2026/2026.png" target="_blank" title="点击查看二维码">
             <img src="2026.png" alt="二维码"
                 style="width:5rem; height:5rem; border-radius:10px;cursor:pointer;opacity:0.2">
@@ -1101,13 +1101,38 @@ input[type="number"] {
                     }
 
                     document.addEventListener('DOMContentLoaded', function () {
+const hitokotoElement = document.querySelector('.motivation-text'); // 一言容器
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        isHitokotoVisible = entry.isIntersecting;
+        
+        if (isHitokotoVisible) {
+            // 进入可视区域，恢复定时器
+            if (!hitokotoInterval) {
+                updateHitokoto(); // 立即更新一次
+                hitokotoInterval = setInterval(updateHitokoto, 20000);
+            }
+        } else {
+            // 离开可视区域，清除定时器
+            clearInterval(hitokotoInterval);
+            hitokotoInterval = null;
+        }
+    });
+}, {
+    threshold: 0.1 // 至少10%可见才触发
+});
+
+if (hitokotoElement) {
+    observer.observe(hitokotoElement);
+}
                         // 初始化一言
                         let hitokotoInterval;
                         let isUpdating = false;
                         function updateHitokoto() {
-                            if (isUpdating) return;
-                            isUpdating = true;
-                            fetch('https://v1.hitokoto.cn')
+
+    if (isUpdating || !isHitokotoVisible) return; // 不在可视区域时不更新
+    isUpdating = true;                            fetch('https://v1.hitokoto.cn')
                                 .then(response => response.json())
                                 .then(data => {
                                     const hitokoto = data.hitokoto || '';
