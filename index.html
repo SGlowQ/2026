@@ -19,18 +19,18 @@
         }
 
         /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
-  appearance: none;
-}
+        /* Firefox */
+        input[type="number"] {
+            -moz-appearance: textfield;
+            -webkit-appearance: none;
+            appearance: none;
+        }
 
         @font-face {
             font-family: 'Elements';
@@ -355,7 +355,6 @@ input[type="number"] {
         }
 
         #lotteryBtn {
-            transition: background 0.3s, box-shadow 0.3s;
             transition: all 0.3s ease;
         }
 
@@ -697,7 +696,6 @@ input[type="number"] {
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 215, 0, 0) 0%, rgba(255, 215, 0, 0.8) 40%, rgba(255, 215, 0, 0.9) 70%);
             opacity: 0;
             transform: scale(0);
             filter: blur(5px);
@@ -751,7 +749,7 @@ input[type="number"] {
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
                 0 0 40px rgba(255, 215, 0, 0.6),
                 0 0 60px rgba(255, 215, 0, 0.4);
-            background:  #ffd700;
+            background: #ffd700;
             background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -814,7 +812,6 @@ input[type="number"] {
             gap: 0.4rem;
             /* 图标与文字间距 */
         }
-        
     </style>
 </head>
 
@@ -826,7 +823,7 @@ input[type="number"] {
         <!-- 角色名称展示 -->
         <div class="character-name">
             <span class="name-text"></span>
-            <div class="stars">⭐⭐⭐⭐⭐</div>
+            <div class="stars"></div>
         </div>
         <!-- 继续按钮 -->
         <button class="wish-continue-btn">
@@ -988,14 +985,18 @@ input[type="number"] {
                 <div class="announcement-item">
                     <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
                     <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。</p>
-                    <h4>概率分布</h4>
+                    <h2>概率分布</h2>
                     <ul>
-                        <li><span class="five-star">五星</span>概率：0.6% (每90祈愿可能出五星)</li>
-                        <li><span class="four-star">四星</span>概率：5.1% (每10祈愿可能出四星)</li>
+                        <li><span class="five-star">五星</span>概率：0.6%</li>
+                        <li><span class="four-star">四星</span>概率：5.1%</li>
                         <li><span class="three-star">三星</span>概率：94.3%</li>
                     </ul>
-
-                    <h4>保底机制</h4>
+                    <h2>十连抽</h2>
+                    <ul>
+                        <li>长按祈愿按钮，可连续抽取10次</li>
+                        <li>十连抽中至少包含1个<span class="four-star">四星</span>或以上角色</li>
+                    </ul>
+                    <h2>保底机制</h2>
                     <ul>
                         <li><strong><span class="five-star">五星</span>保底</strong>：连续89次祈愿未出<span
                                 class="five-star">五星</span>时，第90次祈愿必出<span class="five-star">五星</span></li>
@@ -1009,7 +1010,7 @@ input[type="number"] {
                                 class="four-star">四星</span>必定为UP角色</li>
                     </ul>
 
-                    <h4>UP角色规则</h4>
+                    <h2>UP角色规则</h2>
                     <ul>
                         <li>每次页面刷新会随机选择1名<span class="five-star">五星UP</span>角色和3名<span class="four-star">四星UP</span>角色
                         </li>
@@ -1017,7 +1018,7 @@ input[type="number"] {
                         <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
                     </ul>
 
-                    <h4>其他规则</h4>
+                    <h2>其他规则</h2>
                     <ul>
                         <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
                         <li>大保底状态（必出UP）会持续到获得UP角色为止</li>
@@ -1055,13 +1056,15 @@ input[type="number"] {
                 </div>
 
                 <script>
-                    //禁止右键
+                    // 禁止右键
                     document.addEventListener('contextmenu', function (event) {
                         event.preventDefault();
                     });
+
                     // 设置高考日期（2026年6月7日）
                     const examDate = new Date('June 7, 2026 00:00:00').getTime();
 
+                    // 全屏功能
                     const fullscreenBtn = document.getElementById('fullscreen-btn');
                     fullscreenBtn.addEventListener('click', function () {
                         if (!document.fullscreenElement) {
@@ -1072,6 +1075,7 @@ input[type="number"] {
                             fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
                         }
                     });
+
                     document.addEventListener('fullscreenchange', function () {
                         if (!document.fullscreenElement) {
                             fullscreenBtn.innerHTML = '<i class="fas fa-expand"></i>';
@@ -1100,113 +1104,65 @@ input[type="number"] {
                         requestAnimationFrame(updateCountdown);
                     }
 
-                    document.addEventListener('DOMContentLoaded', function () {
-const hitokotoElement = document.querySelector('.motivation-text'); // 一言容器
+                    // 一言功能
+                    let hitokotoInterval;
+                    let isUpdating = false;
+                    let isHitokotoVisible = true;
 
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        isHitokotoVisible = entry.isIntersecting;
-        
-        if (isHitokotoVisible) {
-            // 进入可视区域，恢复定时器
-            if (!hitokotoInterval) {
-                updateHitokoto(); // 立即更新一次
-                hitokotoInterval = setInterval(updateHitokoto, 20000);
-            }
-        } else {
-            // 离开可视区域，清除定时器
-            clearInterval(hitokotoInterval);
-            hitokotoInterval = null;
-        }
-    });
-}, {
-    threshold: 0.1 // 至少10%可见才触发
-});
+                    function updateHitokoto() {
+                        if (isUpdating || !isHitokotoVisible) return;
 
-if (hitokotoElement) {
-    observer.observe(hitokotoElement);
-}
-                        // 初始化一言
-                        let hitokotoInterval;
-                        let isUpdating = false;
-                        function updateHitokoto() {
+                        isUpdating = true;
+                        fetch('https://v1.hitokoto.cn')
+                            .then(response => response.json())
+                            .then(data => {
+                                const hitokoto = data.hitokoto || '';
+                                const from = data.from ? `『${data.from}』` : '';
+                                const fromWho = data.from_who ? `${data.from_who}` : '';
 
-    if (isUpdating || !isHitokotoVisible) return; // 不在可视区域时不更新
-    isUpdating = true;                            fetch('https://v1.hitokoto.cn')
-                                .then(response => response.json())
-                                .then(data => {
-                                    const hitokoto = data.hitokoto || '';
-                                    const from = data.from ? `『${data.from}』` : '';
-                                    const fromWho = data.from_who ? `${data.from_who}` : '';
+                                // 淡出效果
+                                const hitokotoElement = document.getElementById('hitokoto');
+                                const fromElement = document.getElementById('from');
 
-                                    // 淡出效果 - 仅针对文本元素
-                                    const hitokotoElement = document.getElementById('hitokoto');
-                                    const fromElement = document.getElementById('from');
+                                hitokotoElement.style.transition = 'opacity 0.5s ease';
+                                fromElement.style.transition = 'opacity 0.5s ease';
+                                hitokotoElement.style.opacity = 0;
+                                fromElement.style.opacity = 0;
 
-                                    // 使用更平滑的CSS transition实现淡出
-                                    hitokotoElement.style.transition = 'opacity 0.5s ease';
-                                    fromElement.style.transition = 'opacity 0.5s ease';
-                                    hitokotoElement.style.opacity = 0;
-                                    fromElement.style.opacity = 0;
+                                // 等待淡出完成后再更新内容
+                                setTimeout(() => {
+                                    hitokotoElement.innerText = hitokoto;
+                                    fromElement.innerText = from + fromWho;
+                                    fromElement.style.fontSize = '20px';
 
-                                    // 等待淡出完成后再更新内容
+                                    // 淡入效果
+                                    hitokotoElement.style.opacity = 1;
+                                    fromElement.style.opacity = 1;
+
+                                    // 动画完成后重置transition属性
                                     setTimeout(() => {
-                                        // 更新文本内容
-                                        hitokotoElement.innerText = hitokoto;
-                                        fromElement.innerText = from + fromWho;
-                                        fromElement.style.fontSize = '20px';
-
-                                        // 淡入效果
-                                        hitokotoElement.style.opacity = 1;
-                                        fromElement.style.opacity = 1;
-
-                                        // 动画完成后重置transition属性
-                                        setTimeout(() => {
-                                            hitokotoElement.style.transition = '';
-                                            fromElement.style.transition = '';
-                                            isUpdating = false;
-                                        }, 500);
+                                        hitokotoElement.style.transition = '';
+                                        fromElement.style.transition = '';
+                                        isUpdating = false;
                                     }, 500);
-                                })
-                                .catch(console.error);
-                        }
+                                }, 500);
+                            })
+                            .catch(console.error);
+                    }
 
-                        // 立即执行一次
-                        updateHitokoto();
-                        // 每20秒刷新一次
-                        hitokotoInterval = setInterval(updateHitokoto, 20000);
-                        // 页面卸载时清除定时器
-                        window.addEventListener('unload', () => {
-                            clearInterval(intervalId);
-                        });
-                        document.addEventListener('visibilitychange', function () {
-                            if (document.hidden) {
-                                // 页面隐藏时停止一言刷新
-                                clearInterval(hitokotoInterval);
-                            } else {
-                                // 页面显示时恢复一言刷新
-                                hitokotoInterval = setInterval(updateHitokoto, 20000);
-                            }
-                        });
-                    });
-
-
-                    // 获取元素
+                    // 问卷与简介功能
                     const announcementBtn = document.getElementById('announcement-btn');
                     const announcementContainer = document.getElementById('announcement-container');
                     const announcementCloseBtn = document.getElementById('announcement-close-btn');
 
-                    // 显示问卷与简介
                     announcementBtn.addEventListener('click', function () {
                         announcementContainer.style.display = 'flex';
                     });
 
-                    // 关闭问卷与简介
                     announcementCloseBtn.addEventListener('click', function () {
                         announcementContainer.style.display = 'none';
                     });
 
-                    // 点击空白处关闭
                     announcementContainer.addEventListener('click', function (e) {
                         if (e.target === this) {
                             this.style.display = 'none';
@@ -1215,26 +1171,26 @@ if (hitokotoElement) {
 
                     // Fisher-Yates 洗牌算法
                     function shuffleArray(array) {
-                        const newArray = [...array]; // 创建副本避免修改原数组
+                        const newArray = [...array];
                         for (let i = newArray.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
-                            [newArray[i], newArray[j]] = [newArray[j], newArray[i]]; // 交换元素
+                            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
                         }
                         return newArray;
                     }
 
                     // 元素图标表
                     const elementMap = [
-                        { char: '\ue001', color: 'var(--pyro)' }, // 火
-                        { char: '\ue002', color: 'var(--hydro)' }, // 水
-                        { char: '\ue003', color: 'var(--anemo)' }, // 风
-                        { char: '\ue004', color: 'var(--electro)' }, // 雷
-                        { char: '\ue005', color: 'var(--dendro)' }, // 草
-                        { char: '\ue006', color: 'var(--cryo)' }, // 冰
-                        { char: '\ue007', color: 'var(--geo)' }  // 岩
+                        { char: '\ue001', color: 'var(--pyro)' },
+                        { char: '\ue002', color: 'var(--hydro)' },
+                        { char: '\ue003', color: 'var(--anemo)' },
+                        { char: '\ue004', color: 'var(--electro)' },
+                        { char: '\ue005', color: 'var(--dendro)' },
+                        { char: '\ue006', color: 'var(--cryo)' },
+                        { char: '\ue007', color: 'var(--geo)' }
                     ];
 
-                    // 2. 生成带随机元素图标的名字数组（洗牌前完成）
+                    // 生成带随机元素图标的名字数组
                     const students = [
                         "张永沛", "雷俊杰", "陈馨怡", "殷俊强", "郑奎", "李依婷", "王俊楠",
                         "贺梦菲", "黄金婷", "兰雨檐", "肖涵", "陈慧丽", "崔雯", "马英宸",
@@ -1264,7 +1220,7 @@ if (hitokotoElement) {
                         return result;
                     }
 
-                    // 页面刷新时随机UP（不保存到localStorage）
+                    // 页面刷新时随机UP
                     let fiveStarUP = pickUPs(students, 1)[0];
                     let fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
 
@@ -1277,30 +1233,26 @@ if (hitokotoElement) {
                             const icon = n.match(/<i[^>]*>.*?<\/i>/)[0];
                             const txt = n.replace(/<i[^>]*>.*?<\/i>/, '');
                             return `${icon}<span style="background:linear-gradient(90deg,#A259FF,#8F5AFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${txt}</span>`;
-                        }).join('&nbsp;&nbsp;&nbsp;&nbsp;');   // 2. 四星三人之间增加 4 个空格
+                        }).join('&nbsp;&nbsp;&nbsp;&nbsp;');
 
                         document.getElementById('upInfo').innerHTML = `
-                            <div class="up-line">
-                                <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
-                                ${fiveIcon}
-                                <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveText}</span>
-                            </div>
-                            <div class="up-line">
-                                <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
-                                ${fourHtml}
-                            </div>
-                        `;
+        <div class="up-line">
+            <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
+            ${fiveIcon}
+            <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveText}</span>
+        </div>
+        <div class="up-line">
+            <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
+            ${fourHtml}
+        </div>
+    `;
                     }
 
-                    updateUPDisplay();
-
                     const shuffledStudents = shuffleArray(students);
-                    console.log("打乱后的名单:", shuffledStudents);
 
                     function generateScrollingNames() {
                         const container = document.getElementById('scrollingNames');
                         container.innerHTML = '';
-                        // 生成两倍名单
                         const doubleList = [...shuffledStudents, ...shuffledStudents];
                         doubleList.forEach(student => {
                             const nameElement = document.createElement('div');
@@ -1317,43 +1269,18 @@ if (hitokotoElement) {
                         { name: '⭐⭐⭐', color: 'linear-gradient(90deg,#00bfff,#1e90ff)', textColor: '#fff', chance: 0.943 }
                     ];
 
-                    // 初始更新
-                    updateCountdown();
-                    generateScrollingNames();
-
-
-                    // 祈愿效果
-                    const lotteryBtn = document.getElementById('lotteryBtn');
-                    const scrollingNames = document.getElementById('scrollingNames');
-                    const winnerDiv = document.getElementById('winner');
-                    let isRolling = false;
-
-                    // 获取当天key（只用于祈愿次数）
-                    function getTodayKey(key) {
-                        const today = new Date();
-                        return key + '_' + today.getFullYear() + '_' + today.getMonth() + '_' + today.getDate();
-                    }
-
                     // 获取当前是第几周
                     function getWeekNumber(date = new Date()) {
                         const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
                         const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
-                        // 周一为一周开始
                         return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7);
                     }
 
-                    // 获取本周key（用于祈愿次数和保底）
+                    // 获取本周key
                     function getWeekKey(key) {
                         const today = new Date();
                         const week = getWeekNumber(today);
                         return key + '_' + today.getFullYear() + '_W' + week;
-                    }
-
-                    // 获取本周历史记录key
-                    function getHistoryKey() {
-                        const today = new Date();
-                        const week = getWeekNumber(today);
-                        return 'gachaHistory_' + today.getFullYear() + '_W' + week;
                     }
 
                     // 获取保底次数
@@ -1369,12 +1296,12 @@ if (hitokotoElement) {
                         localStorage.setItem(weekKey, value);
                     }
 
-                    // 初始化保底（只保存祈愿次数，不保存UP）
+                    // 初始化保底
                     let totalDraws = getPity('totalDraws', 0);
                     let fiveStarPity = getPity('fiveStarPity', 0);
                     let fourStarPity = getPity('fourStarPity', 0);
 
-                    // 添加大保底状态变量
+                    // 大保底状态变量
                     let isGuaranteed5StarUP = localStorage.getItem('isGuaranteed5StarUP') === 'true';
                     let isGuaranteed4StarUP = localStorage.getItem('isGuaranteed4StarUP') === 'true';
 
@@ -1385,26 +1312,16 @@ if (hitokotoElement) {
                         document.getElementById('fiveStarGuarantee').innerHTML = isGuaranteed5StarUP ? "已激活" : "未激活";
                         document.getElementById('fourStarGuarantee').innerHTML = isGuaranteed4StarUP ? "已激活" : "未激活";
 
-                        // 根据状态改变颜色
                         document.getElementById('fiveStarGuarantee').style.color = isGuaranteed5StarUP ? "#00ff00" : "#ffeb3b";
                         document.getElementById('fourStarGuarantee').style.color = isGuaranteed4StarUP ? "#00ff00" : "#ffeb3b";
                     }
-
-                    // 在页面加载时初始化显示
-                    updatePityDisplay();
-
 
                     // 祈愿按钮文本显示祈愿次数
                     function updateLotteryBtnText() {
                         lotteryBtn.innerText = `祈愿（累计${totalDraws}次）`;
                     }
-                    updateLotteryBtnText();
 
-                    // 历史记录相关功能
-                    let currentSlide = 0;
-                    let totalSlides = 0;
-
-                    // 获取当天历史记录key
+                    // 获取本周历史记录key
                     function getHistoryKey() {
                         const today = new Date();
                         const week = getWeekNumber(today);
@@ -1432,183 +1349,81 @@ if (hitokotoElement) {
                         localStorage.setItem(historyKey, JSON.stringify(history));
                     }
 
-                    // 显示历史记录
-                    function showHistory() {
-                        const historyKey = getHistoryKey();
-                        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                        const slidesContainer = document.getElementById('history-slides');
 
-                        slidesContainer.innerHTML = '';
 
-                        if (history.length === 0) {
-                            slidesContainer.innerHTML = '<div class="no-history">本周暂无祈愿记录</div>';
-                            document.getElementById('prev-btn').disabled = true;
-                            document.getElementById('next-btn').disabled = true;
-                            document.getElementById('history-container').style.display = 'flex';
-                            return;
+                    // 祈愿功能
+                    const lotteryBtn = document.getElementById('lotteryBtn');
+                    const scrollingNames = document.getElementById('scrollingNames');
+                    const winnerDiv = document.getElementById('winner');
+                    let isRolling = false;
+
+                    // 十连抽相关变量
+                    let isTenPullMode = false;
+                    let longPressTimer = null;
+                    const LONG_PRESS_DURATION = 500; // 长按0.5秒触发十连
+
+                    // 修复点击/长按机制
+                    lotteryBtn.addEventListener('mousedown', function (e) {
+                        e.preventDefault(); // 防止默认行为
+                        startLongPress();
+                    });
+
+                    lotteryBtn.addEventListener('touchstart', function (e) {
+                        e.preventDefault(); // 防止默认行为
+                        startLongPress();
+                    });
+
+                    lotteryBtn.addEventListener('mouseup', function (e) {
+                        e.preventDefault(); // 防止默认行为
+                        cancelLongPress();
+                    });
+
+                    lotteryBtn.addEventListener('touchend', function (e) {
+                        e.preventDefault(); // 防止默认行为
+                        cancelLongPress();
+                    });
+
+                    // 防止鼠标移出时误触发
+                    lotteryBtn.addEventListener('mouseleave', function () {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                            // 重置按钮状态
+                            lotteryBtn.innerText = `祈愿（累计${totalDraws}次）`;
+                            lotteryBtn.style.background = '#4fc3f7';
+                            isTenPullMode = false;
                         }
+                    });
 
-                        // 计算总页数（每5条一组）
-                        totalSlides = Math.ceil(history.length / 5);
-                        currentSlide = 0;
+                    function startLongPress() {
+                        if (isRolling) return;
 
-                        // 更新按钮状态
-                        document.getElementById('prev-btn').disabled = true;
-                        document.getElementById('next-btn').disabled = totalSlides <= 1;
-
-                        // 创建历史记录内容
-                        for (let i = 0; i < totalSlides; i++) {
-                            const group = document.createElement('div');
-                            group.className = 'history-group';
-
-                            // 页码信息
-                            const groupHeader = document.createElement('div');
-                            groupHeader.className = 'group-header';
-
-                            const groupTitle = document.createElement('div');
-                            groupTitle.className = 'group-title';
-                            groupTitle.innerHTML = `第 ${i + 1} 页 / 共 ${totalSlides} 页`;
-
-                            groupHeader.appendChild(groupTitle);
-                            group.appendChild(groupHeader);
-
-                            // 添加组内记录
-                            for (let j = i * 5; j < Math.min((i + 1) * 5, history.length); j++) {
-                                const record = history[j];
-                                const item = document.createElement('div');
-                                item.className = 'history-item';
-
-                                const nameSpan = document.createElement('span');
-                                nameSpan.className = 'item-name';
-                                nameSpan.innerHTML = record.name;
-
-                                const raritySpan = document.createElement('span');
-                                raritySpan.className = 'item-rarity';
-
-                                if (record.rarity === 0) {
-                                    raritySpan.classList.add('five-star');
-                                    raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '');
-                                    nameSpan.style.color = '#FFD700';  // 金色
-                                } else if (record.rarity === 1) {
-                                    raritySpan.classList.add('four-star');
-                                    raritySpan.innerHTML = '四星' + (record.isUP ? ' UP!' : '');
-                                    nameSpan.style.color = '#A259FF';  // 紫色
-                                } else {
-                                    raritySpan.classList.add('three-star');
-                                    raritySpan.innerHTML = '三星';
-                                    nameSpan.style.color = '#03a9f4';  // 蓝色
-                                }
-
-                                const timeSpan = document.createElement('span');
-                                timeSpan.className = 'item-time';
-                                timeSpan.innerHTML = (record.date ? record.date : '') + ' ' + record.time;
-
-                                item.appendChild(nameSpan);
-                                item.appendChild(raritySpan);
-                                item.appendChild(timeSpan);
-
-                                group.appendChild(item);
-                            }
-
-                            slidesContainer.appendChild(group);
-                        }
-
-                        // 生成输入框和跳转按钮的HTML
-                        const pageJumpHTML = `
-                                <input type="number" id="page-input" min="1" max="${totalSlides}" value="1"
-                                    style="width:108px;height:36px;text-align:center;border:1px solid #90caf9;border-radius:8px;padding:0 8px;
-                                    font-size:1rem;background:rgba(255,255,255,0.08);color:#fff;outline:none;transition:border 0.2s;">
-                                <button id="jump-btn" class="slider-btn" style="margin:0 10px;height:36px;width:60px;border-radius:8px;font-size:1rem;background:#4fc3f7;color:#fff;">跳转</button>
-                            `;
-
-                        // 获取slider-controls容器
-                        const controls = document.querySelector('.slider-controls');
-                        // 清空原内容
-                        controls.innerHTML = `
-                                <button class="slider-btn" id="prev-btn">
-                                    <i class="fas fa-chevron-left"></i>
-                                </button>
-                                ${pageJumpHTML}
-                                <button class="slider-btn" id="next-btn">
-                                    <i class="fas fa-chevron-right"></i>
-                                </button>
-                            `;
-
-                        // 绑定事件
-                        document.getElementById('prev-btn').onclick = function () {
-                            goToSlide(currentSlide - 1);
-                        };
-                        document.getElementById('next-btn').onclick = function () {
-                            goToSlide(currentSlide + 1);
-                        };
-                        document.getElementById('jump-btn').onclick = function () {
-                            const val = parseInt(document.getElementById('page-input').value, 10);
-                            if (val >= 1 && val <= totalSlides) {
-                                goToSlide(val - 1);
-                            }
-                        };
-                        document.getElementById('page-input').onkeydown = function (e) {
-                            if (e.key === 'Enter') {
-                                document.getElementById('jump-btn').click();
-                            }
-                        };
-
-                        // 重置到第一页
-                        goToSlide(0);
-
-                        // 显示弹窗
-                        document.getElementById('history-container').style.display = 'flex';
+                        longPressTimer = setTimeout(() => {
+                            isTenPullMode = true;
+                            lotteryBtn.innerText = '十连抽中...';
+                        }, LONG_PRESS_DURATION);
                     }
 
-                    // 修改goToSlide函数，切换页时同步输入框和页码显示
-                    function goToSlide(index) {
-                        if (index < 0 || index >= totalSlides) return;
+                    function cancelLongPress() {
+                        if (longPressTimer) {
+                            clearTimeout(longPressTimer);
+                            longPressTimer = null;
+                        }
 
-                        currentSlide = index;
-                        const slidesContainer = document.getElementById('history-slides');
-                        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+                        if (isRolling) return;
 
-                        // 更新按钮状态
-                        document.getElementById('prev-btn').disabled = currentSlide === 0;
-                        document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
-
-                        // 同步输入框
-                        const input = document.getElementById('page-input');
-                        if (input) input.value = currentSlide + 1;
-
-                        // 同步页码显示
-                        const allHeaders = document.querySelectorAll('.group-header .group-title');
-                        allHeaders.forEach((el, idx) => {
-                            el.innerHTML = `第 ${idx + 1} 页 / 共 ${totalSlides} 页`;
-                        });
+                        // 如果是长按触发的十连抽模式
+                        if (isTenPullMode) {
+                            performTenPull();
+                        }
+                        // 如果是短按触发的单抽
+                        else {
+                            performSinglePull();
+                        }
                     }
 
-                    // 初始化历史记录功能
-                    document.getElementById('history-btn').addEventListener('click', showHistory);
-                    document.getElementById('close-btn').addEventListener('click', function () {
-                        document.getElementById('history-container').style.display = 'none';
-                        // 关闭时重置到第一页
-                        goToSlide(0);
-                    });
-
-                    document.getElementById('prev-btn').addEventListener('click', function () {
-                        goToSlide(currentSlide - 1);
-                    });
-
-                    document.getElementById('next-btn').addEventListener('click', function () {
-                        goToSlide(currentSlide + 1);
-                    });
-
-                    // 点击空白处关闭弹窗
-                    document.getElementById('history-container').addEventListener('click', function (e) {
-                        if (e.target === this) {
-                            this.style.display = 'none';
-                            // 关闭时重置到第一页
-                            goToSlide(0);
-                        }
-                    });
-
-                    lotteryBtn.addEventListener('click', function () {
+                    // 单抽函数
+                    function performSinglePull() {
                         if (isRolling) return;
                         isRolling = true;
                         winnerDiv.style.display = 'none';
@@ -1617,8 +1432,8 @@ if (hitokotoElement) {
                         const winnerIndex = Math.floor(Math.random() * scrollingNames.childNodes.length);
 
                         // 固定滚动总时长为5秒
-                        const totalTime = 61; // 毫秒
-                        const totalSteps = 61; // 总步数
+                        const totalTime = 61;
+                        const totalSteps = 61;
                         const interval = totalTime / totalSteps;
 
                         let currentIndex = 0;
@@ -1654,240 +1469,528 @@ if (hitokotoElement) {
                                 }
                                 requestAnimationFrame(roll);
                             } else {
-                                // 保底机制
-                                let rarityIndex = 2; // 默认三星
-                                totalDraws++;
-                                fiveStarPity++;
-                                fourStarPity++;
-
-                                if (fiveStarPity >= 90) {
-                                    rarityIndex = 0; // 五星保底
-                                    fiveStarPity = 0;
-                                    fourStarPity = 0;
-                                } else if (fourStarPity >= 10) {
-                                    rarityIndex = 1; // 四星保底
-                                    fourStarPity = 0;
-                                } else {
-                                    const rand = Math.random();
-                                    if (rand < rarityConfig[0].chance) {
-                                        rarityIndex = 0;
-                                        fiveStarPity = 0;
-                                        fourStarPity = 0;
-                                    } else if (rand < rarityConfig[0].chance + rarityConfig[1].chance) {
-                                        rarityIndex = 1;
-                                        fourStarPity = 0;
-                                    }
-                                }
-
-                                // 保存祈愿次数（不保存UP）
-                                setPity('totalDraws', totalDraws);
-                                setPity('fiveStarPity', fiveStarPity);
-                                setPity('fourStarPity', fourStarPity);
-
-                                updateLotteryBtnText();
-
-                                // 先决定中奖人（使用当前UP，而不是保存的UP）
-                                let winnerName = '';
-                                let isUP = false;
-                                if (rarityIndex === 0) { // 五星
-                                    // 先重置保底计数器
-                                    fiveStarPity = 0;
-                                    fourStarPity = 0;
-
-                                    if (isGuaranteed5StarUP) {
-                                        // 大保底状态，必出UP角色
-                                        winnerName = fiveStarUP;
-                                        isUP = true;
-                                        isGuaranteed5StarUP = false; // 使用大保底后重置
-                                    } else {
-                                        // 小保底，50%概率UP
-                                        if (Math.random() < 0.5) {
-                                            winnerName = fiveStarUP;
-                                            isUP = true;
-                                        } else {
-                                            const candidates = students.filter(s => s !== fiveStarUP);
-                                            winnerName = candidates[Math.floor(Math.random() * candidates.length)];
-                                            isUP = false;
-                                            isGuaranteed5StarUP = true; // 触发大保底状态
-                                        }
-                                    }
-
-                                    // 保存大保底状态
-                                    localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
-                                    showFiveStarEffect(winnerName);
-                                } else if (rarityIndex === 1) { // 四星
-                                    // 重置四星保底计数器
-                                    fourStarPity = 0;
-
-                                    if (isGuaranteed4StarUP) {
-                                        // 四星大保底状态，必出UP角色之一
-                                        winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
-                                        isUP = true;
-                                        isGuaranteed4StarUP = false; // 使用后重置
-                                    } else {
-                                        // 四星小保底，50%概率UP
-                                        if (Math.random() < 0.5) {
-                                            winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
-                                            isUP = true;
-                                        } else {
-                                            const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
-                                            winnerName = candidates[Math.floor(Math.random() * candidates.length)];
-                                            isUP = false;
-                                            isGuaranteed4StarUP = true; // 触发四星大保底
-                                        }
-                                    }
-
-                                    // 保存四星大保底状态
-                                    localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
-                                } else { // 三星
-                                    const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
-                                    winnerName = candidates[Math.floor(Math.random() * candidates.length)];
-                                }
-                                updatePityDisplay();
-                                // 在祈愿结束后也调用此函数更新显示
-                                // 在祈愿逻辑的最后添加:
-                                // updatePityDisplay();
-                                // 保存祈愿次数和保底计数
-                                setPity('totalDraws', totalDraws);
-                                setPity('fiveStarPity', fiveStarPity);
-                                setPity('fourStarPity', fourStarPity);
-
-                                // 保存大保底状态
-                                localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
-                                localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
-
-
-                                // 在滚动区找到中奖人的位置
-                                let winnerPos = -1;
-                                for (let i = 0; i < scrollingNames.childNodes.length; i++) {
-                                    if (scrollingNames.childNodes[i].innerHTML === winnerName) {
-                                        winnerPos = i;
-                                        break;
-                                    }
-                                }
-                                if (winnerPos === -1) winnerPos = 0;
-
-                                // 高亮中奖人
-                                scrollingNames.childNodes.forEach((el, i) => {
-                                    if (i === winnerPos) {
-                                        el.style.background = rarityConfig[rarityIndex].color;
-                                        el.style.color = rarityConfig[rarityIndex].textColor;
-                                        el.style.fontWeight = 'bold';
-                                        el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
-                                            rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
-                                                '0 0 16px 6px #00bfff';
-                                        el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
-                                            rarityIndex === 1 ? '3px solid #A259FF' :
-                                                '3px solid #00bfff';
-                                    } else {
-                                        el.style.background = '';
-                                        el.style.color = '';
-                                        el.style.fontWeight = '';
-                                        el.style.boxShadow = '';
-                                        el.style.border = '';
-                                    }
-                                });
-                                // 在页面加载完成后预加载音频
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const audio = document.getElementById('fiveStarSound');
-                                    audio.muted = true; // 先静音
-                                    audio.play().then(() => {
-                                        audio.pause();
-                                        audio.currentTime = 0;
-                                        audio.muted = false; // 解除静音
-                                    }).catch(error => {
-                                        console.log('音频预加载失败:', error);
-                                    });
-                                });
-
-                                // 显示五星大特效
-                                function showFiveStarEffect(name) {
-                                    const effectContainer = document.getElementById('wishEffect');
-                                    const goldenLight = effectContainer.querySelector('.golden-light');
-                                    const characterName = effectContainer.querySelector('.character-name');
-                                    const nameText = effectContainer.querySelector('.name-text');
-
-                                    // 播放五星音效
-                                    const audio = document.getElementById('fiveStarSound');
-                                    audio.currentTime = 0; // 重置音频到开头
-                                    audio.play().catch(error => {
-                                        console.log('音频自动播放被阻止，需要用户交互:', error);
-                                    });
-
-                                    // 设置角色名称
-                                    nameText.innerHTML = name;
-
-                                    // 显示特效容器
-                                    effectContainer.classList.add('active');
-
-                                    // 动画序列
-                                    setTimeout(() => {
-
-                                        // 金光迸发
-
-                                        goldenLight.style.animation = 'goldenLightAnimation 2s ease-out forwards';
-                                        goldenLight.style.opacity = '1';
-
-                                        // 显示角色名称                                              
-                                        characterName.classList.add('revealed');
-
-                                    });
-                                }
-
-                                // 关闭五星特效
-                                document.querySelector('.wish-continue-btn').addEventListener('click', function () {
-                                    const effectContainer = document.getElementById('wishEffect');
-                                    const goldenLight = effectContainer.querySelector('.golden-light');
-                                    const characterName = effectContainer.querySelector('.character-name');
-
-                                    // 重置所有动画
-                                    goldenLight.style.animation = 'none';
-                                    goldenLight.style.opacity = '0';
-                                    characterName.classList.remove('revealed');
-
-                                    // 隐藏容器
-                                    effectContainer.classList.remove('active');
-
-                                    // 继续正常流程
-                                    isRolling = false;
-                                    lotteryBtn.disabled = false;
-                                });
-
-                                // 在抽中五星角色时调用此函数
-                                // 替换您现有的五星处理代码，改为调用：
-                                // showFiveStarEffect(winnerName);
-                                let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
-
-                                // 只改这一行：把图标放大并去掉发光
-                                const bigIconName = winnerName
-                                    .replace(
-                                        /(<i[^>]*style="[^"]*font-size:)[^;]+/,
-                                        '$12.5rem;text-shadow:none;font-weight:normal'
-                                    );   // 放大、去发光、去加粗
-
-                                winnerDiv.innerHTML = `
-                                    <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
-                                        ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
-                                    </span>
-                                    <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">
-                                        ${bigIconName}
-                                    </span>
-                                    <br>
-                                    <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜🎉</span>
-                                    `;
-
-                                // 添加历史记录
-                                addHistoryRecord(winnerName, rarityIndex, isUP);
-
-                                winnerDiv.style.display = 'block';
-                                isRolling = false;
-                                lotteryBtn.disabled = false;
+                                // 执行单次抽卡
+                                const result = drawOne();
+                                processSingleResult(result);
                             }
                         }
                         requestAnimationFrame(roll);
+                    }
+
+                    // 十连抽函数 - 修正版本
+                    function performTenPull() {
+                        if (isRolling) return;
+                        isRolling = true;
+                        winnerDiv.style.display = 'none';
+                        lotteryBtn.disabled = true;
+
+                        // 一次性抽取10次结果
+                        const results = [];
+                        for (let i = 0; i < 10; i++) {
+                            results.push(drawOne());
+                        }
+
+                        // 立即记录所有历史记录
+                        results.forEach(result => {
+                            addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP);
+                        });
+
+                        // 依次显示十连抽结果，所有结果都用特效显示
+                        showTenPullResults(results);
+                    }
+
+                    // 显示十连抽结果 - 所有结果都用特效显示
+                    function showTenPullResults(results) {
+                        let currentIndex = 0;
+                        lotteryBtn.innerText = '十连抽中...';
+                        function showNextResult() {
+                            if (currentIndex < results.length) {
+                                const result = results[currentIndex];
+
+                                // 所有星级都用特效显示，只是颜色不同
+                                showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
+                                    currentIndex++;
+                                    setTimeout(showNextResult, 800); // 延迟800ms显示下一个结果
+                                });
+                            } else {
+                                // 所有结果显示完毕
+                                finishTenPull();
+                            }
+                        }
+
+                        showNextResult();
+                    }
+
+                    // 显示五星大特效 - 修正版本，支持所有星级
+                    function showFiveStarEffect(name, rarityIndex, isUP, onClose) {
+                        const effectContainer = document.getElementById('wishEffect');
+                        const goldenLight = effectContainer.querySelector('.golden-light');
+                        const characterName = effectContainer.querySelector('.character-name');
+                        const nameText = effectContainer.querySelector('.name-text');
+                        const starsElement = effectContainer.querySelector('.stars');
+
+                        // 根据稀有度设置颜色和星星
+                        let color, stars, lightColor, background;
+                        if (rarityIndex === 0) {
+                            color = '#FFD700 !';
+                            stars = '⭐⭐⭐⭐⭐';
+                            lightColor = 'rgba(255, 215, 0, 0.8)'; // 金色
+                            background: '#FFD700';
+                        } else if (rarityIndex === 1) {
+                            color = '#A259FF';
+                            stars = '⭐⭐⭐⭐';
+                            lightColor = 'rgba(162, 89, 255, 0.8)'; // 紫色
+                            background: '#A259FF';
+                        } else {
+                            color = '#00bfff';
+                            stars = '⭐⭐⭐';
+                            lightColor = 'rgba(0, 191, 255, 0.8)'; // 蓝色
+                            background: '#00bfff';
+                        }
+
+                        // 设置星星和颜色
+                        starsElement.innerHTML = stars;
+                        nameText.style.color = color;
+                        starsElement.style.color = color;
+
+                        // 设置金光颜色
+                        goldenLight.style.background = `radial-gradient(circle, rgba(255, 255, 255, 0) 0%, ${lightColor} 40%, ${lightColor} 70%)`;
+
+                        // 添加UP标记
+                        const upMark = isUP ? ' UP!' : '';
+                        nameText.innerHTML = name + upMark;
+
+                        // 播放音效（只有五星播放）
+                        if (rarityIndex === 0) {
+                            const audio = document.getElementById('fiveStarSound');
+                            audio.currentTime = 0;
+                            audio.play().catch(error => {
+                                console.log('音频自动播放被阻止，需要用户交互:', error);
+                            });
+                        }
+
+                        // 显示特效容器
+                        effectContainer.classList.add('active');
+
+                        // 动画序列
+                        setTimeout(() => {
+                            goldenLight.style.animation = 'goldenLightAnimation 2s ease-out forwards';
+                            goldenLight.style.opacity = '1';
+                            characterName.classList.add('revealed');
+                        });
+
+                        // 重新绑定关闭事件
+                        const continueBtn = effectContainer.querySelector('.wish-continue-btn');
+                        continueBtn.onclick = function () {
+                            goldenLight.style.animation = 'none';
+                            goldenLight.style.opacity = '0';
+                            characterName.classList.remove('revealed');
+                            effectContainer.classList.remove('active');
+
+                            if (onClose) {
+                                onClose();
+                            }
+                        };
+                    }
+
+                    // 完成十连抽
+                    function finishTenPull() {
+                        isRolling = false;
+                        lotteryBtn.disabled = false;
+                        isTenPullMode = false;
+                        updateLotteryBtnText();
+                        lotteryBtn.style.background = '#4fc3f7';
+
+                        // 显示十连抽完成提示
+                        winnerDiv.innerHTML = `
+        <span style="font-size:2.5rem;color:#4fc3f7;font-weight:bold;">
+            🎉十连抽完成！🎉
+        </span>
+        <br>
+        <span style="font-size:1.2rem;color:#bbdefb;">
+            共抽取10次，请查看历史记录
+        </span>
+    `;
+                        winnerDiv.style.display = 'block';
+                    }
+
+                    // 处理单抽结果
+                    function processSingleResult(result) {
+                        const { winnerName, rarityIndex, isUP } = result;
+
+                        // 在滚动区找到中奖人的位置
+                        let winnerPos = -1;
+                        for (let i = 0; i < scrollingNames.childNodes.length; i++) {
+                            if (scrollingNames.childNodes[i].innerHTML === winnerName) {
+                                winnerPos = i;
+                                break;
+                            }
+                        }
+                        if (winnerPos === -1) winnerPos = 0;
+
+                        // 高亮中奖人
+                        scrollingNames.childNodes.forEach((el, i) => {
+                            if (i === winnerPos) {
+                                el.style.background = rarityConfig[rarityIndex].color;
+                                el.style.color = rarityConfig[rarityIndex].textColor;
+                                el.style.fontWeight = 'bold';
+                                el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
+                                    rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
+                                        '0 0 16px 6px #00bfff';
+                                el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
+                                    rarityIndex === 1 ? '3px solid #A259FF' :
+                                        '3px solid #00bfff';
+                            } else {
+                                el.style.background = '';
+                                el.style.color = '';
+                                el.style.fontWeight = '';
+                                el.style.boxShadow = '';
+                                el.style.border = '';
+                            }
+                        });
+
+                        let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
+
+                        const bigIconName = winnerName
+                            .replace(
+                                /(<i[^>]*style="[^"]*font-size:)[^;]+/,
+                                '$12.5rem;text-shadow:none;font-weight:normal'
+                            );
+
+                        winnerDiv.innerHTML = `
+        <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
+            ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
+        </span>
+        <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">
+            ${bigIconName}
+        </span>
+        <br>
+        <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜🎉</span>
+        `;
+
+                        // 添加历史记录
+                        addHistoryRecord(winnerName, rarityIndex, isUP);
+
+                        winnerDiv.style.display = 'block';
+                        isRolling = false;
+                        lotteryBtn.disabled = false;
+                        isTenPullMode = false;
+                        updateLotteryBtnText();
+                        lotteryBtn.style.background = '#4fc3f7';
+                    }
+
+                    // 抽卡核心逻辑
+                    function drawOne() {
+                        // 保底机制
+                        let rarityIndex = 2;
+                        totalDraws++;
+                        fiveStarPity++;
+                        fourStarPity++;
+
+                        if (fiveStarPity >= 90) {
+                            rarityIndex = 0;
+                            fiveStarPity = 0;
+                            fourStarPity = 0;
+                        } else if (fourStarPity >= 10) {
+                            rarityIndex = 1;
+                            fourStarPity = 0;
+                        } else {
+                            const rand = Math.random();
+                            if (rand < rarityConfig[0].chance) {
+                                rarityIndex = 0;
+                                fiveStarPity = 0;
+                                fourStarPity = 0;
+                            } else if (rand < rarityConfig[0].chance + rarityConfig[1].chance) {
+                                rarityIndex = 1;
+                                fourStarPity = 0;
+                            }
+                        }
+
+                        // 保存祈愿次数
+                        setPity('totalDraws', totalDraws);
+                        setPity('fiveStarPity', fiveStarPity);
+                        setPity('fourStarPity', fourStarPity);
+
+                        updateLotteryBtnText();
+
+                        // 决定中奖人
+                        let winnerName = '';
+                        let isUP = false;
+                        if (rarityIndex === 0) {
+                            fiveStarPity = 0;
+                            fourStarPity = 0;
+
+                            if (isGuaranteed5StarUP) {
+                                winnerName = fiveStarUP;
+                                isUP = true;
+                                isGuaranteed5StarUP = false;
+                            } else {
+                                if (Math.random() < 0.5) {
+                                    winnerName = fiveStarUP;
+                                    isUP = true;
+                                } else {
+                                    const candidates = students.filter(s => s !== fiveStarUP);
+                                    winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                                    isUP = false;
+                                    isGuaranteed5StarUP = true;
+                                }
+                            }
+
+                            localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
+                        } else if (rarityIndex === 1) {
+                            fourStarPity = 0;
+
+                            if (isGuaranteed4StarUP) {
+                                winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
+                                isUP = true;
+                                isGuaranteed4StarUP = false;
+                            } else {
+                                if (Math.random() < 0.5) {
+                                    winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
+                                    isUP = true;
+                                } else {
+                                    const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+                                    winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                                    isUP = false;
+                                    isGuaranteed4StarUP = true;
+                                }
+                            }
+
+                            localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
+                        } else {
+                            const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+                            winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                        }
+
+                        updatePityDisplay();
+
+                        // 保存状态
+                        setPity('totalDraws', totalDraws);
+                        setPity('fiveStarPity', fiveStarPity);
+                        setPity('fourStarPity', fourStarPity);
+                        localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
+                        localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
+
+                        return {
+                            winnerName,
+                            rarityIndex,
+                            isUP
+                        };
+                    }
+
+                    
+
+                    // 历史记录相关功能
+                    let currentSlide = 0;
+                    let totalSlides = 0;
+
+                    // 显示历史记录
+                    function showHistory() {
+                        const historyKey = getHistoryKey();
+                        const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                        const slidesContainer = document.getElementById('history-slides');
+
+                        slidesContainer.innerHTML = '';
+
+                        if (history.length === 0) {
+                            slidesContainer.innerHTML = '<div class="no-history">本周暂无祈愿记录</div>';
+                            document.getElementById('prev-btn').disabled = true;
+                            document.getElementById('next-btn').disabled = true;
+                            document.getElementById('history-container').style.display = 'flex';
+                            return;
+                        }
+
+                        totalSlides = Math.ceil(history.length / 5);
+                        currentSlide = 0;
+
+                        document.getElementById('prev-btn').disabled = true;
+                        document.getElementById('next-btn').disabled = totalSlides <= 1;
+
+                        for (let i = 0; i < totalSlides; i++) {
+                            const group = document.createElement('div');
+                            group.className = 'history-group';
+
+                            const groupHeader = document.createElement('div');
+                            groupHeader.className = 'group-header';
+
+                            const groupTitle = document.createElement('div');
+                            groupTitle.className = 'group-title';
+                            groupTitle.innerHTML = `第 ${i + 1} 页 / 共 ${totalSlides} 页`;
+
+                            groupHeader.appendChild(groupTitle);
+                            group.appendChild(groupHeader);
+
+                            for (let j = i * 5; j < Math.min((i + 1) * 5, history.length); j++) {
+                                const record = history[j];
+                                const item = document.createElement('div');
+                                item.className = 'history-item';
+
+                                const nameSpan = document.createElement('span');
+                                nameSpan.className = 'item-name';
+                                nameSpan.innerHTML = record.name;
+
+                                const raritySpan = document.createElement('span');
+                                raritySpan.className = 'item-rarity';
+
+                                if (record.rarity === 0) {
+                                    raritySpan.classList.add('five-star');
+                                    raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '');
+                                    nameSpan.style.color = '#FFD700';
+                                } else if (record.rarity === 1) {
+                                    raritySpan.classList.add('four-star');
+                                    raritySpan.innerHTML = '四星' + (record.isUP ? ' UP!' : '');
+                                    nameSpan.style.color = '#A259FF';
+                                } else {
+                                    raritySpan.classList.add('three-star');
+                                    raritySpan.innerHTML = '三星';
+                                    nameSpan.style.color = '#03a9f4';
+                                }
+
+                                const timeSpan = document.createElement('span');
+                                timeSpan.className = 'item-time';
+                                timeSpan.innerHTML = (record.date ? record.date : '') + ' ' + record.time;
+
+                                item.appendChild(nameSpan);
+                                item.appendChild(raritySpan);
+                                item.appendChild(timeSpan);
+
+                                group.appendChild(item);
+                            }
+
+                            slidesContainer.appendChild(group);
+                        }
+
+                        const pageJumpHTML = `
+        <input type="number" id="page-input" min="1" max="${totalSlides}" value="1"
+            style="width:108px;height:36px;text-align:center;border:1px solid #90caf9;border-radius:8px;padding:0 8px;
+            font-size:1rem;background:rgba(255,255,255,0.08);color:#fff;outline:none;transition:border 0.2s;">
+        <button id="jump-btn" class="slider-btn" style="margin:0 10px;height:36px;width:60px;border-radius:8px;font-size:1rem;background:#4fc3f7;color:#fff;">跳转</button>
+    `;
+
+                        const controls = document.querySelector('.slider-controls');
+                        controls.innerHTML = `
+        <button class="slider-btn" id="prev-btn">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        ${pageJumpHTML}
+        <button class="slider-btn" id="next-btn">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+
+                        document.getElementById('prev-btn').onclick = function () {
+                            goToSlide(currentSlide - 1);
+                        };
+                        document.getElementById('next-btn').onclick = function () {
+                            goToSlide(currentSlide + 1);
+                        };
+                        document.getElementById('jump-btn').onclick = function () {
+                            const val = parseInt(document.getElementById('page-input').value, 10);
+                            if (val >= 1 && val <= totalSlides) {
+                                goToSlide(val - 1);
+                            }
+                        };
+                        document.getElementById('page-input').onkeydown = function (e) {
+                            if (e.key === 'Enter') {
+                                document.getElementById('jump-btn').click();
+                            }
+                        };
+
+                        goToSlide(0);
+                        document.getElementById('history-container').style.display = 'flex';
+                    }
+
+                    function goToSlide(index) {
+                        if (index < 0 || index >= totalSlides) return;
+
+                        currentSlide = index;
+                        const slidesContainer = document.getElementById('history-slides');
+                        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+
+                        document.getElementById('prev-btn').disabled = currentSlide === 0;
+                        document.getElementById('next-btn').disabled = currentSlide === totalSlides - 1;
+
+                        const input = document.getElementById('page-input');
+                        if (input) input.value = currentSlide + 1;
+
+                        const allHeaders = document.querySelectorAll('.group-header .group-title');
+                        allHeaders.forEach((el, idx) => {
+                            el.innerHTML = `第 ${idx + 1} 页 / 共 ${totalSlides} 页`;
+                        });
+                    }
+
+                    // 初始化历史记录功能
+                    document.getElementById('history-btn').addEventListener('click', showHistory);
+                    document.getElementById('close-btn').addEventListener('click', function () {
+                        document.getElementById('history-container').style.display = 'none';
+                        goToSlide(0);
                     });
 
+                    document.getElementById('prev-btn').addEventListener('click', function () {
+                        goToSlide(currentSlide - 1);
+                    });
 
+                    document.getElementById('next-btn').addEventListener('click', function () {
+                        goToSlide(currentSlide + 1);
+                    });
+
+                    document.getElementById('history-container').addEventListener('click', function (e) {
+                        if (e.target === this) {
+                            this.style.display = 'none';
+                            goToSlide(0);
+                        }
+                    });
+
+                    // 页面加载完成后的初始化
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const hitokotoElement = document.querySelector('.motivation-text');
+
+                        const observer = new IntersectionObserver((entries) => {
+                            entries.forEach(entry => {
+                                isHitokotoVisible = entry.isIntersecting;
+
+                                if (isHitokotoVisible) {
+                                    if (!hitokotoInterval) {
+                                        updateHitokoto();
+                                        hitokotoInterval = setInterval(updateHitokoto, 20000);
+                                    }
+                                } else {
+                                    clearInterval(hitokotoInterval);
+                                    hitokotoInterval = null;
+                                }
+                            });
+                        }, {
+                            threshold: 0.1
+                        });
+
+                        if (hitokotoElement) {
+                            observer.observe(hitokotoElement);
+                        }
+
+                        // 初始化一言
+                        updateHitokoto();
+                        hitokotoInterval = setInterval(updateHitokoto, 20000);
+
+                        // 页面卸载时清除定时器
+                        window.addEventListener('unload', () => {
+                            clearInterval(hitokotoInterval);
+                        });
+
+                        document.addEventListener('visibilitychange', function () {
+                            if (document.hidden) {
+                                clearInterval(hitokotoInterval);
+                            } else {
+                                hitokotoInterval = setInterval(updateHitokoto, 20000);
+                            }
+                        });
+                    });
+
+                    // 初始更新
+                    updateCountdown();
+                    updateUPDisplay();
+                    generateScrollingNames();
+                    updatePityDisplay();
+                    updateLotteryBtnText();
                 </script>
 </body>
 
