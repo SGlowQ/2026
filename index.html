@@ -6,10 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026高考倒计时×祈愿点名</title>
     <link rel="shortcut icon" href="favicon.ico">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <!-- 新增五星音频 -->
     <audio id="fiveStarSound" preload="auto">
-        <source src="a.mp3" type="audio/mpeg">
+        <source src="Genshin Impact Wish Roll 5.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    <!-- 新增四星音频 -->
+    <audio id="fourStarSound" preload="auto">
+        <source src="Genshin Impact Wish Roll 4.mp3" type="audio/mpeg"> <!-- 四星音频文件 -->
+        您的浏览器不支持音频播放。
+    </audio>
+    <!-- 新增三星音频 -->
+    <audio id="threeStarSound" preload="auto">
+        <source src="Genshin Impact Wish Roll 3.mp3" type="audio/mpeg"> <!-- 三星音频文件 -->
         您的浏览器不支持音频播放。
     </audio>
     <style>
@@ -742,14 +752,43 @@
             /* 最终状态：正常大小 */
         }
 
+        /* 基础名字文本样式 */
         .name-text {
             font-size: 10rem;
             font-weight: bold;
             color: #fff;
+        }
+
+        /* 五星特效样式 */
+        .five-star-effect {
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.8),
                 0 0 40px rgba(255, 215, 0, 0.6),
                 0 0 60px rgba(255, 215, 0, 0.4);
             background: #ffd700;
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 四星特效样式 */
+        .four-star-effect {
+            text-shadow: 0 0 20px rgba(162, 89, 255, 0.8),
+                0 0 40px rgba(162, 89, 255, 0.6),
+                0 0 60px rgba(162, 89, 255, 0.4);
+            background: #A259FF;
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 三星特效样式 */
+        .three-star-effect {
+            text-shadow: 0 0 20px rgba(0, 191, 255, 0.8),
+                0 0 40px rgba(0, 191, 255, 0.6),
+                0 0 60px rgba(0, 191, 255, 0.4);
+            background: #00bfff;
             background-size: 300% 300%;
             -webkit-background-clip: text;
             background-clip: text;
@@ -915,8 +954,7 @@
             <div class="scrolling-names" id="scrollingNames">
                 <!-- 名字将由JavaScript动态生成 -->
             </div>
-            <div id="winner" style="text-align:center;font-size:3rem;color:#00ff00;margin-top:1.5rem;display:none;">
-            </div>
+            <!-- 删除下方的提示显示 -->
         </div>
 
         <footer>
@@ -1349,12 +1387,36 @@
                         localStorage.setItem(historyKey, JSON.stringify(history));
                     }
 
+                    // 高亮名字函数
+                    function highlightWinner(winnerName, rarityIndex) {
+                        // 先重置所有名字的样式
+                        scrollingNames.childNodes.forEach(el => {
+                            el.style.background = '';
+                            el.style.color = '';
+                            el.style.fontWeight = '';
+                            el.style.boxShadow = '';
+                            el.style.border = '';
+                        });
 
+                        // 然后高亮所有匹配的名字（两个名单都高亮）
+                        scrollingNames.childNodes.forEach((el, i) => {
+                            if (el.innerHTML === winnerName) {
+                                el.style.background = rarityConfig[rarityIndex].color;
+                                el.style.color = rarityConfig[rarityIndex].textColor;
+                                el.style.fontWeight = 'bold';
+                                el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
+                                    rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
+                                        '0 0 16px 6px #00bfff';
+                                el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
+                                    rarityIndex === 1 ? '3px solid #A259FF' :
+                                        '3px solid #00bfff';
+                            }
+                        });
+                    }
 
                     // 祈愿功能
                     const lotteryBtn = document.getElementById('lotteryBtn');
                     const scrollingNames = document.getElementById('scrollingNames');
-                    const winnerDiv = document.getElementById('winner');
                     let isRolling = false;
 
                     // 十连抽相关变量
@@ -1422,66 +1484,35 @@
                         }
                     }
 
-                    // 单抽函数
+                    // 单抽函数 - 删除滚动动画
                     function performSinglePull() {
                         if (isRolling) return;
                         isRolling = true;
-                        winnerDiv.style.display = 'none';
                         lotteryBtn.disabled = true;
 
-                        const winnerIndex = Math.floor(Math.random() * scrollingNames.childNodes.length);
+                        // 直接抽取结果
+                        const result = drawOne();
 
-                        // 固定滚动总时长为5秒
-                        const totalTime = 61;
-                        const totalSteps = 61;
-                        const interval = totalTime / totalSteps;
+                        // 添加历史记录 - 这是修复的关键
+                        addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP);
 
-                        let currentIndex = 0;
-                        let step = 0;
-                        let lastTime = null;
+                        // 高亮中奖名字
+                        highlightWinner(result.winnerName, result.rarityIndex);
 
-                        function highlightRolling(index) {
-                            scrollingNames.childNodes.forEach((el, i) => {
-                                if (i === index) {
-                                    el.style.background = 'linear-gradient(90deg,#00eaff,#00ff99)';
-                                    el.style.color = '#222';
-                                    el.style.fontWeight = 'bold';
-                                    el.style.boxShadow = '0 0 16px 6px #00eaff';
-                                    el.style.border = '2px solid #00ff99';
-                                } else {
-                                    el.style.background = '';
-                                    el.style.color = '';
-                                    el.style.fontWeight = '';
-                                    el.style.boxShadow = '';
-                                    el.style.border = '';
-                                }
-                            });
-                        }
-
-                        function roll(now) {
-                            if (!lastTime) lastTime = now;
-                            if (step < totalSteps) {
-                                if (now - lastTime >= interval) {
-                                    highlightRolling(currentIndex);
-                                    currentIndex = (currentIndex + 1) % scrollingNames.childNodes.length;
-                                    step++;
-                                    lastTime = now;
-                                }
-                                requestAnimationFrame(roll);
-                            } else {
-                                // 执行单次抽卡
-                                const result = drawOne();
-                                processSingleResult(result);
-                            }
-                        }
-                        requestAnimationFrame(roll);
+                        // 显示特效
+                        showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
+                            isRolling = false;
+                            lotteryBtn.disabled = false;
+                            isTenPullMode = false;
+                            updateLotteryBtnText();
+                            lotteryBtn.style.background = '#4fc3f7';
+                        });
                     }
 
                     // 十连抽函数 - 修正版本
                     function performTenPull() {
                         if (isRolling) return;
                         isRolling = true;
-                        winnerDiv.style.display = 'none';
                         lotteryBtn.disabled = true;
 
                         // 一次性抽取10次结果
@@ -1499,10 +1530,12 @@
                         showTenPullResults(results);
                     }
 
-                    // 显示十连抽结果 - 所有结果都用特效显示
+                    // 显示十连抽结果 - 修改为最后统一高亮
                     function showTenPullResults(results) {
                         let currentIndex = 0;
                         lotteryBtn.innerText = '十连抽中...';
+
+                        // 先收集所有要显示的结果，但不立即高亮
                         function showNextResult() {
                             if (currentIndex < results.length) {
                                 const result = results[currentIndex];
@@ -1510,15 +1543,50 @@
                                 // 所有星级都用特效显示，只是颜色不同
                                 showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
                                     currentIndex++;
-                                    setTimeout(showNextResult, 800); // 延迟800ms显示下一个结果
+                                    showNextResult();
                                 });
                             } else {
-                                // 所有结果显示完毕
+                                // 所有结果显示完毕后，统一高亮所有名字
+                                highlightAllTenPullResults(results);
                                 finishTenPull();
                             }
                         }
 
                         showNextResult();
+                    }
+
+                    // 新增函数：统一高亮十连抽的所有结果
+                    // 找到这个函数，修改循环逻辑
+                    function highlightAllTenPullResults(results) {
+                        // 先重置所有名字的样式
+                        scrollingNames.childNodes.forEach(el => {
+                            el.style.background = '';
+                            el.style.color = '';
+                            el.style.fontWeight = '';
+                            el.style.boxShadow = '';
+                            el.style.border = '';
+                        });
+
+                        // 然后高亮所有中奖的名字（两个名单都高亮）
+                        results.forEach(result => {
+                            const winnerName = result.winnerName;
+                            const rarityIndex = result.rarityIndex;
+
+                            // 找到所有匹配的名字位置（两个名单都高亮）
+                            scrollingNames.childNodes.forEach((el, i) => {
+                                if (el.innerHTML === winnerName) {
+                                    el.style.background = rarityConfig[rarityIndex].color;
+                                    el.style.color = rarityConfig[rarityIndex].textColor;
+                                    el.style.fontWeight = 'bold';
+                                    el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
+                                        rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
+                                            '0 0 16px 6px #00bfff';
+                                    el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
+                                        rarityIndex === 1 ? '3px solid #A259FF' :
+                                            '3px solid #00bfff';
+                                }
+                            });
+                        });
                     }
 
                     // 显示五星大特效 - 修正版本，支持所有星级
@@ -1529,28 +1597,27 @@
                         const nameText = effectContainer.querySelector('.name-text');
                         const starsElement = effectContainer.querySelector('.stars');
 
+                        // 移除所有星级类，只保留基础类
+                        nameText.className = 'name-text';
+
                         // 根据稀有度设置颜色和星星
-                        let color, stars, lightColor, background;
+                        let color, stars, lightColor;
                         if (rarityIndex === 0) {
-                            color = '#FFD700 !';
+                            color = '#FFD700';
                             stars = '⭐⭐⭐⭐⭐';
                             lightColor = 'rgba(255, 215, 0, 0.8)'; // 金色
-                            background: '#FFD700';
                         } else if (rarityIndex === 1) {
                             color = '#A259FF';
                             stars = '⭐⭐⭐⭐';
                             lightColor = 'rgba(162, 89, 255, 0.8)'; // 紫色
-                            background: '#A259FF';
                         } else {
                             color = '#00bfff';
                             stars = '⭐⭐⭐';
                             lightColor = 'rgba(0, 191, 255, 0.8)'; // 蓝色
-                            background: '#00bfff';
                         }
 
                         // 设置星星和颜色
                         starsElement.innerHTML = stars;
-                        nameText.style.color = color;
                         starsElement.style.color = color;
 
                         // 设置金光颜色
@@ -1558,23 +1625,46 @@
 
                         // 添加UP标记
                         const upMark = isUP ? ' UP!' : '';
-                        nameText.innerHTML = name + upMark;
-
-                        // 播放音效（只有五星播放）
+                        // 播放音效（根据稀有度播放不同的音效）
+                        let audioToPlay = null;
                         if (rarityIndex === 0) {
-                            const audio = document.getElementById('fiveStarSound');
-                            audio.currentTime = 0;
-                            audio.play().catch(error => {
+                            audioToPlay = document.getElementById('fiveStarSound'); // 五星音效
+                        } else if (rarityIndex === 1) {
+                            audioToPlay = document.getElementById('fourStarSound'); // 四星音效
+                        } else {
+                            audioToPlay = document.getElementById('threeStarSound'); // 三星音效
+                        }
+
+                        if (audioToPlay) {
+                            audioToPlay.currentTime = 0;
+                            audioToPlay.play().catch(error => {
                                 console.log('音频自动播放被阻止，需要用户交互:', error);
                             });
                         }
+
+                        // 解析名字，分离元素符号和文本
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = name;
+
+                        let elementHTML = '';
+                        let pureName = name;
+
+                        // 如果有元素符号，提取出来
+                        if (tempDiv.querySelector('i')) {
+                            elementHTML = tempDiv.innerHTML.match(/<i[^>]*>.*?<\/i>/)[0];
+                            elementHTML = elementHTML.replace('font-size:1.4rem', 'font-size:3rem;font-weight:normal');
+                            pureName = name.replace(/<i[^>]*>.*?<\/i>/, '');
+                        }
+
+                        // 设置名字显示，元素符号保持原色，只有文本部分应用特效
+                        nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}${upMark}</span>`;
 
                         // 显示特效容器
                         effectContainer.classList.add('active');
 
                         // 动画序列
                         setTimeout(() => {
-                            goldenLight.style.animation = 'goldenLightAnimation 2s ease-out forwards';
+                            goldenLight.style.animation = 'goldenLightAnimation 1.25s ease-out forwards';
                             goldenLight.style.opacity = '1';
                             characterName.classList.add('revealed');
                         });
@@ -1595,83 +1685,6 @@
 
                     // 完成十连抽
                     function finishTenPull() {
-                        isRolling = false;
-                        lotteryBtn.disabled = false;
-                        isTenPullMode = false;
-                        updateLotteryBtnText();
-                        lotteryBtn.style.background = '#4fc3f7';
-
-                        // 显示十连抽完成提示
-                        winnerDiv.innerHTML = `
-        <span style="font-size:2.5rem;color:#4fc3f7;font-weight:bold;">
-            🎉十连抽完成！🎉
-        </span>
-        <br>
-        <span style="font-size:1.2rem;color:#bbdefb;">
-            共抽取10次，请查看历史记录
-        </span>
-    `;
-                        winnerDiv.style.display = 'block';
-                    }
-
-                    // 处理单抽结果
-                    function processSingleResult(result) {
-                        const { winnerName, rarityIndex, isUP } = result;
-
-                        // 在滚动区找到中奖人的位置
-                        let winnerPos = -1;
-                        for (let i = 0; i < scrollingNames.childNodes.length; i++) {
-                            if (scrollingNames.childNodes[i].innerHTML === winnerName) {
-                                winnerPos = i;
-                                break;
-                            }
-                        }
-                        if (winnerPos === -1) winnerPos = 0;
-
-                        // 高亮中奖人
-                        scrollingNames.childNodes.forEach((el, i) => {
-                            if (i === winnerPos) {
-                                el.style.background = rarityConfig[rarityIndex].color;
-                                el.style.color = rarityConfig[rarityIndex].textColor;
-                                el.style.fontWeight = 'bold';
-                                el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
-                                    rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
-                                        '0 0 16px 6px #00bfff';
-                                el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
-                                    rarityIndex === 1 ? '3px solid #A259FF' :
-                                        '3px solid #00bfff';
-                            } else {
-                                el.style.background = '';
-                                el.style.color = '';
-                                el.style.fontWeight = '';
-                                el.style.boxShadow = '';
-                                el.style.border = '';
-                            }
-                        });
-
-                        let tipColor = rarityIndex === 0 ? '#FFD700' : rarityIndex === 1 ? '#A259FF' : '#00bfff';
-
-                        const bigIconName = winnerName
-                            .replace(
-                                /(<i[^>]*style="[^"]*font-size:)[^;]+/,
-                                '$12.5rem;text-shadow:none;font-weight:normal'
-                            );
-
-                        winnerDiv.innerHTML = `
-        <span style="background:${rarityConfig[rarityIndex].color};-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;font-size:2.2rem;">
-            ${rarityConfig[rarityIndex].name}${isUP ? ' UP' : ''}
-        </span>
-        <span style="font-size:3rem;font-weight:bold;color:${tipColor};text-shadow:0 0 10px ${tipColor};">
-            ${bigIconName}
-        </span>
-        <br>
-        <span style="font-size:1.5rem;color:${tipColor};font-weight:bold;">🎉恭喜🎉</span>
-        `;
-
-                        // 添加历史记录
-                        addHistoryRecord(winnerName, rarityIndex, isUP);
-
-                        winnerDiv.style.display = 'block';
                         isRolling = false;
                         lotteryBtn.disabled = false;
                         isTenPullMode = false;
@@ -1777,8 +1790,6 @@
                             isUP
                         };
                     }
-
-                    
 
                     // 历史记录相关功能
                     let currentSlide = 0;
