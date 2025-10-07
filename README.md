@@ -80,7 +80,7 @@ HTML5 + CSS3 + JavaScript
 
 一言([hitokoto.cn](https://hitokoto.cn/))
 
-次元API-举个栗子([t.alcy.cc](https://t.alcy.cc/pc))
+次元API-举个栗子([t.alcy.cc](https://t.alcy.cc/))
 
 **存储**:
 
