@@ -365,20 +365,21 @@
         }
 
         #lotteryBtn {
-            transition: all 0.3s ease;
+            width: 130px;
+            height: 60px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            background-image: url('https://fastcdn.mihoyo.com/content-v2/hk4e/159347/cbfdfee5c271ee8fa07a121b1809982f_4021873944712892023.jpg');
+            background-size: cover;
+            background-position: center;
+            transition: all 1s ease;
         }
 
         #lotteryBtn:hover {
-            background: #00aeff !important;
-            box-shadow: 0 4px 15px rgba(41, 182, 246, 0.4);
-        }
-
-        #lotteryBtn:disabled {
-            background: #b0bec5 !important;
-            color: #eee !important;
-            cursor: not-allowed;
-            box-shadow: none;
-            opacity: 0.7;
+            background: #007bff ;
         }
 
         /* 新增历史记录样式 */
@@ -943,8 +944,7 @@
                     <i class="fas fa-users"></i>
                     <h2>全体同学加油</h2>
                     <i class="fas fa-heart"></i>
-                    <button id="lotteryBtn"
-                        style="margin-left:20px;padding:8px 20px;font-size:1.1rem;border-radius:8px;background:#4fc3f7;color:#fff;border:none;cursor:pointer;">祈愿</button>
+                    <button id="lotteryBtn"></button>
                     <!-- 历史记录按钮 -->
                     <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
                 </div>
@@ -1356,7 +1356,7 @@
 
                     // 祈愿按钮文本显示祈愿次数
                     function updateLotteryBtnText() {
-                        lotteryBtn.innerText = `祈愿（累计${totalDraws}次）`;
+                        lotteryBtn.innerText = `祈愿`+'\n'+`（累计${totalDraws}次）`;
                     }
 
                     // 获取本周历史记录key
@@ -1451,8 +1451,7 @@
                             clearTimeout(longPressTimer);
                             longPressTimer = null;
                             // 重置按钮状态
-                            lotteryBtn.innerText = `祈愿（累计${totalDraws}次）`;
-                            lotteryBtn.style.background = '#4fc3f7';
+                            lotteryBtn.innerText = `祈愿`+'\n'+`（累计${totalDraws}次）`;
                             isTenPullMode = false;
                         }
                     });
@@ -1488,7 +1487,6 @@
                     function performSinglePull() {
                         if (isRolling) return;
                         isRolling = true;
-                        lotteryBtn.disabled = true;
 
                         // 直接抽取结果
                         const result = drawOne();
@@ -1502,10 +1500,8 @@
                         // 显示特效
                         showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
                             isRolling = false;
-                            lotteryBtn.disabled = false;
                             isTenPullMode = false;
                             updateLotteryBtnText();
-                            lotteryBtn.style.background = '#4fc3f7';
                         });
                     }
 
@@ -1513,7 +1509,6 @@
                     function performTenPull() {
                         if (isRolling) return;
                         isRolling = true;
-                        lotteryBtn.disabled = true;
 
                         // 一次性抽取10次结果
                         const results = [];
@@ -1686,10 +1681,8 @@
                     // 完成十连抽
                     function finishTenPull() {
                         isRolling = false;
-                        lotteryBtn.disabled = false;
                         isTenPullMode = false;
                         updateLotteryBtnText();
-                        lotteryBtn.style.background = '#4fc3f7';
                     }
 
                     // 抽卡核心逻辑
