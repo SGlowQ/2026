@@ -69,16 +69,21 @@ UP角色机制：50%概率获得当期UP角色
 ## 🛠 技术栈
 
 **前端**:
+
 HTML5 + CSS3 + JavaScript
 
 **字体图标**:
+
 自定义 Elements 字体
 
 **API**:
+
 一言([hitokoto.cn](https://hitokoto.cn/))
+
 次元API-举个栗子([t.alcy.cc](https://t.alcy.cc/pc))
 
 **存储**:
+
 浏览器本地存储
 
 ## 📁 文件结构
@@ -117,6 +122,7 @@ HTML5 + CSS3 + JavaScript
 
 
 ## 🙏 致谢
+
 感谢 [一言](https://hitokoto.cn/) 提供励志语句API
 
 感谢[次元API-举个栗子](https://t.alcy.cc/) 提供的随机壁纸
