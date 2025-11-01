@@ -379,7 +379,7 @@
         }
 
         #lotteryBtn:hover {
-            background: #007bff ;
+            background: #007bff;
         }
 
         /* 新增历史记录样式 */
@@ -1123,7 +1123,17 @@
                     // 更新倒计时
                     function updateCountdown() {
                         const now = new Date().getTime();
-                        const distance = examDate - now;
+                        let distance = examDate - now;
+
+                        // 如果时间已到，全部归零
+                        if (distance <= 0) {
+                            document.getElementById('days').innerText = "0天";
+                            document.getElementById('hours').innerText = "00";
+                            document.getElementById('minutes').innerText = "00";
+                            document.getElementById('seconds').innerText = "00";
+                            document.getElementById('milliseconds').innerText = "000";
+                            return; // 不再递归调用
+                        }
 
                         // 计算天、时、分、秒、毫秒
                         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -1356,7 +1366,7 @@
 
                     // 祈愿按钮文本显示祈愿次数
                     function updateLotteryBtnText() {
-                        lotteryBtn.innerText = `祈愿`+'\n'+`（累计${totalDraws}次）`;
+                        lotteryBtn.innerText = `祈愿` + '\n' + `（累计${totalDraws}次）`;
                     }
 
                     // 获取本周历史记录key
@@ -1451,7 +1461,7 @@
                             clearTimeout(longPressTimer);
                             longPressTimer = null;
                             // 重置按钮状态
-                            lotteryBtn.innerText = `祈愿`+'\n'+`（累计${totalDraws}次）`;
+                            lotteryBtn.innerText = `祈愿` + '\n' + `（累计${totalDraws}次）`;
                             isTenPullMode = false;
                         }
                     });
