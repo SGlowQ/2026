@@ -22,6 +22,77 @@
         <source src="Genshin Impact Wish Roll 3.mp3" type="audio/mpeg"> <!-- 三星音频文件 -->
         您的浏览器不支持音频播放。
     </audio>
+    <!-- 开屏遮罩 -->
+    <div id="splash-mask" style="
+        position:fixed;
+        left:0;top:0;
+        width:100vw;height:100vh;
+        background:rgb(0, 0, 0);
+        color:#fff;
+        z-index:9999;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:2.2rem;
+        cursor:pointer;
+        flex-direction:column;
+        transition:opacity 0.5s;
+    ">
+        <div style="font-size:5rem;">🌟 2026高考倒计时 × 祈愿点名 🌟</div>
+        <div style="margin-top:2rem;font-size:1.2rem;">点击屏幕进入</div>
+    </div>
+    <!-- 视频容器，初始为空 -->
+    <div id="bg-video" style="
+    position:fixed;
+    left:0;top:0;
+    width:100vw;height:100vh;
+    z-index:-2;
+    background:#000;   
+    overflow:hidden;
+"></div>
+    <script>
+        const bvidList = [
+            "BV1CX4y1t7gA",/*骄傲的少年*/
+            // "BV1uw5Jz9EmK",/*晴天*/
+            // "BV1Zd4y1A7yc",/*妈妈的话*/
+            // "BV1ix411974d",/*稻香*/
+            // "BV1Bv411E7uY",/*侧脸*/
+            // "BV1ESYBzuEUh",/*潮汐*/
+            // "BV1hW411v7GC",/*等你下课*/
+            // "BV1aV4y1Y7Yb",/*第57次取消发送*/
+            // "BV1A7411K7bB",/*冬眠*/
+            // "BV1XJ4m1W7Ch",/*多谢你担心*/
+            // "BV1f5411F7Yv",/*堕*/
+            // "BV19T411k7Tw",/*浮光*/
+            // "BV1E7411k7Qy",/*溯*/
+            // "BV1U24y1y7XG",/*龙卷风*/
+            // "BV1UY4y1Y7LR",/*明天，你好*/
+            // "BV1u8yKYXEkj",/*罗生门*/
+            // "BV1echreGEFM",/*暮色回响*/
+            // "BV1h5411F7sK",/*你从未离去*/
+        ];
+
+        // 随机选一个 bvid
+        const randomBvid = bvidList[Math.floor(Math.random() * bvidList.length)];
+
+        // 用户点击后插入随机视频
+        document.getElementById('splash-mask').onclick = function () {
+            this.style.opacity = '0';
+            setTimeout(() => {
+                this.style.display = 'none';
+                document.getElementById('bg-video').innerHTML = `
+            <iframe 
+                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
+                frameborder="no"
+                scrolling="no"
+                allowfullscreen
+                allow="autoplay"
+                style="width:100vw;height:100vh;position:fixed;left:0;top:0;z-index:-2;pointer-events:none;filter:brightness(0.5);background:transparent;">
+            </iframe>
+        `;
+            }, 500);
+        };
+    </script>
     <style>
         /* 样式保持不变，与原始代码相同 */
         ::-webkit-scrollbar {
@@ -80,29 +151,10 @@
         }
 
         body {
-            /* 设置背景图片 */
-            background-image: url('https://t.alcy.cc/pc');
-            /* 让背景图覆盖整个屏幕 */
-            background-size: cover;
-            /* 背景图居中 */
-            background-position: center center;
-            background-attachment: fixed;
             color: #fff;
             min-height: 100vh;
             overflow-x: hidden;
             position: relative;
-        }
-
-        /* 添加半透明覆盖层 */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-
         }
 
         .container {
