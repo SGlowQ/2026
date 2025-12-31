@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="采用标准倒计时格式 目标时间：2026年06月07日00:00:00">
+    <title>2026高考倒计时×祈愿点名</title>
+    <link rel="shortcut icon" href="resource/favicon.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="css/css.css">
+    <!-- 新增五星音频 -->
+    <audio id="fiveStarSound" preload="auto">
+        <source src="resource/Genshin Impact Wish Roll 5.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+    <!-- 新增四星音频 -->
+    <audio id="fourStarSound" preload="auto">
+        <source src="resource/Genshin Impact Wish Roll 4.mp3" type="audio/mpeg"> <!-- 四星音频文件 -->
+        您的浏览器不支持音频播放。
+    </audio>
+    <!-- 新增三星音频 -->
+    <audio id="threeStarSound" preload="auto">
+        <source src="resource/Genshin Impact Wish Roll 3.mp3" type="audio/mpeg"> <!-- 三星音频文件 -->
+        您的浏览器不支持音频播放。
+    </audio>
+    <!-- 开屏遮罩 -->
+    <div id="splash-mask" style="
+        position:fixed;
+        left:0;top:0;
+        width:100vw;height:100vh;
+        background:rgb(0, 0, 0);
+        color:#fff;
+        z-index:9999;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        font-size:2.2rem;
+        cursor:pointer;
+        flex-direction:column;
+        transition:opacity 0.5s;
+    ">
+        <div style="font-size:2rem;">🌟 2026高考倒计时 × 祈愿点名 🌟</div>
+        <div style="margin-top:2rem;font-size:1.2rem;">点击屏幕进入</div>
+        <div style="margin-top:2rem;font-size:1.2rem;">注意设备音量大小</div>
+    </div>
+    <!-- 视频容器，初始为空 -->
+    <div id="bg-video" style="
+    position:fixed;
+    left:0;top:0;
+    width:100vw;height:100vh;
+    z-index:-2;
+    background:#000;   
+    overflow:hidden;
+"></div>
+</head>
+<script src="js/js.js" defer></script>
+<script src="js/video.js" defer></script>
+
+<body>
+    <!-- 五星祈中特效容器 -->
+    <div id="wishEffect" class="wish-effect">
+        <!-- 金光迸发效果 -->
+        <div class="golden-light"></div>
+        <!-- 角色名称展示 -->
+        <div class="character-name">
+            <span class="name-text"></span>
+            <div class="stars"></div>
+        </div>
+        <!-- 继续按钮 -->
+        <button class="wish-continue-btn">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <button id="fullscreen-btn" style="
+    position:fixed;
+    left:24px;
+    bottom:24px;
+    z-index:5;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    background:rgba(25,118,210,0.85);
+    color:#fff;
+    border:none;
+    box-shadow:0 4px 16px rgba(0,0,0,0.18);
+    font-size:2rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.3s;
+">
+        <i class="fas fa-expand"></i>
+    </button>
+
+    <!-- 杀死视频和声音按钮 -->
+    <button id="kill-video-btn" title="关闭视频和声音" style="position:fixed;left:90px;bottom:24px;z-index:5;width:56px;height:56px;border-radius:50%;background:rgba(25,118,210,0.85);color:#fff;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s;">
+        <i class="fas fa-pause"></i>
+    </button>
+    <div style="position:absolute; left:16px; top:16px; z-index:0;">
+        <img src="resource/favicon.png" style="width:120px; height:120px;cursor:none">
+        </a>
+    </div>
+    <div style="position:fixed; right:10px; top:10px; z-index:5;">
+        <a href="https://sglowq.github.io/2026/2026.png" target="_blank" title="点击查看二维码">
+            <img src="resource/2026.png" alt="二维码"
+                style="width:5rem; height:5rem; border-radius:10px;cursor:pointer;opacity:0.2">
+        </a>
+    </div>
+    <div class="container">
+        <header>
+            <h1>2026高考倒计时×祈愿点名</h1>
+        </header>
+        <div class="countdown-box" id="daysBox">
+            <div class="countdown-value" id="days">365天</div>
+        </div>
+        <div class="countdown-container">
+            <div class="countdown-box">
+                <div class="countdown-value" id="hours">24</div>
+                <div class="countdown-label">小时</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="minutes">60</div>
+                <div class="countdown-label">分钟</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="seconds">60</div>
+                <div class="countdown-label">秒</div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-value" id="milliseconds">999</div>
+                <div class="countdown-label">毫秒</div>
+            </div>
+        </div>
+
+        <div class="motivation-text">
+            <div id="hitokoto">加油哦</div>
+            <div id="from">『一言』正在加载中~</div>
+        </div>
+        <div class="motivation-container">
+            <div id="pityInfo" style="text-align:center; font-size:1rem; color:#bbdefb;">
+                必中五星: <span id="fiveStarPityCount">0</span>/90 |
+                必中四星: <span id="fourStarPityCount">0</span>/10
+                <div>五星必中本期UP状态: <span id="fiveStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
+                <div>四星必中本期UP状态: <span id="fourStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
+                <div class="motivation-header">
+                    <button class="announcement-btn" id="announcement-btn">
+                        问卷与简介
+                    </button>
+                    <i class="fas fa-users"></i>
+                    <h2>全体同学加油</h2>
+                    <i class="fas fa-heart"></i>
+                    <button id="lotteryBtn"></button>
+                    <!-- 历史记录按钮 -->
+                    <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
+                </div>
+            </div>
+            <div id="upInfo" style="text-align:center;margin-bottom:1.5rem;font-size:1.2rem;"></div>
+
+            <button id="toggleNamesBtn" style="display:block;margin:0 auto 1rem auto;padding:0.5em 1.5em;font-size:1rem;border:none;border-radius:1.5em;background:rgba(25,118,210,0.85);color:#fff;box-shadow:0 2px 8px #0002;cursor:pointer;">展开展示栏</button>
+            <div class="scrolling-names" id="scrollingNames" style="display:none;">
+                <!-- 名字将由JavaScript动态生成 -->
+            </div>
+            <!-- 删除下方的提示显示 -->
+        </div>
+
+        <footer>
+            <p>© 2026 星梦捕光 | 为2026届考生加油</p>
+            <p>每一天的努力，都在拉近与梦想的距离</p>
+        </footer>
+    </div>
+
+    <!-- 历史记录弹窗 -->
+    <div class="history-container" id="history-container">
+        <div class="history-content">
+            <button class="close-btn" id="close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="history-title">当周祈愿历史记录</h2>
+            <div class="history-slider">
+                <div class="history-slides" id="history-slides">
+                    <!-- 历史记录内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-btn" id="prev-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slider-btn" id="next-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="announcement-container" id="announcement-container">
+        <div class="announcement-content">
+            <button class="close-btn" id="announcement-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 class="announcement-title">本网页简介</h2>
+            <div class="announcement-scroll">
+                <div class="announcement-item">
+                    <h3><i class="fas fa-lightbulb"></i>问卷</h4>
+                        <a
+                            href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__jMrgodUMlc5UDVMWUxFRElIVFBQNlNMQVVQTU02VS4u">
+                            <button class="announcement-btn">点击进入问卷</button>
+                        </a>
+                </div>
+                <div class="announcement-item">
+                    <h3><i class="fas fa-clock"></i> 倒计时功能说明</h3>
+                    <p>本页面顶部显示的高考倒计时是针对2026年高考的设备标准倒计时，精确到毫秒级。</p>
+                    <ul>
+                        <li>倒计时目标日期：2026年06月07日00:00:00.000</li>
+                        <li>显示格式：天、时、分、秒、毫秒</li>
+                        <li>数据更新：每毫秒自动刷新</li>
+                    </ul>
+                </div>
+
+                <div class="announcement-item">
+                    <h3><i class="fas fa-quote-left"></i> 一言功能说明</h3>
+                    <p>页面中为励志语句</p>
+                    <ul>
+                        <li>数据来源：hitokoto.cn 提供的开放API</li>
+                        <li>更新频率：60秒/次</li>
+                        <li>内容类型：包含古今中外的名言警句、经典台词和文学语句</li>
+                    </ul>
+                </div>
+
+                <div class="announcement-item">
+                    <h3><i class="fa-brands fa-bilibili"></i> 背景视频说明</h3>
+                    <p>背景视频来自网络，每次刷新时随机选择一个视频。</p>
+                    <ul>
+                        <li>数据来源：bilibili提供的网页端视频</li>
+                        <li>更新频率：每次打开一个视频</li>
+                        <li>内容类型：包含中外的音乐，更新至61个视频</li>
+                    </ul>
+                </div>
+
+                <div class="announcement-item">
+                    <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
+                    <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。</p>
+                    <h2>概率分布</h2>
+                    <ul>
+                        <li><span class="five-star">五星</span>概率：0.6%</li>
+                        <li><span class="four-star">四星</span>概率：5.1%</li>
+                        <li><span class="three-star">三星</span>概率：94.3%</li>
+                    </ul>
+                    <h2>十连抽</h2>
+                    <ul>
+                        <li>长按祈愿按钮，可连续抽取10次</li>
+                        <li>十连抽中至少包含1个<span class="four-star">四星</span>或以上角色</li>
+                    </ul>
+                    <h2>保底机制</h2>
+                    <ul>
+                        <li><strong><span class="five-star">五星</span>保底</strong>：连续89次祈愿未出<span
+                                class="five-star">五星</span>时，第90次祈愿必出<span class="five-star">五星</span></li>
+                        <li><strong><span class="four-star">四星</span>保底</strong>：连续9次祈愿未出<span
+                                class="four-star">四星</span>时，第10次祈愿必出<span class="four-star">四星</span></li>
+                        <li><strong><span class="five-star">五星UP</span>机制（状态不清空）</strong>：当获得<span
+                                class="five-star">五星</span>时，有50%概率为当期UP角色；若未获得UP角色，则下一次<span
+                                class="five-star">五星</span>必定为UP角色</li>
+                        <li><strong><span class="four-star">四星UP</span>机制（状态不清空）</strong>：当获得<span
+                                class="four-star">四星</span>时，有50%概率为当期UP角色之一；若未获得UP角色，则下一次<span
+                                class="four-star">四星</span>必定为UP角色</li>
+                    </ul>
+
+                    <h2>UP角色规则</h2>
+                    <ul>
+                        <li>每次页面刷新会随机选择1名<span class="five-star">五星UP</span>角色和3名<span class="four-star">四星UP</span>角色
+                        </li>
+                        <li>UP角色从班级同学名单中随机取出。</li>
+                        <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
+                    </ul>
+
+                    <h2>其他规则</h2>
+                    <ul>
+                        <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
+                        <li>大保底状态（必出UP）会持续到获得UP角色为止</li>
+                        <li>每次祈愿会记录在祈愿历史记录中，可按日期查看</li>
+                        <li>注意：除了本期的<span class="four-star">四星UP</span>和<span
+                                class="five-star">五星UP</span>固定，其余的人都有可能重复成为普通的<span class="five-star">五星</span>、<span
+                                class="four-star">四星</span>以及<span class="three-star">三星</span></li>
+
+                    </ul>
+                </div>
+
+                <div class="announcement-item">
+                    <h3><i class="fas fa-scroll"></i> 名字滚动效果说明</h3>
+                    <ul>
+                        <li>名字列表：包含班级目前所有同学名字</li>
+                        <li>滚动方式：无限循环横向滚动</li>
+                        <li>名字顺序：每次次刷新后重新随机排列</li>
+                        <li>交互效果：悬停时名字会有上浮效果和特殊光效</li>
+                    </ul>
+                </div>
+
+                <div class="announcement-item">
+                    <h3><i class="fas fa-history"></i> 历史记录功能</h3>
+                    <p>祈愿历史记录功能允许查看当周的所有祈愿结果。</p>
+                    <ul>
+                        <li>查看方式：点击右侧历史记录按钮（回溯时钟图标）</li>
+                        <li>记录内容：包含祈中角色、稀有度和祈愿时间</li>
+                        <li>分组显示：每5条记录为一组，支持跳转</li>
+                        <li>数据存储：使用浏览器本地存储，仅保存当周记录。</li>
+
+                        <li>稀有度标识：<span class="five-star">五星</span>、<span class="four-star">四星</span>、<span
+                                class="three-star">三星</span></li>
+                        <li>注意：因为每次刷新页面后，名字的up和星级都会改变，可能有一个人的名字有不同的等级</li>
+                    </ul>
+                </div>
+</body>
+
+</html>
