@@ -26,7 +26,6 @@ const bvidList = [
             "BV1xu411j7Aw",/*Counting Stars*/
             "BV1x5Tcz7EHB",/*Crashing Hard*/
             "BV15vkFYMEdw",/*Cry For Me (feat. Ami)*/
-            "BV1V8ouYeEuR",/*DJ会呼吸的痛-0.9x纯享版*/
             "BV1km421G7rz",/*Down For Life (Phonk)*/
             "BV18381zqE3v",/*Ephemeral Memories*/
             "BV1cG4y117R9",/*Eutopia*/
@@ -42,7 +41,6 @@ const bvidList = [
             "BV1fT4y137yU",/*所念皆星河*/
             "BV1fu4y1s7kj",/*Last Reunion*/
             "BV1uLoKYjEEr",/*Lemon*/
-            "BV1RR4y1L76K",/*Let It Go*/
             "BV15Z4y1p7ML",/*Lifeline*/
             "BV1Bv4y1S7kC",/*Love Is Gone*/
             "BV1HB4y1q74L",/*【FREE】lucky*/
@@ -60,6 +58,7 @@ const bvidList = [
             "BV1De411p77r",/*少年*/
             "BV13v411V7Da",/*雾里*/
             "BV1qD421W7XN",/*我们*/
+	    "BV145QtYZEWx",/*yлетали птицами гордыми(纯音乐)*/
         ];
 
         // 随机选一个 bvid
