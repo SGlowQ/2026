@@ -903,7 +903,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         // 初始化一言
                         updateHitokoto();
-                        hitokotoInterval = setInterval(updateHitokoto, 20000);
+                        hitokotoInterval = setInterval(updateHitokoto, 60000);
 
                         // 页面卸载时清除定时器
                         window.addEventListener('unload', () => {
@@ -914,7 +914,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (document.hidden) {
                                 clearInterval(hitokotoInterval);
                             } else {
-                                hitokotoInterval = setInterval(updateHitokoto, 20000);
+                                hitokotoInterval = setInterval(updateHitokoto, 60000);
                             }
                         });
                     });
