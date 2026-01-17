@@ -42,7 +42,7 @@
     ">
         <div style="font-size:2rem;">🌟 2026高考倒计时 × 祈愿点名 🌟</div>
         <div style="margin-top:2rem;font-size:1.2rem;">点击屏幕进入</div>
-        <div style="margin-top:2rem;font-size:1.2rem;">注意设备音量大小</div>
+        <div style="margin-top:2rem;font-size:1.2rem;">🔊注意设备音量大小⚠️</div>
     </div>
     <!-- 视频容器，初始为空 -->
     <div id="bg-video" style="
@@ -95,7 +95,7 @@
     </button>
 
     <!-- 杀死视频和声音按钮 -->
-    <button id="kill-video-btn" title="关闭视频和声音" style="position:fixed;left:90px;bottom:24px;z-index:5;width:56px;height:56px;border-radius:50%;background:rgba(25,118,210,0.85);color:#fff;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s;">
+    <button id="kill-video-btn" title="关闭背景视频" style="position:fixed;left:90px;bottom:24px;z-index:5;width:56px;height:56px;border-radius:50%;background:rgba(25,118,210,0.85);color:#fff;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s;">
         <i class="fas fa-pause"></i>
     </button>
     <div style="position:absolute; left:16px; top:16px; z-index:0;">
@@ -223,7 +223,7 @@
                     <p>页面中为励志语句</p>
                     <ul>
                         <li>数据来源：hitokoto.cn 提供的开放API</li>
-                        <li>更新频率：60秒/次</li>
+                        <li>更新频率：60秒/次；当显示框超过屏幕不可见时停止更新计数，当重新可见立即重新加载</li>
                         <li>内容类型：包含古今中外的名言警句、经典台词和文学语句</li>
                     </ul>
                 </div>
