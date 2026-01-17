@@ -91,6 +91,7 @@ document.getElementById('kill-video-btn').onclick = function () {
         // 杀死视频
         bgVideo.innerHTML = '';
         this.innerHTML = '<i class="fas fa-play"></i>';
+        this.title = '重新加载背景视频';
         videoKilled = true;
     } else {
         // 重新插入随机视频
@@ -106,6 +107,7 @@ document.getElementById('kill-video-btn').onclick = function () {
             </iframe>
         `;
         this.innerHTML = '<i class="fas fa-pause"></i>';
+        this.title = '关闭背景视频';
         videoKilled = false;
     }
 };
