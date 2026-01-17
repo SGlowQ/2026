@@ -58,7 +58,7 @@ const bvidList = [
             "BV1De411p77r",/*少年*/
             "BV13v411V7Da",/*雾里*/
             "BV1qD421W7XN",/*我们*/
-	    "BV145QtYZEWx",/*yлетали птицами гордыми(纯音乐)*/
+	        "BV145QtYZEWx",/*yлетали птицами гордыми(纯音乐)*/
         ];
 
         // 随机选一个 bvid
@@ -82,10 +82,31 @@ const bvidList = [
             }, 500);
         };
 
-        // 杀死视频和声音按钮逻辑
-        document.getElementById('kill-video-btn').onclick = function () {
-            // 只清空视频容器，不影响音频
-            document.getElementById('bg-video').innerHTML = '';
-            // 隐藏按钮
-            this.style.display = 'none';
-        };
+
+let videoKilled = false; //记录当前视频状态
+
+document.getElementById('kill-video-btn').onclick = function () {
+    const bgVideo = document.getElementById('bg-video');
+    if (!videoKilled) {
+        // 杀死视频
+        bgVideo.innerHTML = '';
+        this.innerHTML = '<i class="fas fa-play"></i>';
+        videoKilled = true;
+    } else {
+        // 重新插入随机视频
+        const randomBvid = bvidList[Math.floor(Math.random() * bvidList.length)];
+        bgVideo.innerHTML = `
+            <iframe 
+                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
+                frameborder="no"
+                scrolling="no"
+                allowfullscreen
+                allow="autoplay"
+                style="width:100vw;height:100vh;position:fixed;left:0;top:0;z-index:-2;pointer-events:none;filter:brightness(0.5);background:transparent;">
+            </iframe>
+        `;
+        this.innerHTML = '<i class="fas fa-pause"></i>';
+        videoKilled = false;
+    }
+};
+
