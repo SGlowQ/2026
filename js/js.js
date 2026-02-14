@@ -1,20 +1,67 @@
-// 点名展示栏展开/收起逻辑
-document.addEventListener('DOMContentLoaded', function() {
-    var btn = document.getElementById('toggleNamesBtn');
-    var names = document.getElementById('scrollingNames');
-    if(btn && names) {
-        btn.onclick = function() {
-            if(names.style.display === 'none') {
-                names.style.display = '';
-                btn.textContent = '收起展示栏';
-            } else {
-                names.style.display = 'none';
-                btn.textContent = '展开展示栏';
-            }
-        };
-    }
-});
-// 禁止右键
+                    // ====== 网络时间同步逻辑开始 ======
+                    let timeOffset = 0; // 网络时间-本地时间（毫秒）
+                    let networkTimeReady = false;
+                    function getNetworkNow() {
+                        return Date.now() + timeOffset;
+                    }
+                    function getNetworkDate() {
+                        return new Date(getNetworkNow());
+                    }
+                    // 获取网络时间并计算偏移（使用RapidAPI）
+                    const xhr = new XMLHttpRequest();
+                    xhr.withCredentials = true;
+                    xhr.addEventListener('readystatechange', function () {
+                        if (this.readyState === this.DONE) {
+                            console.log('API返回内容:', this.responseText); // 调试用
+                            // 提取 datetime 或 utc_datetime 行
+                            let match = this.responseText.match(/^datetime:\s*(.+)$/m);
+                            if (!match) {
+                                match = this.responseText.match(/^utc_datetime:\s*(.+)$/m);
+                            }
+                            if (!match) {
+                                alert('API返回时间格式无法识别: ' + this.responseText);
+                                networkTimeReady = true;
+                                return;
+                            }
+                            const serverTimeStr = match[1].trim();
+                            const serverTime = new Date(serverTimeStr).getTime();
+                            if (isNaN(serverTime)) {
+                                alert('提取到的时间无法识别: ' + serverTimeStr);
+                                networkTimeReady = true;
+                                return;
+                            }
+                            timeOffset = serverTime - Date.now();
+                            networkTimeReady = true;
+                            // 初始化依赖时间的功能
+                            updateCountdown && updateCountdown();
+                            updateUPDisplay && updateUPDisplay();
+                            generateScrollingNames && generateScrollingNames();
+                            updatePityDisplay && updatePityDisplay();
+                            updateLotteryBtnText && updateLotteryBtnText();
+                        }
+                    });
+                    xhr.open('GET', 'https://world-time-api3.p.rapidapi.com/ip.txt');
+                    xhr.setRequestHeader('x-rapidapi-key', '321cc957b9msh51719babd0797e6p16a1d0jsn19a6f50ea3b0');
+                    xhr.setRequestHeader('x-rapidapi-host', 'world-time-api3.p.rapidapi.com');
+                    xhr.send();
+                    // ====== 网络时间同步逻辑结束 ======
+                    // 点名展示栏展开/收起逻辑
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var btn = document.getElementById('toggleNamesBtn');
+                        var names = document.getElementById('scrollingNames');
+                        if(btn && names) {
+                            btn.onclick = function() {
+                                if(names.style.display === 'none') {
+                                    names.style.display = '';
+                                    btn.textContent = '收起展示栏';
+                                } else {
+                                    names.style.display = 'none';
+                                    btn.textContent = '展开展示栏';
+                                }
+                            };
+                        }
+                    });
+                    // 禁止右键
                     document.addEventListener('contextmenu', function (event) {
                         event.preventDefault();
                     });
@@ -42,7 +89,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // 更新倒计时
                     function updateCountdown() {
-                        const now = new Date().getTime();
+                        if (!networkTimeReady) return; // 等待网络时间同步
+                        const now = getNetworkNow();
                         let distance = examDate - now;
 
                         // 如果时间已到，全部归零
@@ -238,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ];
 
                     // 获取当前是第几周
-                    function getWeekNumber(date = new Date()) {
+                    function getWeekNumber(date = getNetworkDate()) {
                         const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
                         const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
                         return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay()) / 7);
@@ -246,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // 获取本周key
                     function getWeekKey(key) {
-                        const today = new Date();
+                        const today = getNetworkDate();
                         const week = getWeekNumber(today);
                         return key + '_' + today.getFullYear() + '_W' + week;
                     }
@@ -291,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     // 获取本周历史记录key
                     function getHistoryKey() {
-                        const today = new Date();
+                        const today = getNetworkDate();
                         const week = getWeekNumber(today);
                         return 'gachaHistory_' + today.getFullYear() + '_W' + week;
                     }
@@ -301,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         const historyKey = getHistoryKey();
                         const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
 
-                        const now = new Date();
+                        const now = getNetworkDate();
                         const dateStr = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
                         const timeStr = now.toLocaleTimeString();
 
