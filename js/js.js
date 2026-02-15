@@ -19,15 +19,31 @@
                                 match = this.responseText.match(/^utc_datetime:\s*(.+)$/m);
                             }
                             if (!match) {
-                                alert('API返回时间格式无法识别: ' + this.responseText);
+                                alert('无法提取时间信息。已使用本地时间作为替代。');
+                                // 网络时间获取失败，fallback到本地时间
                                 networkTimeReady = true;
+                                timeOffset = 0;
+                                // 初始化依赖时间的功能
+                                updateCountdown && updateCountdown();
+                                updateUPDisplay && updateUPDisplay();
+                                generateScrollingNames && generateScrollingNames();
+                                updatePityDisplay && updatePityDisplay();
+                                updateLotteryBtnText && updateLotteryBtnText();
                                 return;
                             }
                             const serverTimeStr = match[1].trim();
                             const serverTime = new Date(serverTimeStr).getTime();
                             if (isNaN(serverTime)) {
-                                alert('提取到的时间无法识别: ' + serverTimeStr);
+                                alert('无法解析时间信息。已使用本地时间作为替代。');
+                                // 网络时间获取失败，fallback到本地时间
                                 networkTimeReady = true;
+                                timeOffset = 0;
+                                // 初始化依赖时间的功能
+                                updateCountdown && updateCountdown();
+                                updateUPDisplay && updateUPDisplay();
+                                generateScrollingNames && generateScrollingNames();
+                                updatePityDisplay && updatePityDisplay();
+                                updateLotteryBtnText && updateLotteryBtnText();
                                 return;
                             }
                             timeOffset = serverTime - Date.now();
@@ -649,6 +665,21 @@
                             goldenLight.style.opacity = '0';
                             characterName.classList.remove('revealed');
                             effectContainer.classList.remove('active');
+
+                            // 停止所有音效播放
+                            try {
+                                var audios = [
+                                    document.getElementById('fiveStarSound'),
+                                    document.getElementById('fourStarSound'),
+                                    document.getElementById('threeStarSound')
+                                ];
+                                audios.forEach(function(audio) {
+                                    if (audio) {
+                                        audio.pause();
+                                        audio.currentTime = 0;
+                                    }
+                                });
+                            } catch (e) {}
 
                             if (onClose) {
                                 onClose();
