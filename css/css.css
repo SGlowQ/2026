@@ -905,7 +905,7 @@ footer {
 /* 展开/收起按钮 */
 #toggleNamesBtn {
     display: block;
-    margin: 0 auto 1rem auto;
+    margin: 1rem auto 1rem auto;
     padding: 0.5em 1.5em;
     font-size: 1rem;
     border: none;
@@ -956,4 +956,5 @@ footer {
     filter: brightness(0.5);
     background: transparent;
     border: none;
+
 }
