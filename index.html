@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,50 +9,29 @@
     <link rel="shortcut icon" href="resource/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="css/css.css">
-    <!-- 新增五星音频 -->
+    <!-- 五星音频 -->
     <audio id="fiveStarSound" preload="auto">
         <source src="resource/Genshin Impact Wish Roll 5.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
-    <!-- 新增四星音频 -->
+    <!-- 四星音频 -->
     <audio id="fourStarSound" preload="auto">
-        <source src="resource/Genshin Impact Wish Roll 4.mp3" type="audio/mpeg"> <!-- 四星音频文件 -->
+        <source src="resource/Genshin Impact Wish Roll 4.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
-    <!-- 新增三星音频 -->
+    <!-- 三星音频 -->
     <audio id="threeStarSound" preload="auto">
-        <source src="resource/Genshin Impact Wish Roll 3.mp3" type="audio/mpeg"> <!-- 三星音频文件 -->
+        <source src="resource/Genshin Impact Wish Roll 3.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
     <!-- 开屏遮罩 -->
-    <div id="splash-mask" style="
-        position:fixed;
-        left:0;top:0;
-        width:100vw;height:100vh;
-        background:rgb(0, 0, 0);
-        color:#fff;
-        z-index:9999;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        font-size:2.2rem;
-        cursor:pointer;
-        flex-direction:column;
-        transition:opacity 0.5s;
-    ">
-        <div style="font-size:2rem;">🌟 2026高考日倒计时 × 祈愿点名 🌟</div>
-        <div style="margin-top:2rem;font-size:1.2rem;">点击屏幕进入</div>
-        <div style="margin-top:2rem;font-size:1.2rem;">🔊本页面会自动播放视频，注意设备音量大小⚠️</div>
+    <div id="splash-mask">
+        <div class="splash-title">🌟 2026高考日倒计时 × 祈愿点名 🌟</div>
+        <div class="splash-click">点击屏幕进入</div>
+        <div class="splash-warning">🔊本页面会自动播放视频，注意设备音量大小⚠️</div>
     </div>
-    <!-- 视频容器，初始为空 -->
-    <div id="bg-video" style="
-    position:fixed;
-    left:0;top:0;
-    width:100vw;height:100vh;
-    z-index:-2;
-    background:#000;   
-    overflow:hidden;
-"></div>
+    <!-- 视频容器 -->
+    <div id="bg-video"></div>
 </head>
 <script src="js/js.js" defer></script>
 <script src="js/video.js" defer></script>
@@ -59,54 +39,35 @@
 <body>
     <!-- 五星祈中特效容器 -->
     <div id="wishEffect" class="wish-effect">
-        <!-- 金光迸发效果 -->
         <div class="golden-light"></div>
-        <!-- 角色名称展示 -->
         <div class="character-name">
             <span class="name-text"></span>
             <div class="stars"></div>
         </div>
-        <!-- 继续按钮 -->
         <button class="wish-continue-btn">
             <i class="fas fa-times"></i>
         </button>
     </div>
-    <button id="fullscreen-btn" style="
-    position:fixed;
-    left:24px;
-    bottom:24px;
-    z-index:5;
-    width:56px;
-    height:56px;
-    border-radius:50%;
-    background:rgba(25,118,210,0.85);
-    color:#fff;
-    border:none;
-    box-shadow:0 4px 16px rgba(0,0,0,0.18);
-    font-size:2rem;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:background 0.3s;
-">
+
+    <button id="fullscreen-btn" class="floating-btn">
         <i class="fas fa-expand"></i>
     </button>
 
     <!-- 杀死视频和声音按钮 -->
-    <button id="kill-video-btn" title="关闭背景视频" style="position:fixed;left:90px;bottom:24px;z-index:5;width:56px;height:56px;border-radius:50%;background:rgba(25,118,210,0.85);color:#fff;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.18);font-size:2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s;">
+    <button id="kill-video-btn" class="floating-btn" title="关闭背景视频">
         <i class="fas fa-pause"></i>
     </button>
-    <div style="position:absolute; left:16px; top:16px; z-index:0;">
-        <img src="resource/favicon.png" style="width:120px; height:120px;cursor:none">
-        </a>
+
+    <div class="logo-wrapper">
+        <img src="resource/favicon.png" class="logo-img">
     </div>
-    <div style="position:fixed; right:10px; top:10px; z-index:5;">
+
+    <div class="qr-fixed">
         <a href="resource/2026.png" download="2026高考日倒计时×祈愿点名.png" title="点击下载二维码">
-            <img src="resource/2026.png" alt="二维码"
-                style="width:5rem; height:5rem; border-radius:10px;cursor:pointer;opacity:0.2">
+            <img src="resource/2026.png" alt="二维码" class="qr-img">
         </a>
     </div>
+
     <div class="container">
         <header>
             <h1>2026高考日倒计时×祈愿点名</h1>
@@ -138,30 +99,26 @@
             <div id="from">『一言』正在加载中~</div>
         </div>
         <div class="motivation-container">
-            <div id="pityInfo" style="display: none; text-align:center; font-size:1rem; color:#bbdefb;">
+            <div id="pityInfo">
                 必中五星: <span id="fiveStarPityCount">0</span>/90 |
                 必中四星: <span id="fourStarPityCount">0</span>/10
-                <div>五星必中本期UP状态: <span id="fiveStarGuarantee" style="color:#ffeb3b;">未激活</span></div>
-                <div>四星必中本期UP状态: <span id="fourStarGuarantee" style="color:#ffeb3b;">未激活</span></div>               
+                <div>五星必中本期UP状态: <span id="fiveStarGuarantee">未激活</span></div>
+                <div>四星必中本期UP状态: <span id="fourStarGuarantee">未激活</span></div>
             </div>
             <div class="motivation-header">
-                    <button class="announcement-btn" id="announcement-btn">
-                        问卷与简介
-                    </button>
-                    <i class="fas fa-users"></i>
-                    <h2>全体同学加油</h2>
-                    <i class="fas fa-heart"></i>
-                    <button id="lotteryBtn"></button>
-                    <!-- 历史记录按钮 -->
-                    <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
-                </div>
-            <div id="upInfo" style="text-align:center;margin-bottom:1.5rem;font-size:1.2rem;"></div>
+                <button class="announcement-btn" id="announcement-btn">问卷与简介</button>
+                <i class="fas fa-users"></i>
+                <h2>全体同学加油</h2>
+                <i class="fas fa-heart"></i>
+                <button id="lotteryBtn"></button>
+                <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
+            </div>
+            <div id="upInfo"></div>
 
-            <button id="toggleNamesBtn" style="display:block;margin:0 auto 1rem auto;padding:0.5em 1.5em;font-size:1rem;border:none;border-radius:1.5em;background:rgba(25,118,210,0.85);color:#fff;box-shadow:0 2px 8px #0002;cursor:pointer;">展开展示栏</button>
-            <div class="scrolling-names" id="scrollingNames" style="display:none;">
+            <button id="toggleNamesBtn">展开展示栏</button>
+            <div class="scrolling-names" id="scrollingNames">
                 <!-- 名字将由JavaScript动态生成 -->
             </div>
-            <!-- 删除下方的提示显示 -->
         </div>
 
         <footer>
@@ -216,7 +173,6 @@
                         <li>数据更新：每毫秒自动刷新</li>
                     </ul>
                 </div>
-
                 <div class="announcement-item">
                     <h3><i class="fas fa-quote-left"></i> 一言功能说明</h3>
                     <p>页面中为励志语句</p>
@@ -226,7 +182,6 @@
                         <li>内容类型：包含古今中外的名言警句、经典台词和文学语句</li>
                     </ul>
                 </div>
-
                 <div class="announcement-item">
                     <h3><i class="fa-brands fa-bilibili"></i> 背景视频说明</h3>
                     <p>背景视频来自网络，每次刷新时随机选择一个视频。</p>
@@ -236,7 +191,6 @@
                         <li>内容类型：包含中外的音乐，更新至239个视频</li>
                     </ul>
                 </div>
-
                 <div class="announcement-item">
                     <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
                     <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。（捕获明光机制未实现）</p>
@@ -264,7 +218,6 @@
                                 class="four-star">四星</span>时，有50%概率为当期UP角色之一；若未获得UP角色，则下一次<span
                                 class="four-star">四星</span>必定为UP角色</li>
                     </ul>
-
                     <h2>UP角色规则</h2>
                     <ul>
                         <li>每次页面刷新会随机选择1名<span class="five-star">五星UP</span>角色和3名<span class="four-star">四星UP</span>角色
@@ -272,7 +225,6 @@
                         <li>UP角色从班级同学名单中随机取出。</li>
                         <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
                     </ul>
-
                     <h2>其他规则</h2>
                     <ul>
                         <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
@@ -281,20 +233,17 @@
                         <li>注意：除了本期的<span class="four-star">四星UP</span>和<span
                                 class="five-star">五星UP</span>固定，其余的人都有可能重复成为普通的<span class="five-star">五星</span>、<span
                                 class="four-star">四星</span>以及<span class="three-star">三星</span></li>
-
                     </ul>
                 </div>
-
                 <div class="announcement-item">
                     <h3><i class="fas fa-scroll"></i> 名字滚动效果说明</h3>
                     <ul>
                         <li>名字列表：包含班级目前所有同学名字</li>
                         <li>滚动方式：无限循环横向滚动</li>
-                        <li>名字顺序：每次次刷新后重新随机排列</li>
+                        <li>名字顺序：每次刷新后重新随机排列</li>
                         <li>交互效果：悬停时名字会有上浮效果和特殊光效</li>
                     </ul>
                 </div>
-
                 <div class="announcement-item">
                     <h3><i class="fas fa-history"></i> 历史记录功能</h3>
                     <p>祈愿历史记录功能允许查看当周的所有祈愿结果。</p>
@@ -303,12 +252,14 @@
                         <li>记录内容：包含祈中角色、稀有度和祈愿时间</li>
                         <li>分组显示：每5条记录为一组，支持跳转</li>
                         <li>数据存储：使用浏览器本地存储，仅保存当周记录。</li>
-
                         <li>稀有度标识：<span class="five-star">五星</span>、<span class="four-star">四星</span>、<span
                                 class="three-star">三星</span></li>
                         <li>注意：因为每次刷新页面后，名字的up和星级都会改变，可能有一个人的名字有不同的等级</li>
                     </ul>
                 </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
