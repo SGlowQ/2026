@@ -249,18 +249,16 @@ document.getElementById('splash-mask').onclick = function () {
     setTimeout(() => {
         this.style.display = 'none';
         document.getElementById('bg-video').innerHTML = `
-                <iframe 
-                    src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
-                    frameborder="no"
-                    scrolling="no"
-                    allowfullscreen
-                    allow="autoplay"
-                    style="width:100vw;height:100vh;position:fixed;left:0;top:0;z-index:-2;pointer-events:none;filter:brightness(0.5);background:transparent;">
-                </iframe>
-                `;
+            <iframe class="video-iframe"
+                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
+                frameborder="no"
+                scrolling="no"
+                allowfullscreen
+                allow="autoplay">
+            </iframe>
+        `;
     }, 500);
 };
-
 
 let videoKilled = false; //记录当前视频状态
 
@@ -276,13 +274,12 @@ document.getElementById('kill-video-btn').onclick = function () {
         // 重新插入随机视频
         const randomBvid = bvidList[Math.floor(Math.random() * bvidList.length)];
         bgVideo.innerHTML = `
-            <iframe 
+            <iframe class="video-iframe"
                 src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
                 frameborder="no"
                 scrolling="no"
                 allowfullscreen
-                allow="autoplay"
-                style="width:100vw;height:100vh;position:fixed;left:0;top:0;z-index:-2;pointer-events:none;filter:brightness(0.5);background:transparent;">
+                allow="autoplay">
             </iframe>
         `;
         this.innerHTML = '<i class="fas fa-pause"></i>';
@@ -290,4 +287,3 @@ document.getElementById('kill-video-btn').onclick = function () {
         videoKilled = false;
     }
 };
-
