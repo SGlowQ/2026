@@ -76,7 +76,7 @@ const bvidList = [
     "BV17N411g7Ft",/*轻涟*/
     "BV1o54y1Y7oP",/*清空*/
     "BV1d4411N7zD",/*晴天*/
-    "BV1uWwCePEEv",/*群青*/
+    "BV118411w7Pa",/*群青*/
     "BV19o4y1T7vL",/*如果呢*/
     "BV1Y4411A7Q7",/*珊瑚海*/
     "BV1De411p77r",/*少年*/
@@ -193,7 +193,6 @@ const bvidList = [
     "BV1wx411H7GS",/*Nevada*/
     "BV1vh411T7F4",/*Nightlight*/
     "BV1kR4y1u7Hi",/*Normal No More*/
-    "BV1wa3YenEA7",/*O Come O Come Emmanuel*/
     "BV1Ai421a71N",/*One Step Ahead*/
     "BV13T421D7Wg",/*Patience*/
     "BV13W411p7Ts",/*PLANET*/
@@ -286,4 +285,5 @@ document.getElementById('kill-video-btn').onclick = function () {
         this.title = '关闭背景视频';
         videoKilled = false;
     }
+
 };
