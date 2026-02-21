@@ -58,19 +58,32 @@ const bvidList = [
             "BV1hA4m137N1",/*デート*/
             "BV12x4y1x7r9",/*かたわれ時*/
             "BV1eC4y1S7MT",/*やわらかな光*/
+    // 在末尾添加杜比合集的25个分P（请将BV1ab替换为实际BV号）
+    "BV1zy4y1b7Eu_p1", "BV1zy4y1b7Eu_p2", "BV1zy4y1b7Eu_p3", "BV1zy4y1b7Eu_p4", "BV1zy4y1b7Eu_p5",
+    "BV1zy4y1b7Eu_p6", "BV1zy4y1b7Eu_p7", "BV1zy4y1b7Eu_p8", "BV1zy4y1b7Eu_p9", "BV1zy4y1b7Eu_p10",
+    "BV1zy4y1b7Eu_p11", "BV1zy4y1b7Eu_p12", "BV1zy4y1b7Eu_p13", "BV1zy4y1b7Eu_p14", "BV1zy4y1b7Eu_p15",
+    "BV1zy4y1b7Eu_p16", "BV1zy4y1b7Eu_p17", "BV1zy4y1b7Eu_p18", "BV1zy4y1b7Eu_p19", "BV1zy4y1b7Eu_p20",
+    "BV1zy4y1b7Eu_p21", "BV1zy4y1b7Eu_p22", "BV1zy4y1b7Eu_p23", "BV1zy4y1b7Eu_p24", "BV1zy4y1b7Eu_p25"
 ];
 
-// 随机选一个 bvid
-const randomBvid = bvidList[Math.floor(Math.random() * bvidList.length)];
+// 随机选一个条目（可能是纯BV号或带_p的）
+const randomEntry = bvidList[Math.floor(Math.random() * bvidList.length)];
+let bvid = randomEntry;
+let page = 1;
+if (randomEntry.includes('_p')) {
+    const parts = randomEntry.split('_p');
+    bvid = parts[0];
+    page = parts[1];
+}
 
-// 用户点击后插入随机视频
+// 用户点击遮罩后插入随机视频
 document.getElementById('splash-mask').onclick = function () {
     this.style.opacity = '0';
     setTimeout(() => {
         this.style.display = 'none';
         document.getElementById('bg-video').innerHTML = `
             <iframe class="video-iframe"
-                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
+                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${bvid}&page=${page}&autoplay=1&as_wide=1&t=0&danmaku=0"
                 frameborder="no"
                 scrolling="no"
                 allowfullscreen
@@ -80,22 +93,29 @@ document.getElementById('splash-mask').onclick = function () {
     }, 500);
 };
 
-let videoKilled = false; //记录当前视频状态
+let videoKilled = false;
 
+// 杀死/重启视频按钮
 document.getElementById('kill-video-btn').onclick = function () {
     const bgVideo = document.getElementById('bg-video');
     if (!videoKilled) {
-        // 杀死视频
         bgVideo.innerHTML = '';
         this.innerHTML = '<i class="fas fa-play"></i>';
         this.title = '重新加载背景视频';
         videoKilled = true;
     } else {
-        // 重新插入随机视频
-        const randomBvid = bvidList[Math.floor(Math.random() * bvidList.length)];
+        // 重新随机选取一个视频
+        const newEntry = bvidList[Math.floor(Math.random() * bvidList.length)];
+        let newBvid = newEntry;
+        let newPage = 1;
+        if (newEntry.includes('_p')) {
+            const parts = newEntry.split('_p');
+            newBvid = parts[0];
+            newPage = parts[1];
+        }
         bgVideo.innerHTML = `
             <iframe class="video-iframe"
-                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${randomBvid}&autoplay=1&as_wide=1&t=0&danmaku=0"
+                src="https://www.bilibili.com/blackboard/html5mobileplayer.html?bvid=${newBvid}&page=${newPage}&autoplay=1&as_wide=1&t=0&danmaku=0"
                 frameborder="no"
                 scrolling="no"
                 allowfullscreen
@@ -106,6 +126,4 @@ document.getElementById('kill-video-btn').onclick = function () {
         this.title = '关闭背景视频';
         videoKilled = false;
     }
-
 };
-
