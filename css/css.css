@@ -134,7 +134,12 @@ h1 {
 
 #daysBox .countdown-value {
     font-size: 10rem;
-    opacity: 0.5;
+    opacity: 0.5;   
+    background: none !important;               /* 移除渐变背景 */
+    -webkit-background-clip: unset !important; /* 重置背景裁剪 */
+    background-clip: unset !important;
+    color: red !important;                      /* 设置纯红色 */
+    -webkit-text-fill-color: red !important;    /* 覆盖渐变文字颜色 */
 }
 
 .motivation-container {

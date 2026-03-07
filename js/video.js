@@ -99,15 +99,27 @@ let videoKilled = false;
 document.getElementById('kill-video-btn').onclick = function () {
     const bgVideo = document.getElementById('bg-video');
     if (!videoKilled) {
+        // 杀死视频：清空iframe
         bgVideo.innerHTML = '';
+
+        // 设置必应壁纸为背景，并调暗
+        bgVideo.style.backgroundImage = "url('https://bing.img.run/uhd.php')";
+        bgVideo.style.backgroundSize = 'cover';
+        bgVideo.style.backgroundPosition = 'center';
+        bgVideo.style.backgroundRepeat = 'no-repeat';
+        bgVideo.style.filter = 'brightness(0.3)';  // ← 调暗至50%
+
         this.innerHTML = '<i class="fas fa-play"></i>';
         this.title = '重新加载背景视频';
         videoKilled = true;
     } else {
-        // 重新随机选取一个视频
+        // 重新加载视频：先清除背景图片和滤镜
+        bgVideo.style.backgroundImage = 'none';
+        bgVideo.style.filter = '';  // ← 移除滤镜
+
+        // 重新随机选取一个视频（原代码不变）
         const newEntry = bvidList[Math.floor(Math.random() * bvidList.length)];
-        let newBvid = newEntry;
-        let newPage = 1;
+        let newBvid = newEntry, newPage = 1;
         if (newEntry.includes('_p')) {
             const parts = newEntry.split('_p');
             newBvid = parts[0];

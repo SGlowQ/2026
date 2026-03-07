@@ -124,15 +124,14 @@ function updateCountdown() {
     }
 
     // 计算天、时、分、秒、毫秒
-    //const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const days = (distance / (1000 * 60 * 60 * 24)).toFixed(1);
+    const days = (Math.floor(distance / (1000 * 60 * 60 * 24) * 10) / 10).toFixed(1);
     const hours = Math.floor(distance / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
     const milliseconds = Math.floor(distance % 1000);
 
     // 更新显示
-    document.getElementById('days').innerText = days + "天";
+    document.getElementById('days').innerText =  days + "天";
     document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
     document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
     document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
