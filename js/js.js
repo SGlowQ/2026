@@ -725,6 +725,9 @@ function showFiveStarEffect(name, rarityIndex, options = {}) {
         goldenLight.style.background = `radial-gradient(circle, rgba(255, 255, 255, 0) 0%, ${lightColor} 40%, ${lightColor} 70%)`;
         goldenLight.style.boxShadow = '0 0 30px rgba(255,255,255,0.3)';
     }
+
+    // 添加UP标记
+    const upMark = isUP ? '' : '';
     
     // 播放音效（根据稀有度播放不同的音效）
     let audioToPlay = null;
@@ -758,7 +761,7 @@ function showFiveStarEffect(name, rarityIndex, options = {}) {
     }
 
     // 设置名字显示，元素符号保持原色，只有文本部分应用特效
-    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}</span>`;
+    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}${upMark}</span>`;
 
     // 显示特效容器
     effectContainer.classList.add('active');
