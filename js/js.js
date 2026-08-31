@@ -456,7 +456,7 @@ function getHistoryKey() {
 }
 
 // 添加历史记录
-function addHistoryRecord(name, rarity, isUP) {
+function addHistoryRecord(name, rarity, isUP, triggeredCaptureLight = false) {
     const historyKey = getHistoryKey();
     const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
 
@@ -468,6 +468,7 @@ function addHistoryRecord(name, rarity, isUP) {
         name: name,
         rarity: rarity,
         isUP: isUP,
+        triggeredCaptureLight: triggeredCaptureLight,
         date: dateStr,
         time: timeStr
     };
@@ -581,16 +582,19 @@ function performSinglePull() {
     const result = drawOne();
 
     // 添加历史记录 - 这是修复的关键
-    addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP);
+    addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP, result.triggeredCaptureLight);
 
     // 高亮中奖名字
     highlightWinner(result.winnerName, result.rarityIndex);
 
     // 显示特效
-    showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
-        isRolling = false;
-        isTenPullMode = false;
-        updateLotteryBtnText();
+    showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, {
+        isCaptureLight: result.triggeredCaptureLight,
+        onClose: function () {
+            isRolling = false;
+            isTenPullMode = false;
+            updateLotteryBtnText();
+        }
     });
 }
 
@@ -607,7 +611,7 @@ function performTenPull() {
 
     // 立即记录所有历史记录
     results.forEach(result => {
-        addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP);
+        addHistoryRecord(result.winnerName, result.rarityIndex, result.isUP, result.triggeredCaptureLight);
     });
 
     // 依次显示十连抽结果，所有结果都用特效显示
@@ -625,9 +629,12 @@ function showTenPullResults(results) {
             const result = results[currentIndex];
 
             // 所有星级都用特效显示，只是颜色不同
-            showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, function () {
-                currentIndex++;
-                showNextResult();
+            showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, {
+                isCaptureLight: result.triggeredCaptureLight,
+                onClose: function () {
+                    currentIndex++;
+                    showNextResult();
+                }
             });
         } else {
             // 所有结果显示完毕后，统一高亮所有名字
@@ -673,15 +680,19 @@ function highlightAllTenPullResults(results) {
 }
 
 // 显示五星大特效 - 修正版本，支持所有星级
-function showFiveStarEffect(name, rarityIndex, isUP, onClose) {
+function showFiveStarEffect(name, rarityIndex, isUP, options = {}) {
+    const { onClose, isCaptureLight = false } = options;
     const effectContainer = document.getElementById('wishEffect');
     const goldenLight = effectContainer.querySelector('.golden-light');
     const characterName = effectContainer.querySelector('.character-name');
     const nameText = effectContainer.querySelector('.name-text');
     const starsElement = effectContainer.querySelector('.stars');
+    const continueBtn = effectContainer.querySelector('.wish-continue-btn');
+    const captureLockMs = 5000;
 
     // 移除所有星级类，只保留基础类
     nameText.className = 'name-text';
+    effectContainer.classList.remove('capture-light-mode');
 
     // 根据稀有度设置颜色和星星
     let color, stars, lightColor;
@@ -703,8 +714,17 @@ function showFiveStarEffect(name, rarityIndex, isUP, onClose) {
     starsElement.innerHTML = stars;
     starsElement.style.color = color;
 
-    // 设置金光颜色
-    goldenLight.style.background = `radial-gradient(circle, rgba(255, 255, 255, 0) 0%, ${lightColor} 40%, ${lightColor} 70%)`;
+    // 捕获明光使用紫金双光交织，其他特效保持单色光辉
+    if (isCaptureLight && rarityIndex === 0) {
+        effectContainer.classList.add('capture-light-mode');
+        goldenLight.style.background = `
+            radial-gradient(circle at center, rgba(255,255,255,0.9) 0%, rgba(255,215,0,0.8) 18%, rgba(162,89,255,0.75) 42%, rgba(255,215,0,0.4) 63%, rgba(162,89,255,0.12) 100%)
+        `;
+        goldenLight.style.boxShadow = '0 0 25px rgba(255,215,0,0.8), 0 0 60px rgba(162,89,255,0.8), 0 0 120px rgba(255,215,0,0.6)';
+    } else {
+        goldenLight.style.background = `radial-gradient(circle, rgba(255, 255, 255, 0) 0%, ${lightColor} 40%, ${lightColor} 70%)`;
+        goldenLight.style.boxShadow = '0 0 30px rgba(255,255,255,0.3)';
+    }
 
     // 添加UP标记
     const upMark = isUP ? ' UP!' : '';
@@ -753,7 +773,55 @@ function showFiveStarEffect(name, rarityIndex, isUP, onClose) {
     });
 
     // 重新绑定关闭事件
-    const continueBtn = effectContainer.querySelector('.wish-continue-btn');
+    continueBtn.disabled = isCaptureLight;
+    continueBtn.style.opacity = isCaptureLight ? '0' : '1';
+    continueBtn.style.cursor = isCaptureLight ? 'not-allowed' : 'pointer';
+    continueBtn.title = isCaptureLight ? '捕获明光动画锁定中，请等待 5 秒后再关闭' : '继续';
+
+    if (isCaptureLight) {
+        const unlockAt = Date.now() + captureLockMs;
+        continueBtn.onclick = function () {
+            if (Date.now() < unlockAt) {
+                return;
+            }
+            if (onClose) {
+                onClose();
+            }
+        };
+        setTimeout(() => {
+            continueBtn.disabled = false;
+            continueBtn.style.opacity = '1';
+            continueBtn.style.cursor = 'pointer';
+            continueBtn.title = '继续';
+            continueBtn.onclick = function () {
+                goldenLight.style.animation = 'none';
+                goldenLight.style.opacity = '0';
+                characterName.classList.remove('revealed');
+                effectContainer.classList.remove('active');
+
+                // 停止所有音效播放
+                try {
+                    var audios = [
+                        document.getElementById('fiveStarSound'),
+                        document.getElementById('fourStarSound'),
+                        document.getElementById('threeStarSound')
+                    ];
+                    audios.forEach(function (audio) {
+                        if (audio) {
+                            audio.pause();
+                            audio.currentTime = 0;
+                        }
+                    });
+                } catch (e) { }
+
+                if (onClose) {
+                    onClose();
+                }
+            };
+        }, captureLockMs);
+        return;
+    }
+
     continueBtn.onclick = function () {
         goldenLight.style.animation = 'none';
         goldenLight.style.opacity = '0';
@@ -845,31 +913,36 @@ function drawOne() {
 
     let winnerName = '';
     let isUP = false;
+    let triggeredCaptureLight = false;
 
     if (rarityIndex === 0) {
         const previousIsNonUp = lastFiveStarWasNonUp;
         const guaranteedUp = isGuaranteed5StarUP;
         const captureLightForced = isCaptureLightGuaranteed;
+        const independentCaptureLightChance = 0.00018;
 
+        // 机制 1：强制状态 / 保底状态，优先级最高
         if (guaranteedUp) {
             winnerName = fiveStarUP;
             isUP = true;
             isGuaranteed5StarUP = false;
         } else if (captureLightForced) {
+            // 机制 2：连续三次非 UP -> UP 之后，下一次五星必定为 UP
             winnerName = fiveStarUP;
             isUP = true;
+            triggeredCaptureLight = true;
             isCaptureLightGuaranteed = false;
         } else {
+            // 机制 3：独立的小概率捕获明光事件，和连续计数器分开计算
             const standardFiveStarUpChance = 0.5;
-            const captureLightChance = 0.00018;
 
             if (Math.random() < standardFiveStarUpChance) {
                 winnerName = fiveStarUP;
                 isUP = true;
-            } else if (Math.random() < captureLightChance) {
+            } else if (Math.random() < independentCaptureLightChance) {
                 winnerName = fiveStarUP;
                 isUP = true;
-                isCaptureLightGuaranteed = false;
+                triggeredCaptureLight = true;
             } else {
                 const candidates = students.filter(s => s !== fiveStarUP);
                 winnerName = candidates[Math.floor(Math.random() * candidates.length)];
@@ -878,7 +951,12 @@ function drawOne() {
             }
         }
 
-        if (previousIsNonUp && isUP) {
+        // 连续计数器只统计“上一发非 UP，且这一发是 UP”的连击链，不参与本次随机明光概率判定
+        if (captureLightForced) {
+            secondFiveStarUpStreak = 0;
+        } else if (!isUP) {
+            secondFiveStarUpStreak = 0;
+        } else if (previousIsNonUp) {
             secondFiveStarUpStreak += 1;
             if (secondFiveStarUpStreak >= 3) {
                 isCaptureLightGuaranteed = true;
@@ -940,7 +1018,8 @@ function drawOne() {
     return {
         winnerName,
         rarityIndex,
-        isUP
+        isUP,
+        triggeredCaptureLight
     };
 }
 
@@ -998,7 +1077,8 @@ function showHistory() {
 
             if (record.rarity === 0) {
                 raritySpan.classList.add('five-star');
-                raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '');
+                const captureTag = record.triggeredCaptureLight ? '——捕获明光' : '';
+                raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '') + captureTag;
                 nameSpan.style.color = '#FFD700';
             } else if (record.rarity === 1) {
                 raritySpan.classList.add('four-star');
@@ -1101,6 +1181,7 @@ function exportHistoryToExcel() {
             名称: plainName,
             星级: record.rarity === 0 ? '五星' : record.rarity === 1 ? '四星' : '三星',
             是否UP: record.isUP ? '是' : '否',
+            捕获明光是否触发: record.triggeredCaptureLight ? '是' : '否',
             日期: record.date || '',
             时间: record.time || ''
         };
@@ -1110,7 +1191,8 @@ function exportHistoryToExcel() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, sheet, '祈愿记录');
 
-    const fileName = `祈愿记录_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const exportDate = getNetworkDate();
+const fileName = `祈愿记录_${exportDate.getFullYear()}-${String(exportDate.getMonth() + 1).padStart(2, '0')}-${String(exportDate.getDate()).padStart(2, '0')}_${String(exportDate.getHours()).padStart(2, '0')}-${String(exportDate.getMinutes()).padStart(2, '0')}-${String(exportDate.getSeconds()).padStart(2, '0')}.xlsx`;
     XLSX.writeFile(workbook, fileName);
 }
 
