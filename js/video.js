@@ -103,7 +103,7 @@ document.getElementById('kill-video-btn').onclick = function () {
         bgVideo.innerHTML = '';
 
         // 设置必应壁纸为背景，并调暗
-        bgVideo.style.backgroundImage = "url('https://bing.img.run/uhd.php')";
+        bgVideo.style.backgroundImage = "url('https://uapis.cn/api/v1/image/bing-daily')";
         bgVideo.style.backgroundSize = 'cover';
         bgVideo.style.backgroundPosition = 'center';
         bgVideo.style.backgroundRepeat = 'no-repeat';

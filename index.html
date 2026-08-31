@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="采用标准倒计时格式 目标时间：2026年06月07日00:00:00">
-    <title>2026高考日倒计时×祈愿点名</title>
+    <title>倒计时×祈愿点名</title>
     <link rel="shortcut icon" href="resource/favicon.ico">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
     <link rel="stylesheet" href="css/css.css">
     <!-- 五星音频 -->
     <audio id="fiveStarSound" preload="auto">
@@ -26,14 +26,16 @@
     </audio>
     <!-- 开屏遮罩 -->
     <div id="splash-mask">
-        <div class="splash-title">🌟 2026高考日倒计时 × 祈愿点名 🌟</div>
+        <div class="splash-title">🌟倒计时 × 祈愿点名 🌟</div>
         <div class="splash-click">点击屏幕进入</div>
         <div class="splash-warning">🔊本页面会自动播放视频，注意设备音量大小⚠️</div>
+        <div class="splash-tip">请在PC端浏览器中打开，避免在移动设备上使用</div>
     </div>
     <!-- 视频容器 -->
     <div id="bg-video"></div>
 </head>
-<script src="js/js.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="js/js.js" defer></script>
 <script src="js/video.js" defer></script>
 
 <body>
@@ -63,14 +65,14 @@
     </div>
 
     <div class="qr-fixed">
-        <a href="resource/2026.png" download="2026高考日倒计时×祈愿点名.png" title="点击下载二维码">
+        <a href="resource/2026.png" download="自定义倒计时×祈愿点名.png" title="点击下载二维码">
             <img src="resource/2026.png" alt="二维码" class="qr-img">
         </a>
     </div>
 
     <div class="container">
         <header>
-            <h1>2026高考日倒计时×祈愿点名</h1>
+            <h1>自定义倒计时×祈愿点名</h1>
         </header>
         <div class="countdown-box" id="daysBox">
             <div class="countdown-value" id="days">365天</div>
@@ -104,25 +106,32 @@
                 必中四星: <span id="fourStarPityCount">0</span>/10
                 <div>五星必中本期UP状态: <span id="fiveStarGuarantee">未激活</span></div>
                 <div>四星必中本期UP状态: <span id="fourStarGuarantee">未激活</span></div>
+                <div>捕获明光状态: <span id="captureLightStatus">未激活</span></div>
+                <div>上一发五星是否非UP: <span id="lastFiveStarStatus">未记录</span></div>
+                <div>连续第二次五星彩UP计数: <span id="secondFiveStarUpCounter">0</span></div>
             </div>
+            <button id="toggleDebugBtn" class="debug-toggle-btn" title="显示/隐藏抽卡状态">状态</button>
             <div class="motivation-header">
                 <button class="announcement-btn" id="announcement-btn">问卷与简介</button>
                 <i class="fas fa-users"></i>
-                <h2>全体同学加油</h2>
-                <i class="fas fa-heart"></i>
+                <h2>祈愿</h2>
                 <button id="lotteryBtn"></button>
                 <button class="history-btn" id="history-btn"><i class="fas fa-history"></i></button>
+                <button class="history-btn" id="export-btn" title="导出抽卡记录"><i class="fas fa-file-export"></i></button>
+                <button class="history-btn" id="settings-btn" title="自定义名单设置"><i class="fas fa-edit"></i></button>
             </div>
             <div id="upInfo"></div>
 
             <button id="toggleNamesBtn">展开展示栏</button>
-            <div class="scrolling-names" id="scrollingNames">
-                <!-- 名字将由JavaScript动态生成 -->
+            <div class="scrolling-names-wrapper">
+                <div class="scrolling-names" id="scrollingNames">
+                    <!-- 名字将由JavaScript动态生成 -->
+                </div>
             </div>
         </div>
 
         <footer>
-            <p>© 2026 星梦捕光 | 为2026届考生加油</p>
+            <p>© 2026 星梦捕光 | 自定义</p>
             <p>每一天的努力，都在拉近与梦想的距离</p>
         </footer>
     </div>
@@ -150,6 +159,30 @@
         </div>
     </div>
 
+    <div id="settings-modal" class="settings-modal" style="display:none;">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <h3>名单设置</h3>
+                <button id="settings-close-btn" class="settings-close-btn">×</button>
+            </div>
+            <div class="settings-mode-switch">
+                <button class="settings-mode-btn active" data-mode="edit">在线编辑</button>
+                <button class="settings-mode-btn" data-mode="import">导入 TXT</button>
+            </div>
+            <div id="settings-edit-panel" class="settings-panel-body">
+                <textarea id="custom-name-input" rows="10" placeholder="一行一个名字，空行会自动忽略&#10;例如：&#10;张三&#10;李四&#10;王五"></textarea>
+            </div>
+            <div id="settings-import-panel" class="settings-panel-body" style="display:none;">
+                <input type="file" id="name-file-input" accept=".txt,text/plain">
+                <div class="settings-tip">支持一人一行的 txt 文件，空白行会自动忽略。</div>
+            </div>
+            <div class="settings-actions">
+                <button id="apply-name-list" class="settings-primary-btn">应用名单</button>
+                <button id="reset-name-list" class="settings-secondary-btn">清空为模板</button>
+            </div>
+        </div>
+    </div>
+
     <div class="announcement-container" id="announcement-container">
         <div class="announcement-content">
             <button class="close-btn" id="announcement-close-btn">
@@ -166,12 +199,13 @@
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-clock"></i> 倒计时功能说明</h3>
-                    <p>本页面顶部显示的高考日倒计时是针对2026年高考的网络标准倒计时，精确到毫秒级。</p>
+                    <p>本页面顶部显示的自定义倒计时是针对特定日期的网络标准倒计时，精确到毫秒级。</p>
                     <ul>
-                        <li>倒计时目标日期：2026年06月07日00:00:00.000</li>
+                        <li>倒计目标日期：<span id="targetDate"></span> <span id="targetTime"></span></li>
                         <li>显示格式：天、时、分、秒、毫秒</li>
                         <li>数据更新：每毫秒自动刷新</li>
                     </ul>
+                    <button id="changeCountdownBtn" class="announcement-btn">修改倒计时</button>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-quote-left"></i> 一言功能说明</h3>
@@ -193,7 +227,7 @@
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
-                    <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。（捕获明光机制未实现）</p>
+                    <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。</p>
                     <h2>概率分布</h2>
                     <ul>
                         <li><span class="five-star">五星</span>概率：0.6%</li>
@@ -211,12 +245,13 @@
                                 class="five-star">五星</span>时，第90次祈愿必出<span class="five-star">五星</span></li>
                         <li><strong><span class="four-star">四星</span>保底</strong>：连续9次祈愿未出<span
                                 class="four-star">四星</span>时，第10次祈愿必出<span class="four-star">四星</span></li>
-                        <li><strong><span class="five-star">五星UP</span>机制（状态不清空）</strong>：当获得<span
+                        <li><strong><span class="five-star">五星UP</span>机制</strong>：当获得<span
                                 class="five-star">五星</span>时，有50%概率为当期UP角色；若未获得UP角色，则下一次<span
                                 class="five-star">五星</span>必定为UP角色</li>
-                        <li><strong><span class="four-star">四星UP</span>机制（状态不清空）</strong>：当获得<span
+                        <li><strong><span class="four-star">四星UP</span>机制</strong>：当获得<span
                                 class="four-star">四星</span>时，有50%概率为当期UP角色之一；若未获得UP角色，则下一次<span
                                 class="four-star">四星</span>必定为UP角色</li>
+                        <li><strong>捕获明光</strong>：在连续两次五星UP后，若前一发五星为非UP，下一次五星大概率仍为UP，并有极低概率触发“捕获明光”状态；触发后，下一次五星必为当期UP角色，且该状态会在命中后清空。</li>
                     </ul>
                     <h2>UP角色规则</h2>
                     <ul>
@@ -224,11 +259,13 @@
                         </li>
                         <li>UP角色从班级同学名单中随机取出。</li>
                         <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
+                        <li>当触发“捕获明光”后，五星UP不再按常规随机，而是强制命中当前当期UP角色。</li>
                     </ul>
                     <h2>其他规则</h2>
                     <ul>
                         <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
                         <li>大保底状态（必出UP）会持续到获得UP角色为止</li>
+                        <li>捕获明光状态会记录在抽卡状态中，并可在右上角“状态”中查看</li>
                         <li>每次祈愿会记录在祈愿历史记录中，可按日期查看</li>
                         <li>注意：除了本期的<span class="four-star">四星UP</span>和<span
                                 class="five-star">五星UP</span>固定，其余的人都有可能重复成为普通的<span class="five-star">五星</span>、<span
@@ -238,7 +275,7 @@
                 <div class="announcement-item">
                     <h3><i class="fas fa-scroll"></i> 名字滚动效果说明</h3>
                     <ul>
-                        <li>名字列表：包含班级目前所有同学名字</li>
+                        <li>名字列表：包含班级目前所有名字</li>
                         <li>滚动方式：无限循环横向滚动</li>
                         <li>名字顺序：每次刷新后重新随机排列</li>
                         <li>交互效果：悬停时名字会有上浮效果和特殊光效</li>

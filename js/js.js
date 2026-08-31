@@ -87,7 +87,40 @@ document.addEventListener('contextmenu', function (event) {
 });
 
 // 设置高考日期（2026年6月7日）
-const examDate = new Date('June 7, 2026 00:00:00').getTime();
+const DEFAULT_EXAM_DATE = new Date('June 7, 2026 00:00:00').getTime();
+const CUSTOM_EXAM_DATE_KEY = 'customExamDate';
+let examDate = Number(localStorage.getItem(CUSTOM_EXAM_DATE_KEY) || DEFAULT_EXAM_DATE);
+
+function updateTargetDateDisplay() {
+    const targetDateEl = document.getElementById('targetDate');
+    const targetTimeEl = document.getElementById('targetTime');
+    if (!targetDateEl || !targetTimeEl) return;
+
+    const date = new Date(examDate);
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mi = String(date.getMinutes()).padStart(2, '0');
+    const ss = String(date.getSeconds()).padStart(2, '0');
+
+    targetDateEl.textContent = `${yyyy}年${mm}月${dd}日`;
+    targetTimeEl.textContent = `${hh}:${mi}:${ss}`;
+}
+
+function setExamDateFromInput(newDateValue) {
+    const parsed = new Date(newDateValue);
+    if (Number.isNaN(parsed.getTime())) {
+        alert('时间格式不正确，请输入例如：2026-06-07 00:00:00');
+        return false;
+    }
+
+    examDate = parsed.getTime();
+    localStorage.setItem(CUSTOM_EXAM_DATE_KEY, String(examDate));
+    updateTargetDateDisplay();
+    updateCountdown();
+    return true;
+}
 
 // 全屏功能
 const fullscreenBtn = document.getElementById('fullscreen-btn');
@@ -226,8 +259,8 @@ const elementMap = [
     { char: '\ue007', color: 'var(--geo)' }
 ];
 
-// 生成带随机元素图标的名字数组
-const students = [
+// 默认名单模板（用于未自定义时的兜底）
+const DEFAULT_STUDENT_NAMES = [
     "张永沛", "雷俊杰", "陈馨怡", "殷俊强", "郑奎", "李依婷", "王俊楠",
     "贺梦菲", "黄金婷", "兰雨檐", "肖涵", "陈慧丽", "崔雯", "马英宸",
     "阮方钰", "袁卓峰", "徐啟锐", "刘一凡", "李健", "韦南楠",
@@ -238,11 +271,38 @@ const students = [
     "樵世诚", "熊娅妮", "黄海棠", "程修均", "张维哲", "徐可欣",
     "张钰箐", "夏增婷", "吴昊昊", "周笠", "任鹏飞", "谢昌农",
     "程凯", "朱海英", "黄佳辉", "曹旖诺", "谢易航", "巩玉蓉"
-].map((name) => {
+];
+
+function decorateNameWithElement(name) {
+    const cleanName = String(name || '').trim();
+    if (!cleanName) return '';
     const randomIndex = Math.floor(Math.random() * elementMap.length);
     const el = elementMap[randomIndex];
-    return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${name}`;
-});
+    return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${cleanName}`;
+}
+
+function getCustomNamesFromStorage() {
+    try {
+        const raw = localStorage.getItem('customStudentNames');
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        return parsed.map(item => String(item).trim()).filter(Boolean);
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveCustomNamesToStorage(list) {
+    localStorage.setItem('customStudentNames', JSON.stringify(list.map(item => String(item).trim()).filter(Boolean)));
+}
+
+function getActiveStudentNames() {
+    const customNames = getCustomNamesFromStorage();
+    return customNames.length ? customNames : DEFAULT_STUDENT_NAMES;
+}
+
+let students = getActiveStudentNames().map(decorateNameWithElement).filter(Boolean);
 
 // 随机选UP角色
 function pickUPs(arr, count) {
@@ -288,6 +348,8 @@ const shuffledStudents = shuffleArray(students);
 
 function generateScrollingNames() {
     const container = document.getElementById('scrollingNames');
+    if (!container) return;
+
     container.innerHTML = '';
     const doubleList = [...shuffledStudents, ...shuffledStudents];
     doubleList.forEach(student => {
@@ -296,6 +358,12 @@ function generateScrollingNames() {
         nameElement.innerHTML = student;
         container.appendChild(nameElement);
     });
+
+    // 修正为“每个卡片约 1 秒”规律：名单越多，整体滚动时间越长，
+    // 不再出现“名字很多时速度突然变快、看不清”的问题。
+    const totalCards = doubleList.length;
+    const duration = Math.max(20, totalCards);
+    container.style.animation = `scroll ${duration}s linear infinite`;
 }
 
 // 稀有度配置
@@ -340,15 +408,38 @@ let fourStarPity = getPity('fourStarPity', 0);
 // 大保底状态变量
 let isGuaranteed5StarUP = localStorage.getItem('isGuaranteed5StarUP') === 'true';
 let isGuaranteed4StarUP = localStorage.getItem('isGuaranteed4StarUP') === 'true';
+let isCaptureLightGuaranteed = localStorage.getItem('isCaptureLightGuaranteed') === 'true';
+let lastFiveStarWasNonUp = localStorage.getItem('lastFiveStarWasNonUp') === 'true';
+let secondFiveStarUpStreak = parseInt(localStorage.getItem('secondFiveStarUpStreak') || '0', 10);
+
+function setBooleanStorage(key, value) {
+    localStorage.setItem(key, String(value));
+}
 
 // 更新保底信息显示
 function updatePityDisplay() {
+    const fiveStarGuaranteedActive = isGuaranteed5StarUP || isCaptureLightGuaranteed;
+    const captureLightElement = document.getElementById('captureLightStatus');
+    const lastFiveStarElement = document.getElementById('lastFiveStarStatus');
+    const secondFiveStarCounterElement = document.getElementById('secondFiveStarUpCounter');
+
     document.getElementById('fiveStarPityCount').innerHTML = fiveStarPity;
     document.getElementById('fourStarPityCount').innerHTML = fourStarPity;
-    document.getElementById('fiveStarGuarantee').innerHTML = isGuaranteed5StarUP ? "已激活" : "未激活";
+    document.getElementById('fiveStarGuarantee').innerHTML = fiveStarGuaranteedActive ? "已激活" : "未激活";
     document.getElementById('fourStarGuarantee').innerHTML = isGuaranteed4StarUP ? "已激活" : "未激活";
+    if (captureLightElement) {
+        captureLightElement.innerHTML = isCaptureLightGuaranteed ? "已激活" : "未激活";
+        captureLightElement.style.color = isCaptureLightGuaranteed ? "#00ff00" : "#ffeb3b";
+    }
+    if (lastFiveStarElement) {
+        lastFiveStarElement.innerHTML = lastFiveStarWasNonUp ? "是" : "否";
+        lastFiveStarElement.style.color = lastFiveStarWasNonUp ? "#ffeb3b" : "#bbdefb";
+    }
+    if (secondFiveStarCounterElement) {
+        secondFiveStarCounterElement.innerHTML = secondFiveStarUpStreak;
+    }
 
-    document.getElementById('fiveStarGuarantee').style.color = isGuaranteed5StarUP ? "#00ff00" : "#ffeb3b";
+    document.getElementById('fiveStarGuarantee').style.color = fiveStarGuaranteedActive ? "#00ff00" : "#ffeb3b";
     document.getElementById('fourStarGuarantee').style.color = isGuaranteed4StarUP ? "#00ff00" : "#ffeb3b";
 }
 
@@ -704,32 +795,33 @@ function drawOne() {
     fiveStarPity++;
     fourStarPity++;
 
-    // 五星阶梯概率表（74-90抽）
     function getFiveStarChance(pity) {
-        if (pity < 74) return 0.006; // 1-73抽基础概率 0.6%
+        if (pity < 74) return 0.006;
         const table = {
-            74: 0.0660,  // 6.60%
-            75: 0.1260,  // 12.60%
-            76: 0.1860,  // 18.60%
-            77: 0.2460,  // 24.60%
-            78: 0.3060,  // 30.60%
-            79: 0.3660,  // 36.60%
-            80: 0.4260,  // 42.60%
-            81: 0.4860,  // 48.60%
-            82: 0.5460,  // 54.60%
-            83: 0.6060,  // 60.60%
-            84: 0.6660,  // 66.60%
-            85: 0.7260,  // 72.60%
-            86: 0.7860,  // 78.60%
-            87: 0.8460,  // 84.60%
-            88: 0.9060,  // 90.60%
-            89: 0.9660,  // 96.60%
-            90: 1.0000   // 100%
+            74: 0.0660,
+            75: 0.1260,
+            76: 0.1860,
+            77: 0.2460,
+            78: 0.3060,
+            79: 0.3660,
+            80: 0.4260,
+            81: 0.4860,
+            82: 0.5460,
+            83: 0.6060,
+            84: 0.6660,
+            85: 0.7260,
+            86: 0.7860,
+            87: 0.8460,
+            88: 0.9060,
+            89: 0.9660,
+            90: 1.0000
         };
-        return table[pity] || 1.0; // 90抽以上（理论上不会）返回1.0
+        return table[pity] || 1.0;
     }
 
-    // 90抽硬保底
+    const fiveStarChance = getFiveStarChance(fiveStarPity);
+    const rand = Math.random();
+
     if (fiveStarPity >= 90) {
         rarityIndex = 0;
         fiveStarPity = 0;
@@ -737,42 +829,47 @@ function drawOne() {
     } else if (fourStarPity >= 10) {
         rarityIndex = 1;
         fourStarPity = 0;
-    } else {
-        // 动态获取五星概率
-        const fiveStarChance = getFiveStarChance(fiveStarPity);
-        const rand = Math.random();
-        if (rand < fiveStarChance) {
-            rarityIndex = 0;
-            fiveStarPity = 0;
-            fourStarPity = 0;
-        } else if (rand < fiveStarChance + rarityConfig[1].chance) {
-            rarityIndex = 1;
-            fourStarPity = 0;
-        }
+    } else if (rand < fiveStarChance) {
+        rarityIndex = 0;
+        fiveStarPity = 0;
+        fourStarPity = 0;
+    } else if (rand < fiveStarChance + rarityConfig[1].chance) {
+        rarityIndex = 1;
+        fourStarPity = 0;
     }
 
-    // 保存祈愿次数
     setPity('totalDraws', totalDraws);
     setPity('fiveStarPity', fiveStarPity);
     setPity('fourStarPity', fourStarPity);
-
     updateLotteryBtnText();
 
-    // 决定中奖人
     let winnerName = '';
     let isUP = false;
-    if (rarityIndex === 0) {
-        fiveStarPity = 0;
-        fourStarPity = 0;
 
-        if (isGuaranteed5StarUP) {
+    if (rarityIndex === 0) {
+        const previousIsNonUp = lastFiveStarWasNonUp;
+        const guaranteedUp = isGuaranteed5StarUP;
+        const captureLightForced = isCaptureLightGuaranteed;
+
+        if (guaranteedUp) {
             winnerName = fiveStarUP;
             isUP = true;
             isGuaranteed5StarUP = false;
+        } else if (captureLightForced) {
+            winnerName = fiveStarUP;
+            isUP = true;
+            isCaptureLightGuaranteed = false;
         } else {
-            if (Math.random() < 0.5) {
+            const standardFiveStarUpChance = 0.5;
+            const captureLightChance = 0.00018;
+
+            if (Math.random() < standardFiveStarUpChance) {
                 winnerName = fiveStarUP;
                 isUP = true;
+            } else if (Math.random() < captureLightChance) {
+                winnerName = fiveStarUP;
+                isUP = true;
+                isCaptureLightGuaranteed = false;
             } else {
                 const candidates = students.filter(s => s !== fiveStarUP);
                 winnerName = candidates[Math.floor(Math.random() * candidates.length)];
@@ -781,7 +878,28 @@ function drawOne() {
             }
         }
 
-        localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
+        if (previousIsNonUp && isUP) {
+            secondFiveStarUpStreak += 1;
+            if (secondFiveStarUpStreak >= 3) {
+                isCaptureLightGuaranteed = true;
+                secondFiveStarUpStreak = 0;
+            }
+        } else {
+            secondFiveStarUpStreak = 0;
+        }
+
+        if (!isUP) {
+            isGuaranteed5StarUP = true;
+        }
+
+        lastFiveStarWasNonUp = !isUP;
+        setBooleanStorage('isGuaranteed5StarUP', isGuaranteed5StarUP);
+        setBooleanStorage('isCaptureLightGuaranteed', isCaptureLightGuaranteed);
+        setBooleanStorage('lastFiveStarWasNonUp', lastFiveStarWasNonUp);
+        localStorage.setItem('secondFiveStarUpStreak', String(secondFiveStarUpStreak));
+        fiveStarPity = 0;
+        fourStarPity = 0;
+
     } else if (rarityIndex === 1) {
         fourStarPity = 0;
 
@@ -801,7 +919,8 @@ function drawOne() {
             }
         }
 
-        localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
+        setBooleanStorage('isGuaranteed4StarUP', isGuaranteed4StarUP);
+        localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP ? 'true' : 'false');
     } else {
         const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
         winnerName = candidates[Math.floor(Math.random() * candidates.length)];
@@ -809,12 +928,14 @@ function drawOne() {
 
     updatePityDisplay();
 
-    // 保存状态
     setPity('totalDraws', totalDraws);
     setPity('fiveStarPity', fiveStarPity);
     setPity('fourStarPity', fourStarPity);
-    localStorage.setItem('isGuaranteed5StarUP', isGuaranteed5StarUP);
-    localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP);
+    setBooleanStorage('isGuaranteed5StarUP', isGuaranteed5StarUP);
+    setBooleanStorage('isGuaranteed4StarUP', isGuaranteed4StarUP);
+    setBooleanStorage('isCaptureLightGuaranteed', isCaptureLightGuaranteed);
+    setBooleanStorage('lastFiveStarWasNonUp', lastFiveStarWasNonUp);
+    localStorage.setItem('secondFiveStarUpStreak', String(secondFiveStarUpStreak));
 
     return {
         winnerName,
@@ -960,8 +1081,42 @@ function goToSlide(index) {
     });
 }
 
+function exportHistoryToExcel() {
+    const historyKey = getHistoryKey();
+    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+
+    if (!history.length) {
+        alert('当前没有可导出的祈愿记录。');
+        return;
+    }
+
+    const rows = history.map((record, index) => {
+        const plainName = (record.name || '')
+            .replace(/<i[^>]*>.*?<\/i>/g, '')
+            .replace(/<[^>]+>/g, '')
+            .trim();
+
+        return {
+            序号: index + 1,
+            名称: plainName,
+            星级: record.rarity === 0 ? '五星' : record.rarity === 1 ? '四星' : '三星',
+            是否UP: record.isUP ? '是' : '否',
+            日期: record.date || '',
+            时间: record.time || ''
+        };
+    });
+
+    const sheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, sheet, '祈愿记录');
+
+    const fileName = `祈愿记录_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+}
+
 // 初始化历史记录功能
 document.getElementById('history-btn').addEventListener('click', showHistory);
+document.getElementById('export-btn').addEventListener('click', exportHistoryToExcel);
 document.getElementById('close-btn').addEventListener('click', function () {
     document.getElementById('history-container').style.display = 'none';
     goToSlide(0);
@@ -982,8 +1137,184 @@ document.getElementById('history-container').addEventListener('click', function 
     }
 });
 
+const toggleDebugBtn = document.getElementById('toggleDebugBtn');
+const pityInfo = document.getElementById('pityInfo');
+
+if (toggleDebugBtn && pityInfo) {
+    toggleDebugBtn.addEventListener('click', function () {
+        const isHidden = window.getComputedStyle(pityInfo).display === 'none';
+        pityInfo.style.display = isHidden ? 'block' : 'none';
+    });
+}
+
+document.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd') {
+        if (pityInfo) {
+            const isHidden = window.getComputedStyle(pityInfo).display === 'none';
+            pityInfo.style.display = isHidden ? 'block' : 'none';
+        }
+    }
+});
+
+function refreshStudentsFromCustomList() {
+    const activeNames = getActiveStudentNames();
+    students = activeNames.map(decorateNameWithElement).filter(Boolean);
+
+    if (!students.length) {
+        students = DEFAULT_STUDENT_NAMES.map(decorateNameWithElement).filter(Boolean);
+    }
+
+    const currentFiveStarUp = fiveStarUP;
+    const currentFourStarUps = fourStarUPs;
+    fiveStarUP = pickUPs(students, 1)[0];
+    fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
+
+    if (currentFiveStarUp && students.includes(currentFiveStarUp)) {
+        fiveStarUP = currentFiveStarUp;
+        fourStarUPs = currentFourStarUps.filter(s => s !== fiveStarUP && students.includes(s));
+        if (fourStarUPs.length < 3) {
+            fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
+        }
+    }
+
+    shuffledStudents = shuffleArray(students);
+    generateScrollingNames();
+    updateUPDisplay();
+}
+
+function openSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    const textarea = document.getElementById('custom-name-input');
+    if (modal && textarea) {
+        const current = getCustomNamesFromStorage();
+        textarea.value = current.length ? current.join('\n') : '';
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+    document.body.style.overflow = '';
+}
+
+function applyCustomNameList() {
+    const textarea = document.getElementById('custom-name-input');
+    if (!textarea) return;
+
+    const lines = textarea.value.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+    saveCustomNamesToStorage(lines);
+
+    if (!lines.length) {
+        localStorage.removeItem('customStudentNames');
+    }
+
+    closeSettingsModal();
+    window.location.reload();
+}
+
+function resetNameListTemplate() {
+    const textarea = document.getElementById('custom-name-input');
+    if (textarea) {
+        textarea.value = '';
+    }
+    localStorage.removeItem('customStudentNames');
+    closeSettingsModal();
+    window.location.reload();
+}
+
+function readTxtNames(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const text = event.target.result || '';
+        const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        const textarea = document.getElementById('custom-name-input');
+        if (textarea) {
+            textarea.value = lines.join('\n');
+        }
+        saveCustomNamesToStorage(lines);
+        closeSettingsModal();
+        window.location.reload();
+    };
+    reader.readAsText(file);
+}
+
+const settingsBtn = document.getElementById('settings-btn');
+const settingsCloseBtn = document.getElementById('settings-close-btn');
+const settingsApplyBtn = document.getElementById('apply-name-list');
+const settingsResetBtn = document.getElementById('reset-name-list');
+const settingsModeButtons = document.querySelectorAll('.settings-mode-btn');
+const settingsEditPanel = document.getElementById('settings-edit-panel');
+const settingsImportPanel = document.getElementById('settings-import-panel');
+const nameFileInput = document.getElementById('name-file-input');
+
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', openSettingsModal);
+}
+if (settingsCloseBtn) {
+    settingsCloseBtn.addEventListener('click', closeSettingsModal);
+}
+if (settingsApplyBtn) {
+    settingsApplyBtn.addEventListener('click', applyCustomNameList);
+}
+if (settingsResetBtn) {
+    settingsResetBtn.addEventListener('click', resetNameListTemplate);
+}
+
+const settingsModal = document.getElementById('settings-modal');
+if (settingsModal) {
+    settingsModal.addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeSettingsModal();
+        }
+    });
+}
+
+settingsModeButtons.forEach(button => {
+    button.addEventListener('click', function () {
+        const mode = this.dataset.mode;
+        settingsModeButtons.forEach(item => item.classList.toggle('active', item === this));
+        const showEdit = mode === 'edit';
+        settingsEditPanel.style.display = showEdit ? 'block' : 'none';
+        settingsImportPanel.style.display = showEdit ? 'none' : 'block';
+    });
+});
+
+if (nameFileInput) {
+    nameFileInput.addEventListener('change', function () {
+        const file = this.files && this.files[0];
+        if (file) {
+            readTxtNames(file);
+            this.value = '';
+        }
+    });
+}
+
 // 页面加载完成后的初始化
 document.addEventListener('DOMContentLoaded', function () {
+    updateTargetDateDisplay();
+
+    const changeCountdownBtn = document.getElementById('changeCountdownBtn');
+    if (changeCountdownBtn) {
+        changeCountdownBtn.addEventListener('click', function () {
+            const current = new Date(examDate);
+            const yyyy = current.getFullYear();
+            const mm = String(current.getMonth() + 1).padStart(2, '0');
+            const dd = String(current.getDate()).padStart(2, '0');
+            const hh = String(current.getHours()).padStart(2, '0');
+            const mi = String(current.getMinutes()).padStart(2, '0');
+            const ss = String(current.getSeconds()).padStart(2, '0');
+            const defaultText = `${yyyy}-${mm}-${dd} ${hh}:${mi}:${ss}`;
+            const input = prompt('请输入新的倒计时目标时间，例如：2026-06-07 00:00:00', defaultText);
+            if (input === null) return;
+            setExamDateFromInput(input);
+        });
+    }
+
     const hitokotoElement = document.querySelector('.motivation-text');
 
     const observer = new IntersectionObserver((entries) => {

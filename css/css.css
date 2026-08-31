@@ -150,7 +150,7 @@ h1 {
     padding: 2rem;
     margin: 4rem 0;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
+    overflow: visible;
     position: relative;
 }
 
@@ -183,13 +183,27 @@ h1 {
     transition: opacity 0.5s ease;
 }
 
+.scrolling-names-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    position: relative;
+    border-radius: 16px;
+    background: rgba(13, 34, 58, 0.28);
+    border: 1px solid rgba(144, 202, 249, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
 .scrolling-names {
     display: none;
     /* 默认隐藏，由JS控制显示为flex */
     animation: scroll 180s linear infinite;
     white-space: nowrap;
-    width: fit-content;
+    width: max-content;
+    min-width: 100%;
     will-change: transform;
+    transform: translateX(0);
+    align-items: center;
 }
 
 .name-item {
@@ -329,7 +343,7 @@ footer {
     color: white;
     border: none;
     cursor: pointer;
-    background-image: url('https://fastcdn.mihoyo.com/content-v2/hk4e/159347/cbfdfee5c271ee8fa07a121b1809982f_4021873944712892023.jpg');
+    background-image: url('https://fastcdn.mihoyo.com/content-v2/hk4e/159347/0ebacdac20e0a8590b8f04d2c5534975_7110704858273035347.jpg');
     background-size: cover;
     background-position: center;
     transition: all 1s ease;
@@ -829,6 +843,12 @@ footer {
     font-size: 1.2rem;
 }
 
+.splash-tip {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: #90caf9;
+}
+
 /* 视频容器 */
 #bg-video {
     position: fixed;
@@ -905,6 +925,178 @@ footer {
     text-align: center;
     font-size: 1rem;
     color: #bbdefb;
+    background: rgba(15, 23, 42, 0.75);
+    border: 1px solid rgba(120, 200, 255, 0.4);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 0 12px rgba(79, 195, 247, 0.12);
+}
+
+.debug-toggle-btn {
+    display: inline-block;
+    margin: 0 auto 12px auto;
+    padding: 0.45em 0.9em;
+    font-size: 0.8rem;
+    border: 1px solid rgba(144, 202, 249, 0.6);
+    border-radius: 999px;
+    background: rgba(21, 101, 192, 0.45);
+    color: #e3f2fd;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.debug-toggle-btn:hover {
+    background: rgba(21, 101, 192, 0.7);
+    transform: translateY(-1px);
+}
+
+.settings-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 5;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.settings-panel {
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    overflow: hidden;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    position: relative;
+    overflow: auto;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+    z-index: 5;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+.settings-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.settings-close-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.settings-mode-switch {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+.settings-mode-btn {
+    flex: 1;
+    border: 1px solid rgba(144, 202, 249, 0.5);
+    background: rgba(255, 255, 255, 0.05);
+    color: #dfefff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.settings-mode-btn.active {
+    background: rgba(76, 175, 80, 0.22);
+    border-color: rgba(76, 175, 80, 0.8);
+}
+
+.settings-panel-body {
+    padding: 0;
+}
+
+#custom-name-input {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 260px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(144, 202, 249, 0.5);
+    background: rgba(15, 23, 42, 0.8);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+#name-file-input {
+    width: 100%;
+    padding: 12px 10px;
+    border-radius: 10px;
+    border: 1px dashed rgba(144, 202, 249, 0.5);
+    background: rgba(15, 23, 42, 0.8);
+    color: #dfefff;
+}
+
+.settings-tip {
+    margin-top: 10px;
+    color: #bbdefb;
+    font-size: 0.85rem;
+    line-height: 1.6;
+}
+
+.settings-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 0 18px 18px;
+}
+
+.settings-primary-btn,
+.settings-secondary-btn {
+    padding: 0.7em 1.1em;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.92rem;
+}
+
+.settings-primary-btn {
+    background: linear-gradient(135deg, #4fc3f7, #29b6f6);
+    color: #06131d;
+    font-weight: 700;
+}
+
+.settings-secondary-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #eaf6ff;
+    border: 1px solid rgba(144, 202, 249, 0.35);
 }
 
 /* 展开/收起按钮 */
