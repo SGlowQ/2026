@@ -758,7 +758,7 @@ function showFiveStarEffect(name, rarityIndex, options = {}) {
     }
 
     // 设置名字显示，元素符号保持原色，只有文本部分应用特效
-    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}${upMark}</span>`;
+    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}</span>`;
 
     // 显示特效容器
     effectContainer.classList.add('active');
