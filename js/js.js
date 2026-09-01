@@ -410,7 +410,7 @@ let isGuaranteed5StarUP = localStorage.getItem('isGuaranteed5StarUP') === 'true'
 let isGuaranteed4StarUP = localStorage.getItem('isGuaranteed4StarUP') === 'true';
 let isCaptureLightGuaranteed = localStorage.getItem('isCaptureLightGuaranteed') === 'true';
 let lastFiveStarWasNonUp = localStorage.getItem('lastFiveStarWasNonUp') === 'true';
-let secondFiveStarUpStreak = parseInt(localStorage.getItem('secondFiveStarUpStreak') || '0', 10);
+let captureLightCounter = parseInt(localStorage.getItem('captureLightCounter') || '1', 10);
 
 function setBooleanStorage(key, value) {
     localStorage.setItem(key, String(value));
@@ -420,23 +420,20 @@ function setBooleanStorage(key, value) {
 function updatePityDisplay() {
     const fiveStarGuaranteedActive = isGuaranteed5StarUP || isCaptureLightGuaranteed;
     const captureLightElement = document.getElementById('captureLightStatus');
-    const lastFiveStarElement = document.getElementById('lastFiveStarStatus');
-    const secondFiveStarCounterElement = document.getElementById('secondFiveStarUpCounter');
+    const captureLightCounterElement = document.getElementById('captureLightCounter');
 
     document.getElementById('fiveStarPityCount').innerHTML = fiveStarPity;
     document.getElementById('fourStarPityCount').innerHTML = fourStarPity;
     document.getElementById('fiveStarGuarantee').innerHTML = fiveStarGuaranteedActive ? "已激活" : "未激活";
     document.getElementById('fourStarGuarantee').innerHTML = isGuaranteed4StarUP ? "已激活" : "未激活";
+
     if (captureLightElement) {
         captureLightElement.innerHTML = isCaptureLightGuaranteed ? "已激活" : "未激活";
         captureLightElement.style.color = isCaptureLightGuaranteed ? "#00ff00" : "#ffeb3b";
     }
-    if (lastFiveStarElement) {
-        lastFiveStarElement.innerHTML = lastFiveStarWasNonUp ? "是" : "否";
-        lastFiveStarElement.style.color = lastFiveStarWasNonUp ? "#ffeb3b" : "#bbdefb";
-    }
-    if (secondFiveStarCounterElement) {
-        secondFiveStarCounterElement.innerHTML = secondFiveStarUpStreak;
+
+    if (captureLightCounterElement) {
+        captureLightCounterElement.innerHTML = Number.isFinite(captureLightCounter) ? captureLightCounter : 1;
     }
 
     document.getElementById('fiveStarGuarantee').style.color = fiveStarGuaranteedActive ? "#00ff00" : "#ffeb3b";
@@ -588,7 +585,7 @@ function performSinglePull() {
     highlightWinner(result.winnerName, result.rarityIndex);
 
     // 显示特效
-    showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, {
+    showFullEffect(result.winnerName, result.rarityIndex, {
         isCaptureLight: result.triggeredCaptureLight,
         onClose: function () {
             isRolling = false;
@@ -629,7 +626,7 @@ function showTenPullResults(results) {
             const result = results[currentIndex];
 
             // 所有星级都用特效显示，只是颜色不同
-            showFiveStarEffect(result.winnerName, result.rarityIndex, result.isUP, {
+            showFullEffect(result.winnerName, result.rarityIndex, {
                 isCaptureLight: result.triggeredCaptureLight,
                 onClose: function () {
                     currentIndex++;
@@ -679,8 +676,8 @@ function highlightAllTenPullResults(results) {
     });
 }
 
-// 显示五星大特效 - 修正版本，支持所有星级
-function showFiveStarEffect(name, rarityIndex, isUP, options = {}) {
+// 显示全屏大特效 - 修正版本，支持所有星级
+function showFullEffect(name, rarityIndex, options = {}) {
     const { onClose, isCaptureLight = false } = options;
     const effectContainer = document.getElementById('wishEffect');
     const goldenLight = effectContainer.querySelector('.golden-light');
@@ -726,8 +723,6 @@ function showFiveStarEffect(name, rarityIndex, isUP, options = {}) {
         goldenLight.style.boxShadow = '0 0 30px rgba(255,255,255,0.3)';
     }
 
-    // 添加UP标记
-    const upMark = isUP ? ' UP!' : '';
     // 播放音效（根据稀有度播放不同的音效）
     let audioToPlay = null;
     if (rarityIndex === 0) {
@@ -760,7 +755,7 @@ function showFiveStarEffect(name, rarityIndex, isUP, options = {}) {
     }
 
     // 设置名字显示，元素符号保持原色，只有文本部分应用特效
-    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}${upMark}</span>`;
+    nameText.innerHTML = elementHTML + `<span class="${rarityIndex === 0 ? 'five-star-effect' : rarityIndex === 1 ? 'four-star-effect' : 'three-star-effect'}">${pureName}</span>`;
 
     // 显示特效容器
     effectContainer.classList.add('active');
@@ -916,10 +911,10 @@ function drawOne() {
     let triggeredCaptureLight = false;
 
     if (rarityIndex === 0) {
-        const previousIsNonUp = lastFiveStarWasNonUp;
+        const previousWasNonUp = lastFiveStarWasNonUp;
         const guaranteedUp = isGuaranteed5StarUP;
         const captureLightForced = isCaptureLightGuaranteed;
-        const independentCaptureLightChance = 0.00018;
+        const fullAlternatingCycleReady = captureLightCounter >= 3;
 
         // 机制 1：强制状态 / 保底状态，优先级最高
         if (guaranteedUp) {
@@ -927,22 +922,26 @@ function drawOne() {
             isUP = true;
             isGuaranteed5StarUP = false;
         } else if (captureLightForced) {
-            // 机制 2：连续三次非 UP -> UP 之后，下一次五星必定为 UP
+            // 机制 2：捕获明光计数器满足 3 后，下一次 UP 必定触发明光
             winnerName = fiveStarUP;
             isUP = true;
             triggeredCaptureLight = true;
             isCaptureLightGuaranteed = false;
+            captureLightCounter = 1;
+        } else if (fullAlternatingCycleReady) {
+            // 机制 3：计数器达到 3，下一次 UP 触发捕获明光，并恢复为默认 1
+            winnerName = fiveStarUP;
+            isUP = true;
+            triggeredCaptureLight = true;
+            isCaptureLightGuaranteed = false;
+            captureLightCounter = 1;
         } else {
-            // 机制 3：独立的小概率捕获明光事件，和连续计数器分开计算
+            // 普通五星随机逻辑
             const standardFiveStarUpChance = 0.5;
 
             if (Math.random() < standardFiveStarUpChance) {
                 winnerName = fiveStarUP;
                 isUP = true;
-            } else if (Math.random() < independentCaptureLightChance) {
-                winnerName = fiveStarUP;
-                isUP = true;
-                triggeredCaptureLight = true;
             } else {
                 const candidates = students.filter(s => s !== fiveStarUP);
                 winnerName = candidates[Math.floor(Math.random() * candidates.length)];
@@ -951,30 +950,35 @@ function drawOne() {
             }
         }
 
-        // 连续计数器只统计“上一发非 UP，且这一发是 UP”的连击链，不参与本次随机明光概率判定
-        if (captureLightForced) {
-            secondFiveStarUpStreak = 0;
-        } else if (!isUP) {
-            secondFiveStarUpStreak = 0;
-        } else if (previousIsNonUp) {
-            secondFiveStarUpStreak += 1;
-            if (secondFiveStarUpStreak >= 3) {
+        // 计数规则：
+        // 默认值 1
+        // 1) 当前发是 UP，上一发是非 UP：不动
+        // 2) 当前发是非 UP，上一发是 UP：+1
+        // 3) 当前发是 UP，上一发也是 UP：-1，最低为 0
+        // 4) 非 UP -> 非 UP 不属于你定义的“UP / 非 UP 交替循环”，因此不参与计数
+        // 5) 触发捕获明光后，计数器必须恢复为 1
+        if (isUP && previousWasNonUp) {
+            // UP -> 非 UP 的上一个状态，无变化
+            isGuaranteed5StarUP = false;
+        } else if (!isUP && !previousWasNonUp) {
+            // 非 UP -> UP，计数 +1
+            captureLightCounter += 1;
+            if (captureLightCounter >= 3) {
                 isCaptureLightGuaranteed = true;
-                secondFiveStarUpStreak = 0;
+                captureLightCounter = 1;
             }
-        } else {
-            secondFiveStarUpStreak = 0;
-        }
-
-        if (!isUP) {
             isGuaranteed5StarUP = true;
+        } else if (isUP && !previousWasNonUp) {
+            // UP -> UP，打断，计数 -1
+            captureLightCounter = Math.max(0, captureLightCounter - 1);
+            isGuaranteed5StarUP = false;
         }
 
         lastFiveStarWasNonUp = !isUP;
         setBooleanStorage('isGuaranteed5StarUP', isGuaranteed5StarUP);
         setBooleanStorage('isCaptureLightGuaranteed', isCaptureLightGuaranteed);
         setBooleanStorage('lastFiveStarWasNonUp', lastFiveStarWasNonUp);
-        localStorage.setItem('secondFiveStarUpStreak', String(secondFiveStarUpStreak));
+        localStorage.setItem('captureLightCounter', String(captureLightCounter));
         fiveStarPity = 0;
         fourStarPity = 0;
 
@@ -1013,7 +1017,7 @@ function drawOne() {
     setBooleanStorage('isGuaranteed4StarUP', isGuaranteed4StarUP);
     setBooleanStorage('isCaptureLightGuaranteed', isCaptureLightGuaranteed);
     setBooleanStorage('lastFiveStarWasNonUp', lastFiveStarWasNonUp);
-    localStorage.setItem('secondFiveStarUpStreak', String(secondFiveStarUpStreak));
+    localStorage.setItem('captureLightCounter', String(captureLightCounter));
 
     return {
         winnerName,
