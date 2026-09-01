@@ -81,6 +81,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+// 移动端横屏检测与提示
+function isMobileDevice() {
+    const userAgent = navigator.userAgent || '';
+    const mobilePattern = /(Android|iPhone|iPad|iPod|Mobile|Windows Phone)/i;
+    const coarsePointer = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    return mobilePattern.test(userAgent) || (coarsePointer && window.innerWidth <= 1024);
+}
+
+function isPortraitMode() {
+    return window.innerHeight >= window.innerWidth;
+}
+
+function updateMobileLandscapeTip() {
+    const tip = document.getElementById('mobile-landscape-tip');
+    if (!tip) return;
+
+    const shouldShow = isMobileDevice() && isPortraitMode();
+    tip.classList.toggle('show', shouldShow);
+}
+
+window.addEventListener('resize', updateMobileLandscapeTip);
+window.addEventListener('orientationchange', updateMobileLandscapeTip);
+document.addEventListener('DOMContentLoaded', updateMobileLandscapeTip);
+
 // 禁止右键
 document.addEventListener('contextmenu', function (event) {
     event.preventDefault();
