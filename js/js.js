@@ -680,7 +680,7 @@ function highlightAllTenPullResults(results) {
 }
 
 // 显示五星大特效 - 修正版本，支持所有星级
-function showFiveStarEffect(name, rarityIndex, options = {}) {
+function showFiveStarEffect(name, rarityIndex, isUP, options = {}) {
     const { onClose, isCaptureLight = false } = options;
     const effectContainer = document.getElementById('wishEffect');
     const goldenLight = effectContainer.querySelector('.golden-light');
@@ -727,8 +727,7 @@ function showFiveStarEffect(name, rarityIndex, options = {}) {
     }
 
     // 添加UP标记
-    const upMark = isUP ? '' : '';
-    
+    const upMark = isUP ? ' UP!' : '';
     // 播放音效（根据稀有度播放不同的音效）
     let audioToPlay = null;
     if (rarityIndex === 0) {
