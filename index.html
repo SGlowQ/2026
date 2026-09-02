@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="采用标准倒计时格式 默认目标时间：2026年06月07日00:00:00">
     <title>倒计时×祈愿点名</title>
     <link rel="shortcut icon" href="resource/favicon.ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
@@ -24,13 +23,6 @@
         <source src="resource/Genshin Impact Wish Roll 3.mp3" type="audio/mpeg">
         您的浏览器不支持音频播放。
     </audio>
-    <!-- 开屏遮罩 -->
-    <div id="splash-mask">
-        <div class="splash-title">🌟倒计时 × 祈愿点名 🌟</div>
-        <div class="splash-click">点击屏幕进入</div>
-        <div class="splash-warning">🔊本页面会自动播放视频，注意设备音量大小⚠️</div>
-        <div class="splash-tip">移动端请保持横屏浏览，PC端体验效果更佳</div>
-    </div>
     <div id="mobile-landscape-tip" class="mobile-landscape-tip" aria-live="polite">
         <div class="mobile-landscape-inner">
             <i class="fas fa-mobile-screen-button"></i>
@@ -38,12 +30,11 @@
             <p>当前页面在横屏模式下浏览效果更佳</p>
         </div>
     </div>
-    <!-- 视频容器 -->
-    <div id="bg-video"></div>
+    <!-- 壁纸容器 -->
+    <div id="bg-video" aria-hidden="true"></div>
 </head>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="js/js.js" defer></script>
-<script src="js/video.js" defer></script>
 
 <body>
     <!-- 全屏祈中特效容器 -->
@@ -60,11 +51,6 @@
 
     <button id="fullscreen-btn" class="floating-btn">
         <i class="fas fa-expand"></i>
-    </button>
-
-    <!-- 杀死视频和声音按钮 -->
-    <button id="kill-video-btn" class="floating-btn" title="关闭背景视频">
-        <i class="fas fa-pause"></i>
     </button>
 
     <div class="logo-wrapper">
@@ -165,7 +151,7 @@
         </div>
     </div>
 
-    <div id="settings-modal" class="settings-modal" style="display:none;">
+    <div id="settings-modal" class="settings-modal">
         <div class="settings-panel">
             <div class="settings-header">
                 <h3>名单设置</h3>
@@ -174,13 +160,17 @@
             <div class="settings-mode-switch">
                 <button class="settings-mode-btn active" data-mode="edit">在线编辑</button>
                 <button class="settings-mode-btn" data-mode="import">导入 TXT</button>
+                <button class="settings-mode-btn" data-mode="pool">角色池</button>
             </div>
             <div id="settings-edit-panel" class="settings-panel-body">
                 <textarea id="custom-name-input" rows="10" placeholder="一行一个名字，空行会自动忽略&#10;例如：&#10;张三&#10;李四&#10;王五"></textarea>
             </div>
-            <div id="settings-import-panel" class="settings-panel-body" style="display:none;">
+            <div id="settings-import-panel" class="settings-panel-body is-hidden">
                 <input type="file" id="name-file-input" accept=".txt,text/plain">
                 <div class="settings-tip">支持一人一行的 txt 文件，空白行会自动忽略。</div>
+            </div>
+            <div id="settings-pool-panel" class="settings-panel-body is-hidden">
+                <div id="role-pool-list" class="role-pool-list"></div>
             </div>
             <div class="settings-actions">
                 <button id="apply-name-list" class="settings-primary-btn">应用名单</button>
@@ -198,52 +188,49 @@
             <div class="announcement-scroll">
                 <div class="announcement-item">
                     <h3><i class="fas fa-lightbulb"></i>问卷</h3>
+                    <p>这里提供外部问卷入口，用于收集使用反馈或其他信息。点击按钮后会打开问卷页面，问卷内容与本网页的抽卡名单相互独立。</p>
                         <a
-                            href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__jMrgodUMlc5UDVMWUxFRElIVFBQNlNMQVVQTU02VS4u">
+                            href="https://forms.cloud.microsoft/r/dcdUvMc6Uk?origin=lprLink">
                             <button class="announcement-btn">点击进入问卷</button>
                         </a>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-clock"></i> 倒计时功能说明</h3>
-                    <p>本页面顶部显示的自定义倒计时是针对特定日期的网络标准倒计时，精确到毫秒级。</p>
+                    <p>页面顶部的倒计时用于显示距离目标日期还剩多少时间，依次显示天、小时、分钟、秒和毫秒。系统会优先使用网络时间，减少设备本地时间不准确造成的误差。</p>
                     <ul>
-                        <li>倒计目标日期：<span id="targetDate"></span> <span id="targetTime"></span></li>
-                        <li>显示格式：天、时、分、秒、毫秒</li>
-                        <li>数据更新：每毫秒自动刷新</li>
+                        <li>默认倒计时目标日期：<span id="targetDate"></span> <span id="targetTime"></span></li>
+                        <li>显示格式：天、时、分、秒、毫秒，页面会持续更新。</li>
+                        <li>修改方法：点击“修改倒计时”，输入新的日期和时间并确认。</li>
+                        <li>保存方式：修改后的目标时间保存在当前浏览器中，重新打开页面仍会沿用。</li>
+                        <li>备用方案：网络时间服务不可用时，页面会自动使用本地时间。</li>
                     </ul>
                     <button id="changeCountdownBtn" class="announcement-btn">修改倒计时</button>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-quote-left"></i> 一言功能说明</h3>
-                    <p>页面中为励志语句</p>
+                    <p>页面中部的文字区域会展示随机励志语句，为学习和日常使用提供简短的提醒。</p>
                     <ul>
-                        <li>数据来源：hitokoto.cn 提供的开放API</li>
-                        <li>更新频率：60秒/次；当显示框超过屏幕不可见时停止更新计数，当重新可见立即重新加载</li>
-                        <li>内容类型：包含古今中外的名言警句、经典台词和文学语句</li>
-                    </ul>
-                </div>
-                <div class="announcement-item">
-                    <h3><i class="fa-brands fa-bilibili"></i> 背景视频说明</h3>
-                    <p>背景视频来自网络，每次刷新时随机选择一个视频。</p>
-                    <ul>
-                        <li>数据来源：bilibili提供的网页端视频</li>
-                        <li>更新频率：每次打开一个视频直至播放完</li>
-                        <li>内容类型：包含中外的音乐，更新至84个视频</li>
+                        <li>数据来源：hitokoto.cn 提供的开放 API。</li>
+                        <li>更新频率：正常情况下约每 60 秒更新一次。</li>
+                        <li>节能处理：文字区域离开屏幕时会暂停请求，重新可见后恢复更新。</li>
+                        <li>内容类型：包含名言警句、经典台词和文学语句；请求失败时保留当前内容。</li>
                     </ul>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-dice"></i> 祈愿机制详细说明</h3>
-                    <p>本祈愿系统模拟了『原神』祈愿机制，包含保底机制和UP角色设定。</p>
-                    <h2>概率分布</h2>
+                    <p>本祈愿系统将班级名单模拟为一个角色池。每次页面刷新时，系统会重新整理名单、分配星级并随机选择本期 UP 角色；之后的抽卡会按照当前页面已经生成的角色池进行，直到页面刷新或重新应用名单。</p>
+                    <h2>星级判定</h2>
                     <ul>
-                        <li><span class="five-star">五星</span>概率：0.6%</li>
-                        <li><span class="four-star">四星</span>概率：5.1%</li>
-                        <li><span class="three-star">三星</span>概率：94.3%</li>
+                        <li>每次抽卡先判定本次结果属于<span class="five-star">五星</span>、<span class="four-star">四星</span>或<span class="three-star">三星</span>。</li>
+                        <li><span class="five-star">五星</span>基础概率为 0.6%，<span class="four-star">四星</span>基础概率为 5.1%，<span class="three-star">三星</span>基础概率为 94.3%。</li>
+                        <li>随着连续未抽到对应星级，保底计数会持续增加；一旦抽到对应星级，该星级的保底计数会重置。</li>
                     </ul>
-                    <h2>十连抽</h2>
+                    <h2>角色池分配</h2>
                     <ul>
-                        <li>长按祈愿按钮，可连续抽取10次</li>
-                        <li>十连抽中至少包含1个<span class="four-star">四星</span>或以上角色</li>
+                        <li>角色池人数按<span class="five-star">五星</span>:<span class="four-star">四星</span>:<span class="three-star">三星</span>约为 1:8:53 分配，系统会根据名单总人数尽量接近这个比例。</li>
+                        <li>为了保证角色池可用，名单达到要求时，<span class="five-star">五星</span>至少分配 1 人，<span class="four-star">四星</span>至少分配 3 人；<span class="three-star">三星</span>可以没有。</li>
+                        <li>自定义或导入名单至少需要 10 个非空名字，否则系统会提示并拒绝应用。</li>
+                        <li>角色池按钮可以查看当前页面中每个人所属的星级，UP 角色会排在对应星级分组的前面。</li>
                     </ul>
                     <h2>保底机制</h2>
                     <ul>
@@ -251,53 +238,71 @@
                                 class="five-star">五星</span>时，第90次祈愿必出<span class="five-star">五星</span></li>
                         <li><strong><span class="four-star">四星</span>保底</strong>：连续9次祈愿未出<span
                                 class="four-star">四星</span>时，第10次祈愿必出<span class="four-star">四星</span></li>
-                        <li><strong><span class="five-star">五星UP</span>机制</strong>：当获得<span
-                                class="five-star">五星</span>时，有50%概率为当期UP角色；若未获得UP角色，则下一次<span
-                                class="five-star">五星</span>必定为UP角色</li>
-                        <li><strong><span class="four-star">四星UP</span>机制</strong>：当获得<span
-                                class="four-star">四星</span>时，有50%概率为当期UP角色之一；若未获得UP角色，则下一次<span
-                                class="four-star">四星</span>必定为UP角色</li>
-                        <li><strong>捕获明光</strong>：在连续两次五星UP后，若前一发五星为非UP，下一次五星大概率仍为UP，并有极低概率触发“捕获明光”状态；触发后，下一次五星必为当期UP角色，且该状态会在命中后清空。</li>
+                        <li>五星保底计数和四星保底计数分别独立累计；抽到五星时会同时重置五星和四星保底计数。</li>
+                        <li>当前保底次数、累计抽卡次数和相关状态会显示在“状态”面板中，并按周保存在浏览器本地。</li>
                     </ul>
-                    <h2>UP角色规则</h2>
+                    <h2>UP 与捕获明光</h2>
                     <ul>
-                        <li>每次页面刷新会随机选择1名<span class="five-star">五星UP</span>角色和3名<span class="four-star">四星UP</span>角色
-                        </li>
-                        <li>UP角色从名单中随机取出。</li>
-                        <li>UP状态仅在当前页面有效，刷新页面后会重新随机分配。</li>
-                        <li>当触发“捕获明光”后，五星UP不再按常规随机，而是强制命中当前当期UP角色。</li>
+                        <li>每次页面刷新会从当前<span class="five-star">五星</span>池中随机选择 1 名<span class="five-star">五星 UP</span>，从<span class="four-star">四星</span>池中随机选择最多 3 名<span class="four-star">四星 UP</span>。</li>
+                        <li>抽到<span class="five-star">五星</span>或<span class="four-star">四星</span>时，会根据当期 UP 状态决定抽取 UP 角色或普通角色；普通角色仍从对应星级池中选择。</li>
+                        <li>如果没有抽到当期<span class="five-star">五星 UP</span>或<span class="four-star">四星 UP</span>，对应的大保底状态会被记录，下一次该星级结果会优先保证命中 UP。</li>
+                        <li>捕获明光状态属于五星 UP 的额外保底状态。触发后，下一次<span class="five-star">五星</span>会强制命中当前五星 UP，并在命中后清除。</li>
+                        <li>当前五星 UP、四星 UP 和角色池星级只在当前页面中有效；刷新页面或重新应用名单后会重新生成。</li>
                     </ul>
-                    <h2>其他规则</h2>
+                    <h2>抽取方式与记录</h2>
                     <ul>
-                        <li>祈愿次数和小保底计数每周重置（基于浏览器本地存储）</li>
-                        <li>大保底状态（必出UP）会持续到获得UP角色为止</li>
-                        <li>捕获明光状态会记录在抽卡状态中，并可在右上角“状态”中查看</li>
-                        <li>每次祈愿会记录在祈愿历史记录中，可按日期查看</li>
-                        <li>注意：除了本期的<span class="four-star">四星UP</span>和<span
-                                class="five-star">五星UP</span>固定，其余的人都有可能重复成为普通的<span class="five-star">五星</span>、<span
-                                class="four-star">四星</span>以及<span class="three-star">三星</span></li>
+                        <li>短按“祈愿”按钮进行单抽，长按约 0.5 秒进入十连抽模式。</li>
+                        <li>每次抽卡都会播放对应星级音效，并显示全屏结果动画。</li>
+                        <li>抽卡结果会记录到当周历史中，可查看、分页浏览并导出为 Excel。</li>
+                        <li>名单中的角色可以重复被抽到；角色池表示每个人当前对应的星级，不代表抽到后会从池中永久移除。</li>
+                    </ul>
+                </div>
+                <div class="announcement-item">
+                    <h3><i class="fas fa-sliders"></i> 页面控制说明</h3>
+                    <p>页面上的控制按钮集中在顶部和祈愿区域周围，常用操作不需要额外设置。</p>
+                    <ul>
+                        <li>全屏按钮：点击左下方的全屏图标进入或退出浏览器全屏模式，适合课堂展示或大屏使用。</li>
+                        <li>二维码：点击右侧二维码可以下载对应图片，方便分享页面入口。</li>
+                        <li>横屏提示：移动设备竖屏打开时会提示旋转设备，横屏后提示会自动消失。</li>
+                        <li>背景：页面会自动加载壁纸 API 作为背景，不会影响名单、抽卡和历史数据。</li>
+                        <li>状态面板：点击“状态”可以展开或收起抽卡状态，查看累计抽卡次数、五星和四星保底计数、UP 保底以及捕获明光状态。</li>
+                        <li>状态保存：抽卡次数、保底计数和相关保底状态会保存在当前浏览器，并按周区分。</li>
+                    </ul>
+                </div>
+                <div class="announcement-item">
+                    <h3><i class="fas fa-users-gear"></i> 名单设置教程</h3>
+                    <p>点击祈愿区域右侧的编辑按钮即可打开“名单设置”。名单中的每一行代表一个名字，空白行会自动忽略。</p>
+                    <ul>
+                        <li>在线编辑：在文本框中输入或修改名单，每行一个名字，然后点击“应用名单”。</li>
+                        <li>导入 TXT：切换到“导入 TXT”，选择一人一行的文本文件，系统会自动读取内容。</li>
+                        <li>人数限制：在线编辑或导入的名单至少需要 10 个非空名字，不足时会提示且不会保存。</li>
+                        <li>恢复模板：点击“清空为模板”会删除自定义名单，下一次加载时使用默认名单。</li>
+                        <li>生效方式：应用名单后页面会刷新，并根据新名单重新生成角色池和本期 UP。</li>
+                        <li>保存位置：名单只保存在当前浏览器的本地存储中，不会上传到服务器。</li>
                     </ul>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-scroll"></i> 名字滚动效果说明</h3>
+                    <p>展开名字展示栏可以查看当前名单。每张卡片会显示姓名、所属星级和彩色星级文字，方便快速识别角色池分组。</p>
                     <ul>
-                        <li>名字列表：包含班级目前所有名字</li>
-                        <li>滚动方式：无限循环横向滚动</li>
-                        <li>名字顺序：每次刷新后重新随机排列</li>
-                        <li>交互效果：悬停时名字会有上浮效果和特殊光效</li>
+                        <li>展开方法：点击“展开展示栏”；再次点击可收起展示栏。</li>
+                        <li>滚动方式：名单以横向无限循环方式滚动，列表会复制一份以保证循环连续。</li>
+                        <li>刷新规则：每次页面刷新会重新排列滚动顺序，但不会改变抽卡判定逻辑。</li>
+                        <li>交互效果：鼠标悬停时卡片会上浮；抽卡后中奖卡片会显示对应星级高亮。</li>
                     </ul>
                 </div>
                 <div class="announcement-item">
                     <h3><i class="fas fa-history"></i> 历史记录功能</h3>
-                    <p>祈愿历史记录功能允许查看当周的所有祈愿结果。</p>
+                    <p>历史记录会保存每次抽卡的结果，包含抽中的名字、星级、是否 UP、捕获明光状态、日期和时间，方便回顾本周抽卡情况。</p>
                     <ul>
-                        <li>查看方式：点击右侧历史记录按钮（回溯时钟图标）</li>
-                        <li>记录内容：包含祈中角色、稀有度和祈愿时间</li>
-                        <li>分组显示：每5条记录为一组，支持跳转</li>
-                        <li>数据存储：使用浏览器本地存储，仅保存当周记录。</li>
+                        <li>查看方式：点击祈愿区域右侧的历史记录按钮。</li>
+                        <li>分组显示：每 5 条记录为一页，可以使用上一页、下一页或输入页码跳转。</li>
+                        <li>星级颜色：五星使用金色，四星使用紫色，三星使用蓝色；UP 会在星级后标记。</li>
+                        <li>数据存储：使用浏览器本地存储，按照当前年份和周数区分记录。</li>
+                        <li>导出方式：点击文件导出按钮，可将当前周记录导出为 Excel 文件。</li>
+                        <li>注意事项：刷新页面会重新生成角色池，因此历史记录只代表当次抽卡发生时的星级和 UP 结果。</li>
                         <li>稀有度标识：<span class="five-star">五星</span>、<span class="four-star">四星</span>、<span
                                 class="three-star">三星</span></li>
-                        <li>注意：因为每次刷新页面后，名字的up和星级都会改变，可能有一个人的名字有不同的等级</li>
                     </ul>
                 </div>
             </div>

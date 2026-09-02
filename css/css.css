@@ -206,6 +206,10 @@ h1 {
     align-items: center;
 }
 
+.scrolling-names.is-visible {
+    display: flex;
+}
+
 .name-item {
     display: inline-flex;
     align-items: center;
@@ -225,13 +229,47 @@ h1 {
 }
 
 .name-item::after {
-    content: "加油!";
+    content: none;
+}
+
+.element-icon {
+    font-family: Elements;
+    font-size: 1.4rem;
+    margin-right: 6px;
+    font-style: normal;
+}
+
+.element-pyro { color: var(--pyro); }
+.element-hydro { color: var(--hydro); }
+.element-anemo { color: var(--anemo); }
+.element-electro { color: var(--electro); }
+.element-dendro { color: var(--dendro); }
+.element-cryo { color: var(--cryo); }
+.element-geo { color: var(--geo); }
+
+.effect-element-icon {
+    font-size: 3rem;
+    font-weight: normal;
+}
+
+.name-rarity {
     position: absolute;
     bottom: 5px;
     right: 10px;
     font-size: 0.9rem;
-    color: #00ff00;
     font-weight: 400;
+}
+
+.name-rarity.rarity-0 {
+    color: #ffd700;
+}
+
+.name-rarity.rarity-1 {
+    color: #c084fc;
+}
+
+.name-rarity.rarity-2 {
+    color: #38bdf8;
 }
 
 .name-item:hover {
@@ -252,6 +290,34 @@ h1 {
     border-radius: 12px;
 }
 
+.name-item.winner-rarity-0,
+.name-item.winner-rarity-1,
+.name-item.winner-rarity-2 {
+    color: var(--winner-text-color);
+    font-weight: bold;
+}
+
+.name-item.winner-rarity-0 {
+    --winner-text-color: #000;
+    background: linear-gradient(90deg, #ffd700, #ffa500);
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 32px 12px #ffd700;
+}
+
+.name-item.winner-rarity-1 {
+    --winner-text-color: #fff;
+    background: linear-gradient(90deg, #a259ff, #8f5aff);
+    border: 3px solid #a259ff;
+    box-shadow: 0 0 24px 8px #a259ff;
+}
+
+.name-item.winner-rarity-2 {
+    --winner-text-color: #fff;
+    background: linear-gradient(90deg, #00bfff, #1e90ff);
+    border: 3px solid #00bfff;
+    box-shadow: 0 0 16px 6px #00bfff;
+}
+
 .motivation-text {
     font-size: 1.8rem;
     text-align: center;
@@ -261,6 +327,10 @@ h1 {
     backdrop-filter: blur(5px);
     background: rgba(25, 118, 210, 0.2);
     border-radius: 16px;
+}
+
+#from {
+    font-size: 20px;
 }
 
 footer {
@@ -373,12 +443,11 @@ footer {
     background: rgba(255, 255, 255, 0.3);
 }
 
-.history-container {
+.history-container,
+.announcement-container,
+.settings-modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(0, 0, 0, 0.7);
     z-index: 5;
     display: none;
@@ -387,11 +456,17 @@ footer {
     backdrop-filter: blur(5px);
 }
 
-.history-content {
+.history-container.is-open,
+.announcement-container.is-open,
+.settings-modal.is-open {
+    display: flex;
+}
+
+.history-content,
+.settings-panel {
     width: 90%;
     max-width: 800px;
     max-height: 80vh;
-    overflow: hidden;
     padding: 30px;
     border-radius: 20px;
     background: rgba(0, 0, 0, 0.5);
@@ -406,7 +481,8 @@ footer {
     font-size: 2rem;
 }
 
-.close-btn {
+.close-btn,
+.settings-close-btn {
     position: absolute;
     top: 15px;
     right: 15px;
@@ -424,7 +500,8 @@ footer {
     transition: all 0.3s ease;
 }
 
-.close-btn:hover {
+.close-btn:hover,
+.settings-close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
@@ -579,20 +656,6 @@ footer {
 }
 
 /* 问卷与说明弹窗样式 */
-.announcement-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 5;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
-
 .announcement-content {
     width: 90%;
     max-width: 60rem;
@@ -825,42 +888,28 @@ footer {
     gap: 0.4rem;
 }
 
+.up-label,
+.up-name {
+    font-weight: bold;
+}
+
+.up-label-five,
+.up-name-five {
+    background: linear-gradient(90deg, #ffd700, #ffa500);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.up-label-four,
+.up-name-four {
+    background: linear-gradient(90deg, #a259ff, #8f5aff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 /* ========== 新增样式（迁移内联样式） ========== */
-
-/* 开屏遮罩 */
-#splash-mask {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgb(0, 0, 0);
-    color: #fff;
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.2rem;
-    cursor: pointer;
-    flex-direction: column;
-    transition: opacity 0.5s;
-}
-
-.splash-title {
-    font-size: 2rem;
-}
-
-.splash-click,
-.splash-warning {
-    margin-top: 2rem;
-    font-size: 1.2rem;
-}
-
-.splash-tip {
-    margin-top: 1rem;
-    font-size: 1rem;
-    color: #90caf9;
-}
 
 .mobile-landscape-tip {
     position: fixed;
@@ -914,8 +963,12 @@ footer {
     top: 0;
     width: 100vw;
     height: 100vh;
-    z-index: -2;
+    z-index: 0;
     background: #000;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: brightness(0.3);
     overflow: hidden;
 }
 
@@ -941,10 +994,6 @@ footer {
 
 #fullscreen-btn {
     left: 24px;
-}
-
-#kill-video-btn {
-    left: 90px;
 }
 
 /* Logo 区域 */
@@ -991,6 +1040,23 @@ footer {
     box-shadow: 0 0 12px rgba(79, 195, 247, 0.12);
 }
 
+#fiveStarGuarantee,
+#fourStarGuarantee,
+#captureLightStatus {
+    color: #ffeb3b;
+    font-weight: 700;
+}
+
+#fiveStarGuarantee.is-guaranteed,
+#fourStarGuarantee.is-guaranteed,
+#captureLightStatus.is-guaranteed {
+    color: #00ff00;
+}
+
+#pityInfo.is-visible {
+    display: block;
+}
+
 .debug-toggle-btn {
     display: inline-block;
     margin: 0 auto 12px auto;
@@ -1009,30 +1075,7 @@ footer {
     transform: translateY(-1px);
 }
 
-.settings-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 5;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
-
 .settings-panel {
-    width: 90%;
-    max-width: 800px;
-    max-height: 80vh;
-    overflow: hidden;
-    padding: 30px;
-    border-radius: 20px;
-    background: rgba(0, 0, 0, 0.5);
-    position: relative;
-    overflow: auto;
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
     z-index: 5;
 }
@@ -1050,28 +1093,6 @@ footer {
     margin: 0;
     font-size: 2rem;
     color: #ffffff;
-}
-
-.settings-close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.settings-close-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
 }
 
 .settings-mode-switch {
@@ -1095,8 +1116,77 @@ footer {
     border-color: rgba(76, 175, 80, 0.8);
 }
 
+.role-pool-list {
+    max-height: 48vh;
+    overflow-y: auto;
+}
+
+.role-pool-group {
+    margin-bottom: 16px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.72);
+}
+
+.role-pool-group h4 {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+}
+
+.role-pool-group h4 span {
+    color: #dfefff;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.role-pool-group h4 .role-pool-rarity {
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.role-pool-group h4 .role-pool-rarity.rarity-0 { color: #ffd700; }
+.role-pool-group h4 .role-pool-rarity.rarity-1 { color: #c084fc; }
+.role-pool-group h4 .role-pool-rarity.rarity-2 { color: #38bdf8; }
+
+.role-pool-names {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 8px;
+}
+
+.role-pool-names span {
+    padding: 8px 10px;
+    border: 1px solid rgba(144, 202, 249, 0.18);
+    border-radius: 8px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.06);
+    text-align: center;
+}
+
+.role-pool-up {
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+.role-pool-up-five {
+    color: #111827;
+    background: #ffd700;
+}
+
+.role-pool-up-four {
+    color: #fff;
+    background: #a259ff;
+}
+
 .settings-panel-body {
     padding: 0;
+}
+
+.is-hidden {
+    display: none;
 }
 
 #custom-name-input {
@@ -1199,17 +1289,3 @@ footer {
     cursor: pointer;
 }
 
-/* 背景视频 iframe 样式 */
-.video-iframe {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    z-index: -2;
-    pointer-events: none;
-    filter: brightness(0.5);
-    background: transparent;
-    border: none;
-
-}

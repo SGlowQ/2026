@@ -1,3 +1,13 @@
+const WALLPAPER_API = 'https://uapis.cn/api/v1/image/bing-daily';
+
+function applyWallpaper() {
+    const wallpaper = document.getElementById('bg-video');
+    if (!wallpaper) return;
+    wallpaper.style.backgroundImage = `url("${WALLPAPER_API}")`;
+}
+
+applyWallpaper();
+
 // ====== 网络时间同步逻辑开始 ======
 let timeOffset = 0; // 网络时间-本地时间（毫秒）
 let networkTimeReady = false;
@@ -70,13 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
         btn.onclick = function () {
             // 使用 getComputedStyle 判断实际显示状态
             const isHidden = window.getComputedStyle(names).display === 'none';
-            if (isHidden) {
-                names.style.display = 'flex';   // 显示为 flex
-                btn.textContent = '收起展示栏';
-            } else {
-                names.style.display = 'none';
-                btn.textContent = '展开展示栏';
-            }
+            names.classList.toggle('is-visible', isHidden);
+            btn.textContent = isHidden ? '收起展示栏' : '展开展示栏';
         };
     }
 });
@@ -226,16 +231,14 @@ function updateHitokoto() {
             setTimeout(() => {
                 hitokotoElement.innerText = hitokoto;
                 fromElement.innerText = from + fromWho;
-                fromElement.style.fontSize = '20px';
-
                 // 淡入效果
                 hitokotoElement.style.opacity = 1;
                 fromElement.style.opacity = 1;
 
                 // 动画完成后重置transition属性
                 setTimeout(() => {
-                    hitokotoElement.style.transition = '';
-                    fromElement.style.transition = '';
+                            hitokotoElement.style.transition = '';
+                            fromElement.style.transition = '';
                     isUpdating = false;
                 }, 500);
             }, 500);
@@ -249,16 +252,16 @@ const announcementContainer = document.getElementById('announcement-container');
 const announcementCloseBtn = document.getElementById('announcement-close-btn');
 
 announcementBtn.addEventListener('click', function () {
-    announcementContainer.style.display = 'flex';
+    announcementContainer.classList.add('is-open');
 });
 
 announcementCloseBtn.addEventListener('click', function () {
-    announcementContainer.style.display = 'none';
+    announcementContainer.classList.remove('is-open');
 });
 
 announcementContainer.addEventListener('click', function (e) {
     if (e.target === this) {
-        this.style.display = 'none';
+        this.classList.remove('is-open');
     }
 });
 
@@ -274,13 +277,13 @@ function shuffleArray(array) {
 
 // 元素图标表
 const elementMap = [
-    { char: '\ue001', color: 'var(--pyro)' },
-    { char: '\ue002', color: 'var(--hydro)' },
-    { char: '\ue003', color: 'var(--anemo)' },
-    { char: '\ue004', color: 'var(--electro)' },
-    { char: '\ue005', color: 'var(--dendro)' },
-    { char: '\ue006', color: 'var(--cryo)' },
-    { char: '\ue007', color: 'var(--geo)' }
+    { char: '\ue001', className: 'element-pyro' },
+    { char: '\ue002', className: 'element-hydro' },
+    { char: '\ue003', className: 'element-anemo' },
+    { char: '\ue004', className: 'element-electro' },
+    { char: '\ue005', className: 'element-dendro' },
+    { char: '\ue006', className: 'element-cryo' },
+    { char: '\ue007', className: 'element-geo' }
 ];
 
 // 默认名单模板（用于未自定义时的兜底）
@@ -302,7 +305,7 @@ function decorateNameWithElement(name) {
     if (!cleanName) return '';
     const randomIndex = Math.floor(Math.random() * elementMap.length);
     const el = elementMap[randomIndex];
-    return `<i style="font-family:Elements;font-size:1.4rem;color:${el.color};margin-right:6px;font-style:normal;">${el.char}</i>${cleanName}`;
+    return `<i class="element-icon ${el.className}">${el.char}</i>${cleanName}`;
 }
 
 function getCustomNamesFromStorage() {
@@ -328,6 +331,45 @@ function getActiveStudentNames() {
 
 let students = getActiveStudentNames().map(decorateNameWithElement).filter(Boolean);
 
+const starPoolWeights = [1, 8, 53];
+let starPools = { 0: [], 1: [], 2: [] };
+
+function createStarPools(names) {
+    const decoratedNames = shuffleArray(names).map(decorateNameWithElement).filter(Boolean);
+    const totalWeight = starPoolWeights.reduce((sum, weight) => sum + weight, 0);
+    const counts = starPoolWeights.map(weight => Math.floor(decoratedNames.length * weight / totalWeight));
+    const remainders = starPoolWeights.map((weight, index) => ({
+        index,
+        remainder: decoratedNames.length * weight / totalWeight - counts[index]
+    }));
+
+    let remaining = decoratedNames.length - counts.reduce((sum, count) => sum + count, 0);
+    remainders.sort((left, right) => right.remainder - left.remainder);
+    for (let index = 0; index < remaining; index++) {
+        counts[remainders[index % remainders.length].index]++;
+    }
+
+    const minimumCounts = [1, 3, 0];
+    for (let index = 0; index < minimumCounts.length; index++) {
+        while (counts[index] < minimumCounts[index] && counts.reduce((sum, count) => sum + count, 0) <= decoratedNames.length) {
+            const donorIndex = counts.findIndex((count, candidateIndex) => candidateIndex !== index && count > minimumCounts[candidateIndex]);
+            if (donorIndex < 0) break;
+            counts[donorIndex]--;
+            counts[index]++;
+        }
+    }
+
+    let cursor = 0;
+    starPools = {
+        0: decoratedNames.slice(cursor, cursor += counts[0]),
+        1: decoratedNames.slice(cursor, cursor += counts[1]),
+        2: decoratedNames.slice(cursor)
+    };
+    students = decoratedNames;
+}
+
+createStarPools(getActiveStudentNames());
+
 // 随机选UP角色
 function pickUPs(arr, count) {
     const copy = [...arr];
@@ -341,8 +383,8 @@ function pickUPs(arr, count) {
 }
 
 // 页面刷新时随机UP
-let fiveStarUP = pickUPs(students, 1)[0];
-let fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
+let fiveStarUP = pickUPs(starPools[0], 1)[0] || pickUPs(students, 1)[0];
+let fourStarUPs = pickUPs(starPools[1], Math.min(3, starPools[1].length));
 
 // 展示UP信息
 function updateUPDisplay() {
@@ -352,23 +394,23 @@ function updateUPDisplay() {
     const fourHtml = fourStarUPs.map(n => {
         const icon = n.match(/<i[^>]*>.*?<\/i>/)[0];
         const txt = n.replace(/<i[^>]*>.*?<\/i>/, '');
-        return `${icon}<span style="background:linear-gradient(90deg,#A259FF,#8F5AFF);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${txt}</span>`;
+        return `${icon}<span class="up-name up-name-four">${txt}</span>`;
     }).join('&nbsp;&nbsp;&nbsp;&nbsp;');
 
     document.getElementById('upInfo').innerHTML = `
         <div class="up-line">
-            <span style="font-weight:bold;color:#FFD700;">五星UP：</span>
+            <span class="up-label up-label-five">五星UP：</span>
             ${fiveIcon}
-            <span style="background:linear-gradient(90deg,#FFD700,#FFA500);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">${fiveText}</span>
+            <span class="up-name up-name-five">${fiveText}</span>
         </div>
         <div class="up-line">
-            <span style="font-weight:bold;color:#A259FF;">四星UP：</span>
+            <span class="up-label up-label-four">四星UP：</span>
             ${fourHtml}
         </div>
     `;
 }
 
-const shuffledStudents = shuffleArray(students);
+let shuffledStudents = shuffleArray(students);
 
 function generateScrollingNames() {
     const container = document.getElementById('scrollingNames');
@@ -379,7 +421,10 @@ function generateScrollingNames() {
     doubleList.forEach(student => {
         const nameElement = document.createElement('div');
         nameElement.className = 'name-item';
-        nameElement.innerHTML = student;
+        const rarityIndex = Object.keys(starPools).find(index => starPools[index].includes(student));
+        const rarityText = ['五星', '四星', '三星'][rarityIndex] || '';
+        nameElement.dataset.studentName = student;
+        nameElement.innerHTML = `${student}<span class="name-rarity rarity-${rarityIndex}">${rarityText}</span>`;
         container.appendChild(nameElement);
     });
 
@@ -453,15 +498,15 @@ function updatePityDisplay() {
 
     if (captureLightElement) {
         captureLightElement.innerHTML = isCaptureLightGuaranteed ? "已激活" : "未激活";
-        captureLightElement.style.color = isCaptureLightGuaranteed ? "#00ff00" : "#ffeb3b";
+        captureLightElement.classList.toggle('is-guaranteed', isCaptureLightGuaranteed);
     }
 
     if (captureLightCounterElement) {
         captureLightCounterElement.innerHTML = Number.isFinite(captureLightCounter) ? captureLightCounter : 1;
     }
 
-    document.getElementById('fiveStarGuarantee').style.color = fiveStarGuaranteedActive ? "#00ff00" : "#ffeb3b";
-    document.getElementById('fourStarGuarantee').style.color = isGuaranteed4StarUP ? "#00ff00" : "#ffeb3b";
+    document.getElementById('fiveStarGuarantee').classList.toggle('is-guaranteed', fiveStarGuaranteedActive);
+    document.getElementById('fourStarGuarantee').classList.toggle('is-guaranteed', isGuaranteed4StarUP);
 }
 
 // 祈愿按钮文本显示祈愿次数
@@ -500,27 +545,13 @@ function addHistoryRecord(name, rarity, isUP, triggeredCaptureLight = false) {
 
 // 高亮名字函数
 function highlightWinner(winnerName, rarityIndex) {
-    // 先重置所有名字的样式
     scrollingNames.childNodes.forEach(el => {
-        el.style.background = '';
-        el.style.color = '';
-        el.style.fontWeight = '';
-        el.style.boxShadow = '';
-        el.style.border = '';
+        el.classList.remove('winner-rarity-0', 'winner-rarity-1', 'winner-rarity-2');
     });
 
-    // 然后高亮所有匹配的名字（两个名单都高亮）
-    scrollingNames.childNodes.forEach((el, i) => {
-        if (el.innerHTML === winnerName) {
-            el.style.background = rarityConfig[rarityIndex].color;
-            el.style.color = rarityConfig[rarityIndex].textColor;
-            el.style.fontWeight = 'bold';
-            el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
-                rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
-                    '0 0 16px 6px #00bfff';
-            el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
-                rarityIndex === 1 ? '3px solid #A259FF' :
-                    '3px solid #00bfff';
+    scrollingNames.childNodes.forEach(el => {
+        if (el.dataset.studentName === winnerName) {
+            el.classList.add(`winner-rarity-${rarityIndex}`);
         }
     });
 }
@@ -669,13 +700,8 @@ function showTenPullResults(results) {
 
 // 新增函数：统一高亮十连抽的所有结果
 function highlightAllTenPullResults(results) {
-    // 先重置所有名字的样式
     scrollingNames.childNodes.forEach(el => {
-        el.style.background = '';
-        el.style.color = '';
-        el.style.fontWeight = '';
-        el.style.boxShadow = '';
-        el.style.border = '';
+        el.classList.remove('winner-rarity-0', 'winner-rarity-1', 'winner-rarity-2');
     });
 
     // 然后高亮所有中奖的名字（两个名单都高亮）
@@ -683,18 +709,9 @@ function highlightAllTenPullResults(results) {
         const winnerName = result.winnerName;
         const rarityIndex = result.rarityIndex;
 
-        // 找到所有匹配的名字位置（两个名单都高亮）
-        scrollingNames.childNodes.forEach((el, i) => {
-            if (el.innerHTML === winnerName) {
-                el.style.background = rarityConfig[rarityIndex].color;
-                el.style.color = rarityConfig[rarityIndex].textColor;
-                el.style.fontWeight = 'bold';
-                el.style.boxShadow = rarityIndex === 0 ? '0 0 32px 12px #FFD700' :
-                    rarityIndex === 1 ? '0 0 24px 8px #A259FF' :
-                        '0 0 16px 6px #00bfff';
-                el.style.border = rarityIndex === 0 ? '3px solid #FFD700' :
-                    rarityIndex === 1 ? '3px solid #A259FF' :
-                        '3px solid #00bfff';
+        scrollingNames.childNodes.forEach(el => {
+            if (el.dataset.studentName === winnerName) {
+                el.classList.add(`winner-rarity-${rarityIndex}`);
             }
         });
     });
@@ -774,7 +791,7 @@ function showFullEffect(name, rarityIndex, options = {}) {
     // 如果有元素符号，提取出来
     if (tempDiv.querySelector('i')) {
         elementHTML = tempDiv.innerHTML.match(/<i[^>]*>.*?<\/i>/)[0];
-        elementHTML = elementHTML.replace('font-size:1.4rem', 'font-size:3rem;font-weight:normal');
+        elementHTML = elementHTML.replace('class="element-icon', 'class="element-icon effect-element-icon');
         pureName = name.replace(/<i[^>]*>.*?<\/i>/, '');
     }
 
@@ -967,7 +984,8 @@ function drawOne() {
                 winnerName = fiveStarUP;
                 isUP = true;
             } else {
-                const candidates = students.filter(s => s !== fiveStarUP);
+                const candidates = starPools[0].filter(s => s !== fiveStarUP);
+                if (!candidates.length) candidates.push(...starPools[0]);
                 winnerName = candidates[Math.floor(Math.random() * candidates.length)];
                 isUP = false;
                 isGuaranteed5StarUP = true;
@@ -1018,7 +1036,8 @@ function drawOne() {
                 winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
                 isUP = true;
             } else {
-                const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+                const candidates = starPools[1].filter(s => !fourStarUPs.includes(s));
+                if (!candidates.length) candidates.push(...starPools[1]);
                 winnerName = candidates[Math.floor(Math.random() * candidates.length)];
                 isUP = false;
                 isGuaranteed4StarUP = true;
@@ -1028,7 +1047,7 @@ function drawOne() {
         setBooleanStorage('isGuaranteed4StarUP', isGuaranteed4StarUP);
         localStorage.setItem('isGuaranteed4StarUP', isGuaranteed4StarUP ? 'true' : 'false');
     } else {
-        const candidates = students.filter(s => !fourStarUPs.includes(s) && s !== fiveStarUP);
+        const candidates = starPools[2].length ? starPools[2] : students;
         winnerName = candidates[Math.floor(Math.random() * candidates.length)];
     }
 
@@ -1067,7 +1086,7 @@ function showHistory() {
         slidesContainer.innerHTML = '<div class="no-history">本周暂无祈愿记录</div>';
         document.getElementById('prev-btn').disabled = true;
         document.getElementById('next-btn').disabled = true;
-        document.getElementById('history-container').style.display = 'flex';
+        document.getElementById('history-container').classList.add('is-open');
         return;
     }
 
@@ -1107,15 +1126,15 @@ function showHistory() {
                 raritySpan.classList.add('five-star');
                 const captureTag = record.triggeredCaptureLight ? '——捕获明光' : '';
                 raritySpan.innerHTML = '五星' + (record.isUP ? ' UP!' : '') + captureTag;
-                nameSpan.style.color = '#FFD700';
+                nameSpan.classList.add('five-star');
             } else if (record.rarity === 1) {
                 raritySpan.classList.add('four-star');
                 raritySpan.innerHTML = '四星' + (record.isUP ? ' UP!' : '');
-                nameSpan.style.color = '#A259FF';
+                nameSpan.classList.add('four-star');
             } else {
                 raritySpan.classList.add('three-star');
                 raritySpan.innerHTML = '三星';
-                nameSpan.style.color = '#03a9f4';
+                nameSpan.classList.add('three-star');
             }
 
             const timeSpan = document.createElement('span');
@@ -1167,7 +1186,7 @@ function showHistory() {
     };
 
     goToSlide(0);
-    document.getElementById('history-container').style.display = 'flex';
+    document.getElementById('history-container').classList.add('is-open');
 }
 
 function goToSlide(index) {
@@ -1228,7 +1247,7 @@ const fileName = `祈愿记录_${exportDate.getFullYear()}-${String(exportDate.g
 document.getElementById('history-btn').addEventListener('click', showHistory);
 document.getElementById('export-btn').addEventListener('click', exportHistoryToExcel);
 document.getElementById('close-btn').addEventListener('click', function () {
-    document.getElementById('history-container').style.display = 'none';
+    document.getElementById('history-container').classList.remove('is-open');
     goToSlide(0);
 });
 
@@ -1242,7 +1261,7 @@ document.getElementById('next-btn').addEventListener('click', function () {
 
 document.getElementById('history-container').addEventListener('click', function (e) {
     if (e.target === this) {
-        this.style.display = 'none';
+        this.classList.remove('is-open');
         goToSlide(0);
     }
 });
@@ -1253,7 +1272,7 @@ const pityInfo = document.getElementById('pityInfo');
 if (toggleDebugBtn && pityInfo) {
     toggleDebugBtn.addEventListener('click', function () {
         const isHidden = window.getComputedStyle(pityInfo).display === 'none';
-        pityInfo.style.display = isHidden ? 'block' : 'none';
+        pityInfo.classList.toggle('is-visible', isHidden);
     });
 }
 
@@ -1261,29 +1280,25 @@ document.addEventListener('keydown', function (event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'd') {
         if (pityInfo) {
             const isHidden = window.getComputedStyle(pityInfo).display === 'none';
-            pityInfo.style.display = isHidden ? 'block' : 'none';
+            pityInfo.classList.toggle('is-visible', isHidden);
         }
     }
 });
 
 function refreshStudentsFromCustomList() {
     const activeNames = getActiveStudentNames();
-    students = activeNames.map(decorateNameWithElement).filter(Boolean);
-
-    if (!students.length) {
-        students = DEFAULT_STUDENT_NAMES.map(decorateNameWithElement).filter(Boolean);
-    }
+    createStarPools(activeNames.length ? activeNames : DEFAULT_STUDENT_NAMES);
 
     const currentFiveStarUp = fiveStarUP;
     const currentFourStarUps = fourStarUPs;
-    fiveStarUP = pickUPs(students, 1)[0];
-    fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
+    fiveStarUP = pickUPs(starPools[0], 1)[0] || pickUPs(students, 1)[0];
+    fourStarUPs = pickUPs(starPools[1], Math.min(3, starPools[1].length));
 
-    if (currentFiveStarUp && students.includes(currentFiveStarUp)) {
+    if (currentFiveStarUp && starPools[0].includes(currentFiveStarUp)) {
         fiveStarUP = currentFiveStarUp;
-        fourStarUPs = currentFourStarUps.filter(s => s !== fiveStarUP && students.includes(s));
-        if (fourStarUPs.length < 3) {
-            fourStarUPs = pickUPs(students.filter(s => s !== fiveStarUP), 3);
+        fourStarUPs = currentFourStarUps.filter(s => s !== fiveStarUP && starPools[1].includes(s));
+        if (fourStarUPs.length < Math.min(3, starPools[1].length)) {
+            fourStarUPs = pickUPs(starPools[1], Math.min(3, starPools[1].length));
         }
     }
 
@@ -1292,13 +1307,41 @@ function refreshStudentsFromCustomList() {
     updateUPDisplay();
 }
 
+function renderRolePool() {
+    const container = document.getElementById('role-pool-list');
+    if (!container) return;
+
+    container.innerHTML = [0, 1, 2].map(index => {
+        const rarityLabels = ['五星', '四星', '三星'];
+        const upNames = index === 0 ? [fiveStarUP] : index === 1 ? fourStarUPs : [];
+        const orderedNames = [
+            ...upNames.filter(name => starPools[index].includes(name)),
+            ...starPools[index].filter(name => !upNames.includes(name))
+        ];
+
+        return `
+        <section class="role-pool-group">
+            <h4 class="rarity-${index}"><span class="role-pool-rarity rarity-${index}">${rarityLabels[index]}</span><span>${starPools[index].length}人</span></h4>
+            <div class="role-pool-names">${orderedNames.map(name => {
+                const isFiveStarUP = index === 0 && name === fiveStarUP;
+                const isFourStarUP = index === 1 && fourStarUPs.includes(name);
+                const cleanName = name.replace(/<i[^>]*>.*?<\/i>/, '');
+                const upClass = isFiveStarUP ? 'role-pool-up role-pool-up-five' : isFourStarUP ? 'role-pool-up role-pool-up-four' : '';
+                return `<span>${cleanName}${upClass ? ` <b class="${upClass}">UP</b>` : ''}</span>`;
+            }).join('')}</div>
+        </section>
+    `;
+    }).join('');
+}
+
 function openSettingsModal() {
     const modal = document.getElementById('settings-modal');
     const textarea = document.getElementById('custom-name-input');
     if (modal && textarea) {
         const current = getCustomNamesFromStorage();
         textarea.value = current.length ? current.join('\n') : '';
-        modal.style.display = 'flex';
+        renderRolePool();
+        modal.classList.add('is-open');
         document.body.style.overflow = 'hidden';
     }
 }
@@ -1306,7 +1349,7 @@ function openSettingsModal() {
 function closeSettingsModal() {
     const modal = document.getElementById('settings-modal');
     if (modal) {
-        modal.style.display = 'none';
+        modal.classList.remove('is-open');
     }
     document.body.style.overflow = '';
 }
@@ -1316,6 +1359,10 @@ function applyCustomNameList() {
     if (!textarea) return;
 
     const lines = textarea.value.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+    if (lines.length < 10) {
+        alert('名单至少需要 10 个名字，请补充后再应用。');
+        return;
+    }
     saveCustomNamesToStorage(lines);
 
     if (!lines.length) {
@@ -1342,6 +1389,10 @@ function readTxtNames(file) {
     reader.onload = function (event) {
         const text = event.target.result || '';
         const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line.length > 0);
+        if (lines.length < 10) {
+            alert('导入名单至少需要 10 个名字，当前只有 ' + lines.length + ' 个。');
+            return;
+        }
         const textarea = document.getElementById('custom-name-input');
         if (textarea) {
             textarea.value = lines.join('\n');
@@ -1360,6 +1411,7 @@ const settingsResetBtn = document.getElementById('reset-name-list');
 const settingsModeButtons = document.querySelectorAll('.settings-mode-btn');
 const settingsEditPanel = document.getElementById('settings-edit-panel');
 const settingsImportPanel = document.getElementById('settings-import-panel');
+const settingsPoolPanel = document.getElementById('settings-pool-panel');
 const nameFileInput = document.getElementById('name-file-input');
 
 if (settingsBtn) {
@@ -1389,8 +1441,12 @@ settingsModeButtons.forEach(button => {
         const mode = this.dataset.mode;
         settingsModeButtons.forEach(item => item.classList.toggle('active', item === this));
         const showEdit = mode === 'edit';
-        settingsEditPanel.style.display = showEdit ? 'block' : 'none';
-        settingsImportPanel.style.display = showEdit ? 'none' : 'block';
+        const showImport = mode === 'import';
+        settingsEditPanel.classList.toggle('is-hidden', !showEdit);
+        settingsImportPanel.classList.toggle('is-hidden', !showImport);
+        settingsPoolPanel.classList.toggle('is-hidden', mode !== 'pool');
+        document.querySelector('.settings-actions').classList.toggle('is-hidden', mode === 'pool');
+        if (mode === 'pool') renderRolePool();
     });
 });
 
