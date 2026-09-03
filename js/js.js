@@ -979,10 +979,14 @@ function drawOne() {
                 isUP = true;
             } else {
                 const candidates = starPools[0].filter(s => s !== fiveStarUP);
-                if (!candidates.length) candidates.push(...starPools[0]);
-                winnerName = candidates[Math.floor(Math.random() * candidates.length)];
-                isUP = false;
-                isGuaranteed5StarUP = true;
+                if (candidates.length) {
+                    winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                    isUP = false;
+                    isGuaranteed5StarUP = true;
+                } else {
+                    winnerName = fiveStarUP;
+                    isUP = true;
+                }
             }
         }
 
