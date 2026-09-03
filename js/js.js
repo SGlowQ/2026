@@ -1035,10 +1035,14 @@ function drawOne() {
                 isUP = true;
             } else {
                 const candidates = starPools[1].filter(s => !fourStarUPs.includes(s));
-                if (!candidates.length) candidates.push(...starPools[1]);
-                winnerName = candidates[Math.floor(Math.random() * candidates.length)];
-                isUP = false;
-                isGuaranteed4StarUP = true;
+                if (candidates.length) {
+                    winnerName = candidates[Math.floor(Math.random() * candidates.length)];
+                    isUP = false;
+                    isGuaranteed4StarUP = true;
+                } else {
+                    winnerName = fourStarUPs[Math.floor(Math.random() * fourStarUPs.length)];
+                    isUP = true;
+                }
             }
         }
 
