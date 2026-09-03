@@ -173,14 +173,28 @@ h1 {
 }
 
 #hitokoto {
-    background: linear-gradient(90deg, #da75ff, #6a82fb);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
     font-size: 2.4rem;
     font-weight: 700;
     margin-bottom: 0.8rem;
-    transition: opacity 0.5s ease;
+    isolation: isolate;
+}
+
+.hitokoto-letter {
+    display: inline-block;
+    position: relative;
+    white-space: pre;
+    color: #e9d7ff;
+    will-change: transform, opacity, filter;
+}
+
+#hitokoto.is-dissolving .hitokoto-letter {
+    animation: hitokotoSmokeOut 0.72s cubic-bezier(0.42, 0, 0.72, 1) both;
+    animation-delay: calc(var(--letter-index) * 0.035s);
+}
+
+#hitokoto.is-entering .hitokoto-letter {
+    animation: hitokotoSmokeIn 0.72s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--letter-index) * 0.045s);
 }
 
 .scrolling-names-wrapper {
@@ -327,10 +341,56 @@ h1 {
     backdrop-filter: blur(5px);
     background: rgba(25, 118, 210, 0.2);
     border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+    isolation: isolate;
+}
+
+#hitokoto,
+#from {
+    position: relative;
+    z-index: 1;
 }
 
 #from {
     font-size: 20px;
+    min-height: 1.5em;
+    color: rgba(225, 239, 255, 0.78);
+}
+
+#from .hitokoto-letter {
+    animation-duration: 0.58s;
+}
+
+@keyframes hitokotoSmokeOut {
+    0% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0) rotate(0) skew(0) scale(1);
+        text-shadow: 0 0 0 currentColor;
+    }
+    100% {
+        opacity: 0;
+        filter: blur(3px);
+        transform: translate3d(1.15rem, -2.4rem, 0) rotate(-24deg) skew(22deg) scale(1.35);
+        text-shadow: 0 0 22px currentColor;
+    }
+}
+
+@keyframes hitokotoSmokeIn {
+    0% {
+        opacity: 0;
+        filter: blur(5px);
+        transform: translate3d(-0.8rem, 1rem, 0) rotate(12deg) scale(0.82);
+        text-shadow: 0 0 20px currentColor;
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+        transform: translate3d(0, 0, 0) rotate(0) scale(1);
+        text-shadow: 0 0 0 transparent;
+    }
 }
 
 footer {
@@ -956,8 +1016,8 @@ footer {
     color: #bbdefb;
 }
 
-/* 视频容器 */
-#bg-video {
+/* 壁纸容器 */
+#bg {
     position: fixed;
     left: 0;
     top: 0;

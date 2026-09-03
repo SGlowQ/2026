@@ -1,7 +1,7 @@
 const WALLPAPER_API = 'https://uapis.cn/api/v1/image/bing-daily';
 
 function applyWallpaper() {
-    const wallpaper = document.getElementById('bg-video');
+    const wallpaper = document.getElementById('bg');
     if (!wallpaper) return;
     wallpaper.style.backgroundImage = `url("${WALLPAPER_API}")`;
 }
@@ -207,6 +207,28 @@ let hitokotoInterval;
 let isUpdating = false;
 let isHitokotoVisible = true;
 
+function renderHitokotoText(element, text) {
+    element.innerHTML = '';
+    const characters = Array.from(text);
+    const isMainText = element.id === 'hitokoto';
+    const lastIndex = Math.max(characters.length - 1, 1);
+
+    characters.forEach((character, index) => {
+        const letter = document.createElement('span');
+        letter.className = 'hitokoto-letter';
+        letter.textContent = character === ' ' ? '\u00a0' : character;
+        letter.style.setProperty('--letter-index', Math.min(index, 8));
+        if (isMainText) {
+            const progress = index / lastIndex;
+            const red = Math.round(218 + (106 - 218) * progress);
+            const green = Math.round(117 + (130 - 117) * progress);
+            const blue = Math.round(255 + (251 - 255) * progress);
+            letter.style.color = `rgb(${red}, ${green}, ${blue})`;
+        }
+        element.appendChild(letter);
+    });
+}
+
 function updateHitokoto() {
     if (isUpdating || !isHitokotoVisible) return;
 
@@ -218,32 +240,38 @@ function updateHitokoto() {
             const from = data.from ? `『${data.from}』` : '';
             const fromWho = data.from_who ? `${data.from_who}` : '';
 
-            // 淡出效果
             const hitokotoElement = document.getElementById('hitokoto');
             const fromElement = document.getElementById('from');
+            if (!hitokotoElement || !fromElement) {
+                isUpdating = false;
+                return;
+            }
 
-            hitokotoElement.style.transition = 'opacity 0.5s ease';
-            fromElement.style.transition = 'opacity 0.5s ease';
-            hitokotoElement.style.opacity = 0;
-            fromElement.style.opacity = 0;
+            hitokotoElement.classList.remove('is-entering', 'is-dissolving');
+            fromElement.classList.remove('is-entering', 'is-dissolving');
+            void hitokotoElement.offsetWidth;
+            hitokotoElement.classList.add('is-dissolving');
+            fromElement.classList.add('is-dissolving');
 
-            // 等待淡出完成后再更新内容
             setTimeout(() => {
-                hitokotoElement.innerText = hitokoto;
-                fromElement.innerText = from + fromWho;
-                // 淡入效果
-                hitokotoElement.style.opacity = 1;
-                fromElement.style.opacity = 1;
+                renderHitokotoText(hitokotoElement, hitokoto);
+                renderHitokotoText(fromElement, from + fromWho);
+                hitokotoElement.classList.remove('is-dissolving');
+                fromElement.classList.remove('is-dissolving');
+                hitokotoElement.classList.add('is-entering');
+                fromElement.classList.add('is-entering');
 
-                // 动画完成后重置transition属性
                 setTimeout(() => {
-                            hitokotoElement.style.transition = '';
-                            fromElement.style.transition = '';
+                    hitokotoElement.classList.remove('is-entering');
+                    fromElement.classList.remove('is-entering');
                     isUpdating = false;
-                }, 500);
-            }, 500);
+                }, 900);
+            }, 820);
         })
-        .catch(console.error);
+        .catch(error => {
+            console.error(error);
+            isUpdating = false;
+        });
 }
 
 // 问卷与简介功能
