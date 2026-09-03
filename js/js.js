@@ -1447,7 +1447,6 @@ settingsModeButtons.forEach(button => {
         settingsEditPanel.classList.toggle('is-hidden', !showEdit);
         settingsImportPanel.classList.toggle('is-hidden', !showImport);
         settingsPoolPanel.classList.toggle('is-hidden', mode !== 'pool');
-        document.querySelector('.settings-actions').classList.toggle('is-hidden', mode === 'pool');
         if (mode === 'pool') renderRolePool();
     });
 });

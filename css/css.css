@@ -1223,7 +1223,7 @@ footer {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    padding: 0 18px 18px;
+    padding-top: 14px;
 }
 
 .settings-primary-btn,
