@@ -968,14 +968,8 @@ function drawOne() {
             isUP = true;
             triggeredCaptureLight = true;
             isCaptureLightGuaranteed = false;
-            captureLightCounter = 1;
-        } else if (fullAlternatingCycleReady) {
-            // 机制 3：计数器达到 3，下一次 UP 触发捕获明光，并恢复为默认 1
-            winnerName = fiveStarUP;
-            isUP = true;
-            triggeredCaptureLight = true;
-            isCaptureLightGuaranteed = false;
-            captureLightCounter = 1;
+            //捕获明光触发后，为了计数器必须恢复为 1，所以这里设置为 2
+            captureLightCounter = 2;
         } else {
             // 普通五星随机逻辑
             const standardFiveStarUpChance = 0.5;
