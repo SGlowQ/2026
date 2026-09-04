@@ -177,11 +177,11 @@ function updateCountdown() {
 
     // 如果时间已到，全部归零
     if (distance <= 0) {
-        document.getElementById('days').innerText = "0天";
-        document.getElementById('hours').innerText = "00";
-        document.getElementById('minutes').innerText = "00";
-        document.getElementById('seconds').innerText = "00";
-        document.getElementById('milliseconds').innerText = "000";
+        updateFlipValue('days', '0', false);
+        updateFlipValue('hours', '00');
+        updateFlipValue('minutes', '00');
+        updateFlipValue('seconds', '00');
+        updateStaticFlipValue('milliseconds', '000');
         return; // 不再递归调用
     }
 
@@ -193,13 +193,69 @@ function updateCountdown() {
     const milliseconds = Math.floor(distance % 1000);
 
     // 更新显示
-    document.getElementById('days').innerText =  days + "天";
-    document.getElementById('hours').innerText = hours.toString().padStart(2, '0');
-    document.getElementById('minutes').innerText = minutes.toString().padStart(2, '0');
-    document.getElementById('seconds').innerText = seconds.toString().padStart(2, '0');
-    document.getElementById('milliseconds').innerText = milliseconds.toString().padStart(3, '0');
+    updateFlipValue('days', days.split('.')[0]);
+    updateFlipValue('hours', hours.toString().padStart(2, '0'));
+    updateFlipValue('minutes', minutes.toString().padStart(2, '0'));
+    updateFlipValue('seconds', seconds.toString().padStart(2, '0'));
+    updateStaticFlipValue('milliseconds', milliseconds.toString().padStart(3, '0'));
 
     requestAnimationFrame(updateCountdown);
+}
+
+function renderFlipDigit(current, previous, shouldPlay) {
+    let html = '';
+    for (let number = 0; number <= 9; number += 1) {
+        const state = number === Number(current) ? 'active' : number === Number(previous) ? 'before' : '';
+        html += `<span class="flip-item ${state}">
+            <span class="flip-half flip-half-top"><span class="flip-number">${number}</span></span>
+            <span class="flip-half flip-half-bottom"><span class="flip-number">${number}</span></span>
+        </span>`;
+    }
+    return `<span class="flip-digit${shouldPlay ? ' flip-play' : ''}">${html}</span>`;
+}
+
+function updateFlipValue(elementId, value, padValue = true) {
+    const element = document.getElementById(elementId);
+    const display = element && element.querySelector('.flip-display');
+    if (!display) return;
+
+    const nextValue = padValue ? String(value).padStart(2, '0') : String(value);
+    const previousValue = display.dataset.flipValue || nextValue;
+    if (display.dataset.flipValue === nextValue && display.children.length > 0) return;
+
+    const nextDigits = nextValue.split('');
+    const previousDigits = previousValue.padStart(nextDigits.length, '0').split('');
+    display.innerHTML = nextDigits.map((digit, index) =>
+        renderFlipDigit(digit, previousDigits[index], digit !== previousDigits[index])
+    ).join('');
+    display.dataset.flipValue = nextValue;
+}
+
+function updateStaticFlipValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    const display = element && element.querySelector('.static-flip-display');
+    if (!display) return;
+
+    const nextValue = String(value).padStart(3, '0');
+    if (display.dataset.flipValue === nextValue && display.children.length > 0) return;
+
+    if (display.children.length === 0) {
+        display.innerHTML = nextValue.split('').map(digit => renderFlipDigit(digit, digit, false)).join('');
+    } else {
+        nextValue.split('').forEach((digit, index) => {
+            const flipDigit = display.children[index];
+            if (!flipDigit) return;
+            flipDigit.querySelectorAll('.flip-number').forEach(number => {
+                number.textContent = digit;
+            });
+            flipDigit.querySelectorAll('.flip-item').forEach((item, itemIndex) => {
+                item.classList.toggle('active', itemIndex === Number(digit));
+                item.classList.remove('before');
+            });
+        });
+    }
+
+    display.dataset.flipValue = nextValue;
 }
 
 // 一言功能

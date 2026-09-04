@@ -107,39 +107,205 @@ h1 {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.countdown-value {
-    font-size: 3.5rem;
-    font-weight: 700;
-    background: linear-gradient(to bottom, #e0f7fa, #80deea);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 0.5rem;
-}
-
 .countdown-label {
     font-size: 1.1rem;
-    color: #e3f2fd;
+    color: #e3f2fd !important;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
-#daysBox {
-    height: 15rem;
-    background: rgba(0, 0, 0, 0);
+.flip-countdown-box {
+    background: transparent;
     backdrop-filter: none;
-    border: none;
+    border-color: transparent;
     box-shadow: none;
 }
 
-#daysBox .countdown-value {
-    font-size: 10rem;
-    opacity: 0.5;   
-    background: none !important;               /* 移除渐变背景 */
-    -webkit-background-clip: unset !important; /* 重置背景裁剪 */
-    background-clip: unset !important;
-    color: red !important;                      /* 设置纯红色 */
-    -webkit-text-fill-color: red !important;    /* 覆盖渐变文字颜色 */
+#daysBox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 15rem;
+    padding: 0;
+    margin: 0;
+}
+
+#days {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flip-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    user-select: none;
+}
+
+.flip-digit {
+    position: relative;
+    width: 56px;
+    height: 78px;
+    font-size: 3.9rem;
+    font-weight: 700;
+    line-height: 78px;
+    perspective: 180px;
+    border-radius: 7px;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(144, 202, 249, 0.16);
+}
+
+.flip-item {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.flip-item:not(.active):not(.before) {
+    visibility: hidden;
+}
+
+.flip-item.active,
+.flip-item:first-child {
+    z-index: 2;
+}
+
+.flip-item .flip-half {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    overflow: hidden;
+    background: linear-gradient(145deg, #3a78a5, #1d4c73);
+    border-left: 1px solid rgba(144, 202, 249, 0.12);
+    border-right: 1px solid rgba(144, 202, 249, 0.12);
+}
+
+.flip-item .flip-half-top {
+    top: 0;
+    transform-origin: 50% 100%;
+    border-radius: 7px 7px 0 0;
+}
+
+.flip-item .flip-half-bottom {
+    bottom: 0;
+    transform-origin: 50% 0%;
+    border-radius: 0 0 7px 7px;
+    background: linear-gradient(145deg, #2c648e, #153d60);
+}
+
+.flip-item .flip-half-top::after {
+    content: none;
+}
+
+.flip-digit::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: calc(50% - 1px);
+    width: 100%;
+    height: 2px;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 5;
+}
+
+.flip-item .flip-number {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 200%;
+    transform: translateY(-3px);
+    color: #80deea;
+    -webkit-text-fill-color: #80deea;
+    text-align: center;
+    text-shadow: 0 1px 2px #000;
+}
+
+.flip-item .flip-half-top .flip-number { top: 0; }
+.flip-item .flip-half-bottom .flip-number { bottom: 0; }
+
+.flip-display .flip-play .flip-item.before { z-index: 3; }
+.flip-display .flip-play .flip-item.active { animation: flip-item-active 0.5s 0.5s linear both; }
+.flip-display .flip-play .flip-item.before .flip-half-top {
+    z-index: 2;
+    animation: flip-turn-up 0.5s linear both;
+}
+.flip-display .flip-play .flip-item.active .flip-half-bottom {
+    z-index: 2;
+    animation: flip-turn-down 0.5s 0.5s linear both;
+}
+
+@keyframes flip-turn-up {
+    to { transform: rotateX(-90deg); }
+}
+
+@keyframes flip-turn-down {
+    from { transform: rotateX(90deg); }
+    to { transform: rotateX(0); }
+}
+
+@keyframes flip-item-active {
+    0% { z-index: 2; }
+    5%, 100% { z-index: 4; }
+}
+
+.countdown-suffix {
+    position: absolute;
+    right: -42px;
+    bottom: 2px;
+    font-size: 2.2rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+#daysBox .flip-display { gap: 8px; }
+#daysBox .flip-digit {
+    width: 100px;
+    height: 132px;
+    font-size: 7.7rem;
+    line-height: 132px;
+}
+
+@media (max-width: 768px) {
+    .flip-digit {
+        width: 45px;
+        height: 66px;
+        font-size: 3.2rem;
+        line-height: 66px;
+    }
+
+    #daysBox .flip-digit {
+        width: 78px;
+        height: 104px;
+        font-size: 6.1rem;
+        line-height: 104px;
+    }
+}
+
+@media (max-width: 480px) {
+    .flip-digit {
+        width: 35px;
+        height: 52px;
+        font-size: 2.6rem;
+        line-height: 52px;
+    }
+
+    #daysBox .flip-digit {
+        width: 60px;
+        height: 82px;
+        font-size: 4.8rem;
+        line-height: 82px;
+    }
+
+    .flip-display { gap: 4px; }
+    #daysBox .flip-display { gap: 5px; }
+    .countdown-suffix {
+        right: -28px;
+        bottom: 0;
+        font-size: 1.6rem;
+    }
 }
 
 .motivation-container {
@@ -170,6 +336,21 @@ h1 {
 .motivation-header i {
     font-size: 2rem;
     color: #4fc3f7;
+}
+
+.action-with-label {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.action-label {
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.78rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
 }
 
 #hitokoto {
@@ -433,10 +614,6 @@ footer {
         padding: 1.5rem 1rem;
     }
 
-    .countdown-value {
-        font-size: 2.5rem;
-    }
-
     .name-item {
         min-width: 150px;
         height: 70px;
@@ -448,10 +625,6 @@ footer {
     .countdown-box {
         min-width: 80px;
         padding: 1rem 0.5rem;
-    }
-
-    .countdown-value {
-        font-size: 2rem;
     }
 
     .countdown-label {
