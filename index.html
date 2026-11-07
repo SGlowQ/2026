@@ -102,6 +102,10 @@
   p { margin-bottom: 12px; }
   ul { margin: 0 0 14px 22px; }
   li { margin-bottom: 6px; }
+  /* 更新记录里的二级列表 */
+  li > ul { margin: 7px 0 16px 18px; }
+  li > ul > li { margin-bottom: 4px; font-size: 14px; color: var(--text-dim); }
+  li > strong { color: var(--text); }
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   strong { font-weight: 600; }
@@ -299,7 +303,7 @@
     <table>
       <tr><th>应用名称</th><td>祈愿与倒计时</td></tr>
       <tr><th>开发者</th><td>Sglowq</td></tr>
-      <tr><th>版本</th><td>2.0.2.0</td></tr>
+      <tr><th>版本</th><td>2.0.6.0</td></tr>
       <tr><th>价格</th><td>免费</td></tr>
       <tr><th>Store ID</th><td><code>9PF3KCM4KN1B</code></td></tr>
       <tr><th>商店链接</th><td><a href="https://apps.microsoft.com/detail/9PF3KCM4KN1B" target="_blank" rel="noopener">apps.microsoft.com/detail/9PF3KCM4KN1B</a></td></tr>
@@ -307,8 +311,50 @@
 
     <h2>更新记录</h2>
     <ul>
-      <li><strong>2.0.2.0</strong> —— 「打开文件夹」改用更可靠的方式，修复部分情况下点了没反应</li>
-      <li><strong>2.0.1.0</strong> —— 修复数据无法保存（关闭重启后名单和记录丢失）、名单粘贴换行解析失败、元素图标重绘</li>
+      <li>
+        <strong>2.0.6.0</strong>
+        <ul>
+          <li>移除「长按 0.5 秒十连」操作，单抽与十连改为两个独立按钮</li>
+          <li>一言渐变色改为缓慢流动的彩虹效果，不再快速跳变</li>
+          <li>抽卡记录改为永久保存，不再自动清理旧记录</li>
+          <li>关于页新增分类清除：可分别清除抽卡记录、名单、倒计时目标，都有二次确认</li>
+          <li>新增「更改数据保存位置」，可把数据放到任意目录，现有数据会自动复制过去</li>
+          <li>说明文案与当前功能对齐（网络时间改为校准软件倒计时）</li>
+        </ul>
+      </li>
+      <li>
+        <strong>2.0.5.0</strong>
+        <ul>
+          <li>一言与网络时间拆成两个独立开关</li>
+          <li>网络时间统一按北京时间（UTC+8）计算，不再依赖系统时区</li>
+          <li>一言加入打字机特效</li>
+          <li>切换开关立即生效，无需重启</li>
+          <li>标题栏去掉副标题，只显示应用名</li>
+          <li>关于页「说明」改为可折叠，规则说明扩充为 8 个章节</li>
+          <li>修复一言卡在「正在加载」的问题（代理探测超时）</li>
+        </ul>
+      </li>
+      <li>
+        <strong>2.0.3.0</strong>
+        <ul>
+          <li>最近中奖改为显示 10 条，按窗口宽度自动换行</li>
+          <li>清理代码中的冗余部分，降低安装包体积</li>
+        </ul>
+      </li>
+      <li>
+        <strong>2.0.2.0</strong>
+        <ul>
+          <li>「打开文件夹」改用更可靠的方式，修复部分情况下点了没反应</li>
+        </ul>
+      </li>
+      <li>
+        <strong>2.0.1.0</strong>
+        <ul>
+          <li>修复关闭程序后名单、倒计时目标和抽卡记录丢失</li>
+          <li>修复名单粘贴换行识别错误</li>
+          <li>元素图标改用系统 Emoji：水 火 雷 草 冰 岩 风</li>
+        </ul>
+      </li>
       <li><strong>2.0.0.0</strong> —— 首次上架</li>
     </ul>
 
