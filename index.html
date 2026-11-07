@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>隐私政策 · 祈愿与倒计时</title>
-<meta name="description" content="祈愿与倒计时（WishLamp）隐私政策 — 说明本应用如何处理你的数据">
+<title>祈愿与倒计时 · Microsoft Store</title>
+<meta name="description" content="祈愿与倒计时 — 春节倒计时 + 祈愿抽卡点名的 Windows 桌面应用">
 <style>
   :root {
-    --bg: #14161a;
-    --card: #1c1f26;
+    --bg: #0f1115;
+    --card: #171a21;
     --text: #e8eaed;
     --text-dim: #9aa0a6;
     --accent: #4fc3f7;
+    --purple: #9b6de8;
     --gold: #ffd700;
-    --border: #2a2e37;
+    --border: #262a33;
   }
   @media (prefers-color-scheme: light) {
     :root {
@@ -22,212 +23,309 @@
       --text: #1f2328;
       --text-dim: #656d76;
       --accent: #0969da;
+      --purple: #8250df;
       --gold: #9a6700;
       --border: #d8dee4;
     }
   }
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    margin: 0;
-    padding: 0;
     background: var(--bg);
     color: var(--text);
     font-family: "Microsoft YaHei UI", "Microsoft YaHei", -apple-system,
                  BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    line-height: 1.75;
+    line-height: 1.7;
     font-size: 15px;
   }
-  .wrap {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 48px 20px 80px;
+  .wrap { max-width: 800px; margin: 0 auto; padding: 48px 20px 70px; }
+
+  /* 顶部 */
+  .hero {
+    background: linear-gradient(135deg, rgba(79,195,247,0.10), rgba(155,109,232,0.10));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 34px;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
   }
-  header {
-    margin-bottom: 36px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border);
+  .hero-icon {
+    width: 88px; height: 88px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #4fc3f7 0%, #9b6de8 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    flex-shrink: 0;
   }
-  h1 {
-    font-size: 30px;
-    font-weight: 600;
-    margin: 0 0 10px;
-    letter-spacing: -0.3px;
-  }
-  .sub {
-    color: var(--text-dim);
-    font-size: 14px;
-    margin: 0;
-  }
+  .hero-body { flex: 1; min-width: 230px; }
+  .hero h1 { font-size: 28px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.4px; }
+  .hero-sub { color: var(--text-dim); font-size: 14px; margin-bottom: 14px; }
+  .badges { margin-bottom: 16px; }
   .badge {
     display: inline-block;
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: rgba(79,195,247,0.13);
+    color: var(--accent);
     border-radius: 999px;
     padding: 3px 12px;
     font-size: 12.5px;
-    color: var(--text-dim);
-    margin-right: 8px;
-    margin-top: 10px;
+    margin: 0 6px 6px 0;
   }
-  h2 {
-    font-size: 20px;
+  .btn-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: var(--accent);
+    color: #0b1220;
     font-weight: 600;
-    margin: 40px 0 14px;
+    text-decoration: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: opacity .15s;
+  }
+  .btn-main:hover { opacity: .87; }
+  .btn-main svg { width: 17px; height: 17px; }
+
+  /* 面板 */
+  .panel { display: block; }
+
+  h2 {
+    font-size: 19px;
+    font-weight: 600;
+    margin: 34px 0 14px;
     padding-left: 12px;
     border-left: 3px solid var(--accent);
   }
-  h3 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 24px 0 10px;
-    color: var(--text);
-  }
-  p { margin: 0 0 14px; }
-  ul { margin: 0 0 16px; padding-left: 22px; }
-  li { margin-bottom: 7px; }
+  h2:first-child { margin-top: 0; }
+  p { margin-bottom: 12px; }
+  ul { margin: 0 0 14px 22px; }
+  li { margin-bottom: 6px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  strong { font-weight: 600; }
   code {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 5px;
     padding: 2px 7px;
-    font-family: Consolas, "Cascadia Mono", monospace;
-    font-size: 13px;
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
     word-break: break-all;
   }
-  .card {
+
+  /* 特性 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .feat {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 20px 22px;
-    margin: 18px 0 24px;
+    padding: 17px;
   }
-  .highlight {
+  .feat-i { font-size: 21px; display: block; margin-bottom: 7px; }
+  .feat-t { font-weight: 600; font-size: 14.5px; margin-bottom: 4px; }
+  .feat-d { color: var(--text-dim); font-size: 13.5px; line-height: 1.6; }
+
+  /* 步骤 */
+  .steps { counter-reset: s; }
+  .step {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 15px 18px 15px 54px;
+    margin-bottom: 9px;
+    position: relative;
+    counter-increment: s;
+  }
+  .step::before {
+    content: counter(s);
+    position: absolute;
+    left: 16px; top: 15px;
+    width: 25px; height: 25px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #0b1220;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12.5px; font-weight: 700;
+  }
+  .step-t { font-weight: 600; margin-bottom: 3px; font-size: 14.5px; }
+  .step-d { color: var(--text-dim); font-size: 13.5px; }
+
+  /* 表格 */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0 18px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-dim); font-weight: 500; font-size: 13px; width: 32%; }
+  td { word-break: break-word; }
+
+  /* 提示 */
+  .note {
+    background: var(--card);
+    border: 1px solid var(--border);
     border-left: 3px solid var(--gold);
-  }
-  .highlight strong { color: var(--gold); }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0 22px;
+    border-radius: 10px;
+    padding: 15px 19px;
+    margin: 14px 0;
     font-size: 14px;
   }
-  th, td {
-    text-align: left;
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-  }
-  th {
-    color: var(--text-dim);
-    font-weight: 500;
-    font-size: 13px;
-  }
-  a {
-    color: var(--accent);
-    text-decoration: none;
-  }
-  a:hover { text-decoration: underline; }
+  .note strong { color: var(--gold); }
+
   footer {
-    margin-top: 56px;
-    padding-top: 24px;
+    margin-top: 48px;
+    padding-top: 22px;
     border-top: 1px solid var(--border);
     color: var(--text-dim);
     font-size: 13.5px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
   }
+
   @media (max-width: 600px) {
-    .wrap { padding: 32px 16px 60px; }
-    h1 { font-size: 24px; }
-    h2 { font-size: 18px; }
+    .wrap { padding: 28px 16px 56px; }
+    .hero { padding: 24px; }
+    .hero-icon { width: 68px; height: 68px; font-size: 32px; }
+    .hero h1 { font-size: 22px; }
+    h2 { font-size: 17px; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <h1>隐私政策</h1>
-    <p class="sub">祈愿与倒计时 · WishCountdown</p>
-    <span class="badge">版本 2.0.0.0</span>
-    <span class="badge">最后更新：2026 年 11 月 6 日</span>
-  </header>
-
-  <div class="card highlight">
-    <p><strong>一句话总结：</strong>本应用不收集、不存储、不传输任何个人身份信息。所有数据都保存在你自己的电脑上，永远不会上传到任何服务器。</p>
+  <div class="hero">
+    <div class="hero-icon">🎋</div>
+    <div class="hero-body">
+      <h1>祈愿与倒计时</h1>
+      <div class="hero-sub">春节倒计时 × 祈愿抽卡点名 · Windows 桌面应用</div>
+      <div class="badges">
+        <span class="badge">WinUI 3</span>
+        <span class="badge">完全离线可用</span>
+        <span class="badge">数据本地保存</span>
+        <span class="badge">免费</span>
+      </div>
+      <a class="btn-main" href="https://apps.microsoft.com/detail/9PF3KCM4KN1B" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg>
+        从 Microsoft Store 获取
+      </a>
+    </div>
   </div>
+  <!-- 面板：桌面版 -->
+  <div class="panel" id="p-store">
 
-  <h2>一、我们收集什么信息</h2>
-  <p><strong>什么也不收集。</strong></p>
-  <p>本应用没有账号系统，没有用户注册，不收集你的姓名、电话、邮箱、位置、设备标识符或任何可识别个人身份的信息。应用内也没有任何统计、埋点、广告或用户行为分析功能。</p>
+    <div class="note">
+      <strong>打不开链接？</strong>应用还在审核中时商店链接可能暂时无效，
+      直接在 Microsoft Store 应用里搜索「<b>祈愿与倒计时</b>」即可。
+    </div>
 
-  <h2>二、你的数据保存在哪里</h2>
-  <p>你在应用里填写的所有内容——包括名单、倒计时目标、抽卡记录、保底状态和偏好设置——都只保存在 <strong>你自己的电脑本地</strong>，路径为：</p>
-  <div class="card">
-    <code>%AppData%\WishLamp\WishCountdown</code>
+    <h2>它能做什么</h2>
+    <div class="grid">
+      <div class="feat">
+        <span class="feat-i">🎋</span>
+        <div class="feat-t">春节倒计时</div>
+        <div class="feat-d">自动跟随下一个春节，标题带天干地支年份，不用每年手动改日期</div>
+      </div>
+      <div class="feat">
+        <span class="feat-i">📅</span>
+        <div class="feat-t">多个自定义目标</div>
+        <div class="feat-d">期末、生日、假期都能单独设一个倒计时，随时切换</div>
+      </div>
+      <div class="feat">
+        <span class="feat-i">⭐</span>
+        <div class="feat-t">祈愿点名</div>
+        <div class="feat-d">抽卡式随机点名，五星四星双保底，UP 大保底和捕获明光</div>
+      </div>
+      <div class="feat">
+        <span class="feat-i">📋</span>
+        <div class="feat-t">名单管理</div>
+        <div class="feat-d">粘贴或导入 TXT，自动划分角色池，可导出备份</div>
+      </div>
+      <div class="feat">
+        <span class="feat-i">📊</span>
+        <div class="feat-t">抽卡记录</div>
+        <div class="feat-d">按周管理，分页浏览，一键导出 Excel</div>
+      </div>
+      <div class="feat">
+        <span class="feat-i">🔒</span>
+        <div class="feat-t">完全本地</div>
+        <div class="feat-d">所有数据存在你自己的电脑上，不上传任何服务器</div>
+      </div>
+    </div>
+
+    <h2>桌面版优势</h2>
+    <ul>
+      <li>启动只需要 1 秒，比开浏览器快</li>
+      <li>「一言」和「网络时间」可一键关闭，关掉后完全离线</li>
+      <li>名单、抽卡记录、保底状态存在本机文件里，不会因清浏览器缓存丢失</li>
+      <li>抽卡记录可直接导出 Excel</li>
+      <li>倒计时目标可以保存多个，随时切换</li>
+    </ul>
+
+    <h2>怎么安装</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-t">打开 Microsoft Store</div>
+        <div class="step-d">点击上面的「从 Microsoft Store 获取」，或从开始菜单打开 Microsoft Store</div>
+      </div>
+      <div class="step">
+        <div class="step-t">搜索应用</div>
+        <div class="step-d">搜索「祈愿与倒计时」，找到后进入详情页</div>
+      </div>
+      <div class="step">
+        <div class="step-t">点击「获取」安装</div>
+        <div class="step-d">应用免费，自动安装，无需任何额外配置</div>
+      </div>
+      <div class="step">
+        <div class="step-t">从开始菜单启动</div>
+        <div class="step-d">安装完成后搜索「祈愿与倒计时」即可打开</div>
+      </div>
+    </div>
+
+    <h2>系统要求</h2>
+    <table>
+      <tr><th>操作系统</th><td>Windows 10 版本 1809（Build 17763）及以上</td></tr>
+      <tr><th>架构</th><td>x64、ARM64</td></tr>
+      <tr><th>网络</th><td>可选。核心功能完全离线可用</td></tr>
+      <tr><th>磁盘空间</th><td>约 200 MB</td></tr>
+    </table>
+
+    <h2>应用信息</h2>
+    <table>
+      <tr><th>应用名称</th><td>祈愿与倒计时</td></tr>
+      <tr><th>开发者</th><td>Sglowq</td></tr>
+      <tr><th>版本</th><td>2.0.2.0</td></tr>
+      <tr><th>价格</th><td>免费</td></tr>
+      <tr><th>Store ID</th><td><code>9PF3KCM4KN1B</code></td></tr>
+      <tr><th>商店链接</th><td><a href="https://apps.microsoft.com/detail/9PF3KCM4KN1B" target="_blank" rel="noopener">apps.microsoft.com/detail/9PF3KCM4KN1B</a></td></tr>
+    </table>
+
+    <h2>更新记录</h2>
+    <ul>
+      <li><strong>2.0.2.0</strong> —— 「打开文件夹」改用更可靠的方式，修复部分情况下点了没反应</li>
+      <li><strong>2.0.1.0</strong> —— 修复数据无法保存（关闭重启后名单和记录丢失）、名单粘贴换行解析失败、元素图标重绘</li>
+      <li><strong>2.0.0.0</strong> —— 首次上架</li>
+    </ul>
+
+    <h2>相关链接</h2>
+    <ul>
+      <li><a href="https://apps.microsoft.com/detail/9PF3KCM4KN1B" target="_blank" rel="noopener">Microsoft Store 页面</a></li>
+      <li><a href="https://github.com/sglowq" target="_blank" rel="noopener">GitHub</a></li>
+    </ul>
+
   </div>
-  <p>这些文件<strong>不会</strong>被上传、同步或备份到任何服务器。你可以随时通过应用「关于」页的「打开文件夹」按钮查看，或者直接删除该目录来清除全部数据。</p>
-
-  <h2>三、网络访问</h2>
-  <p>本应用在<strong>完全离线</strong>的情况下也能正常使用全部核心功能（倒计时、点名抽卡、名单管理、历史记录）。</p>
-  <p>应用提供两个可选的联网功能，均可在「关于」页随时关闭：</p>
-
-  <table>
-    <thead>
-      <tr>
-        <th>功能</th>
-        <th>访问的地址</th>
-        <th>传输的内容</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>一言</td>
-        <td>公开的语录 API（hitokoto.cn 等）</td>
-        <td>仅发送普通 HTTP 请求，不附带任何用户信息</td>
-      </tr>
-      <tr>
-        <td>使用网络时间</td>
-        <td>公开的授时接口</td>
-        <td>仅读取服务器返回的时间，不上传任何内容</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <p>这些请求不包含 Cookie、身份标识或你填写的任何数据。关闭上述开关后，应用不会发起任何网络连接。</p>
-
-  <h2>四、数据共享</h2>
-  <p><strong>我们不会向任何第三方出售、出租或共享你的数据</strong>——因为我们的服务器上根本没有你的数据。</p>
-
-  <h2>五、儿童隐私</h2>
-  <p>本应用可能被用于教室场景，使用者中可能包含未成年人。由于本应用不收集任何个人信息、不要求注册、不包含广告和社交功能，因此不存在收集儿童个人信息的情况。</p>
-
-  <h2>六、应用申请的权限</h2>
-  <ul>
-    <li><code>runFullTrust</code> —— 桌面应用（WinUI 3）运行所必需，无法避免</li>
-    <li><code>internetClient</code> —— 用于上述可选的「一言」和「网络时间」功能，关闭开关后不会使用</li>
-  </ul>
-  <p>本应用<strong>不访问</strong>你的摄像头、麦克风、通讯录、日历、短信、照片库或精确位置。</p>
-
-  <h2>七、你的控制权</h2>
-  <ul>
-    <li><strong>关闭联网</strong>：在「关于」页关闭「一言」和「使用网络时间」开关，应用即完全离线运行</li>
-    <li><strong>删除数据</strong>：删除 <code>%AppData%\WishLamp\WishCountdown</code> 目录即可清空全部本地数据</li>
-    <li><strong>卸载应用</strong>：从开始菜单或「设置 → 应用」中卸载即可</li>
-  </ul>
-
-  <h2>八、本政策的变更</h2>
-  <p>如果本政策有实质性变更，我们会更新本页面顶部的「最后更新」日期。由于本应用不收集任何联系方式，建议你在升级后回到本页面查看最新版本。</p>
-
-  <h2>九、联系我们</h2>
-  <p>如果你对本隐私政策有任何疑问，可以通过以下方式联系：</p>
-  <ul>
-    <li>GitHub：<a href="https://github.com/SGlowQ" target="_blank" rel="noopener">github.com/sglowq</a></li>
-    <li>项目主页：<a href="https://SGlowQ.github.io/2026/" target="_blank" rel="noopener">sglowq.github.io/2026</a></li>
-  </ul>
 
   <footer>
-    <p>© 2026 Sglowq · 祈愿与倒计时</p>
-    <p>本页面适用于 Microsoft Store 上架的 Windows 桌面版本，以及网页版倒计时。</p>
+    <span>© 2026 Sglowq · 祈愿与倒计时</span>
+    <span>最后更新：2026 年 11 月</span>
   </footer>
 
 </div>
+
 </body>
 </html>
