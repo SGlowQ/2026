@@ -1,0 +1,64 @@
+## .NET / Visual Studio
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+artifacts/
+
+# Build logs
+[Ll]og/
+[Ll]ogs/
+*.log
+*.binlog
+
+# Test results
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+project.lock.json
+
+# MSIX 打包产物
+AppPackages/
+BundleArtifacts/
+*.msix
+*.msixupload
+*.msixbundle
+*.appx
+*.appxbundle
+*.appxupload
+*.cer
+
+# 发布输出（本项目的几个中文目录名）
+publish/
+发布/
+商店包/
+安装包/
+bundle输入/
+msix输出/
+PublishScripts/
+
+# 代码分析 / 工具
+_ReSharper*/
+*.DotSettings.user
+*.dotCover
+.idea/
+
+# 生成文件
+Generated\ Files/
+*_wpftmp.csproj
+
+# 运行期产生的东西
+crash.log
+WishLamp-save-error.log

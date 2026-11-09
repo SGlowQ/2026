@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>祈愿与倒计时 · 下载</title>
+<meta name="description" content="祈愿与倒计时 — 教室祈愿点名 + 春节倒计时的 Windows 桌面应用，WinUI 3 原生开发，支持触屏智慧黑板。">
+<meta property="og:title" content="祈愿与倒计时 · 下载">
+<meta property="og:description" content="教室祈愿点名 + 春节倒计时的 Windows 桌面应用">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #0f1115;
+    --card: #171a21;
+    --text: #e8eaed;
+    --text-dim: #9aa0a6;
+    --accent: #4fc3f7;
+    --purple: #9b6de8;
+    --gold: #ffd700;
+    --border: #262a33;
+    --code-bg: #12151b;
+    --ok: #4ade80;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f7f8fa;
+      --card: #ffffff;
+      --text: #1f2328;
+      --text-dim: #656d76;
+      --accent: #0969da;
+      --purple: #8250df;
+      --gold: #9a6700;
+      --border: #d8dee4;
+      --code-bg: #f0f2f5;
+      --ok: #16a34a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Microsoft YaHei UI", "Microsoft YaHei", -apple-system,
+                 BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.7;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 20px 80px; }
+
+  /* ===== 顶部 ===== */
+  .hero {
+    background: linear-gradient(135deg, rgba(79,195,247,0.10), rgba(155,109,232,0.10));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 34px;
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+  }
+  .hero-icon {
+    width: 88px; height: 88px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #4fc3f7 0%, #9b6de8 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(79,195,247,0.25);
+  }
+  .hero-text { flex: 1; min-width: 220px; }
+  .hero-text h1 {
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .hero-text p { color: var(--text-dim); font-size: 14px; }
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    background: var(--card);
+  }
+  .badge.ok { color: var(--ok); border-color: var(--ok); }
+
+  /* ===== 下载按钮区 ===== */
+  .downloads {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 34px;
+  }
+  @media (max-width: 620px) { .downloads { grid-template-columns: 1fr; } }
+
+  .dl-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    text-decoration: none;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+  }
+  .dl-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+    box-shadow: 0 8px 24px rgba(79,195,247,0.15);
+  }
+  .dl-card.primary {
+    background: linear-gradient(135deg, rgba(79,195,247,0.14), rgba(155,109,232,0.14));
+    border-color: rgba(79,195,247,0.4);
+  }
+  .dl-title {
+    font-size: 17px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dl-desc { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+  .dl-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .recommend {
+    font-size: 11px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #0f1115;
+    font-weight: 600;
+  }
+
+  /* ===== 通用区块 ===== */
+  section { margin-bottom: 34px; }
+  h2 {
+    font-size: 20px;
+    font-weight: 650;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  p + p { margin-top: 10px; }
+  code {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-family: "Cascadia Code", "Consolas", monospace;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+  pre code { background: none; padding: 0; color: var(--text); }
+
+  /* ===== 功能列表 ===== */
+  .features { display: grid; gap: 12px; }
+  .feat {
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  .feat-icon {
+    width: 34px; height: 34px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, rgba(79,195,247,0.18), rgba(155,109,232,0.18));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .feat-body strong { display: block; font-size: 14.5px; margin-bottom: 2px; }
+  .feat-body span { font-size: 13px; color: var(--text-dim); }
+
+  /* ===== 表格 ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  th, td {
+    text-align: left;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  th { color: var(--text-dim); font-weight: 500; font-size: 13px; }
+  tr:last-child td { border-bottom: none; }
+
+  /* ===== 提示框 ===== */
+  .note {
+    display: flex;
+    gap: 10px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.65;
+    margin-top: 12px;
+  }
+  .note.warn {
+    background: rgba(255,215,0,0.08);
+    border: 1px solid rgba(255,215,0,0.25);
+  }
+  .note.info {
+    background: rgba(79,195,247,0.08);
+    border: 1px solid rgba(79,195,247,0.25);
+  }
+  .note b { color: var(--text); }
+
+  /* ===== 页脚 ===== */
+  footer {
+    margin-top: 50px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .sep { margin: 0 8px; opacity: 0.4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= 顶部 ================= -->
+  <div class="hero">
+    <div class="hero-icon">🎴</div>
+    <div class="hero-text">
+      <h1>祈愿与倒计时</h1>
+      <p>教室祈愿点名 + 春节倒计时 · Windows 桌面应用</p>
+      <div class="badges">
+        <span class="badge">WinUI 3</span>
+        <span class="badge">Windows 10 / 11</span>
+        <span class="badge">触屏友好</span>
+        <span class="badge ok">v2.1.4.0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 下载 ================= -->
+  <div class="downloads">
+    <a class="dl-card primary"
+       href="https://apps.microsoft.com/detail/9PF3KCM4KN1B"
+       target="_blank" rel="noopener">
+      <div class="dl-title">🏪 Microsoft Store <span class="recommend">推荐</span></div>
+      <div class="dl-desc">从微软商店安装，自动更新，无需担心运行库。</div>
+      <div class="dl-meta">Windows 10 1809+ · 商店负责签名与更新</div>
+    </a>
+
+    <a class="dl-card"
+       href="https://github.com/SGlowQ/2026/releases/latest"
+       target="_blank" rel="noopener">
+      <div class="dl-title">📦 绿色版（免安装）</div>
+      <div class="dl-desc">下载即用，自带 .NET 运行时和 Windows App SDK，不写注册表。</div>
+      <div class="dl-meta">x64 / ARM64 · 需保留同目录 Assets 文件夹</div>
+    </a>
+  </div>
+
+  <!-- ================= 功能 ================= -->
+  <section>
+    <h2>功能</h2>
+    <div class="features">
+
+      <div class="feat">
+        <div class="feat-icon">⏳</div>
+        <div class="feat-body">
+          <strong>倒计时</strong>
+          <span>天 / 时 / 分 / 秒 / 毫秒实时刷新；自动跟随下一个春节（带干支年份），也可保存多个自定义目标。一言每分钟刷新，带打字机特效与流动彩虹渐变。</span>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">🎲</div>
+        <div class="feat-body">
+          <strong>祈愿（随机点名）</strong>
+          <span>名单自动划分为五星 / 四星 / 三星角色池，还原真实抽卡概率；支持单抽与十连，五星四星双保底，还有「捕获明光」机制。</span>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">📜</div>
+        <div class="feat-body">
+          <strong>历史记录</strong>
+          <span>按周归档、永久保留，可查看任意一周。<b>点页码弹出数字小键盘</b>，直接输入跳转——专为教室触屏黑板设计。</span>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">👥</div>
+        <div class="feat-body">
+          <strong>名单分组</strong>
+          <span>支持多个班级分组随时切换。导入 TXT 时<b>自动用文件名当分组名</b>，导出时也用分组名当文件名。</span>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <div class="feat-body">
+          <strong>抽卡统计</strong>
+          <span>真实出货率、平均保底抽数、UP 命中率、捕获明光次数，与理论概率实时对比。</span>
+        </div>
+      </div>
+
+      <div class="feat">
+        <div class="feat-icon">🎨</div>
+        <div class="feat-body">
+          <strong>原生 WinUI 3 界面</strong>
+          <span>参照 Windows「设置」设计：左侧导航、云母材质、圆角卡片。界面统一使用鸿蒙字体 HarmonyOS Sans SC，随程序打包。</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 抽卡规则 ================= -->
+  <section>
+    <h2>抽卡规则</h2>
+    <div class="card">
+      <table>
+        <tr><th>星级</th><th>概率</th><th>保底</th></tr>
+        <tr><td>五星</td><td>0.6%</td><td>第 74 抽起每抽 +6%，第 90 抽必出</td></tr>
+        <tr><td>四星</td><td>5.1%</td><td>连续 9 抽没有四星则第 10 抽必出</td></tr>
+        <tr><td>三星</td><td>94.3%</td><td>—</td></tr>
+      </table>
+      <div class="note info">
+        <span>💡</span>
+        <div>出五星或四星时 50% 概率为当期 UP，未中则下次必中；五星 UP 与非 UP 交替累计 3 次后触发<b>捕获明光</b>。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 快捷键 ================= -->
+  <section>
+    <h2>快捷键</h2>
+    <div class="card">
+      <table>
+        <tr><td><code>Ctrl</code> + <code>1</code> ~ <code>6</code></td><td>切换页面</td></tr>
+        <tr><td><code>Ctrl</code> + <code>Enter</code></td><td>抽一次</td></tr>
+        <tr><td><code>Ctrl</code> + <code>Shift</code> + <code>Enter</code></td><td>连抽十次</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- ================= 数据与隐私 ================= -->
+  <section>
+    <h2>数据与隐私</h2>
+    <div class="card">
+      <p>所有数据（名单、抽卡记录、倒计时目标、设置）<b>只保存在你自己的电脑上</b>，不上传任何服务器。</p>
+      <p>默认位置：</p>
+      <pre><code>%AppData%\WishLamp\WishCountdown\
+├── settings.json   ← 名单、倒计时目标、开关设置
+└── history.json    ← 按周保存的抽卡记录与保底状态</code></pre>
+      <div class="note warn">
+        <span>⚠️</span>
+        <div>绿色版第一次运行前建议先确认一下运行库。若提示缺少组件，请改装 Microsoft Store 版本，商店会自动处理依赖。</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 常见问题 ================= -->
+  <section>
+    <h2>常见问题</h2>
+    <div class="card">
+
+      <p><b>绿色版打开提示缺少 DLL？</b></p>
+      <p>确认 <code>Assets</code> 文件夹和 exe 在同一个目录下，不要在压缩包里直接双击运行。</p>
+
+      <p style="margin-top:16px"><b>名单至少需要几个名字？</b></p>
+      <p>10 个。少于 10 个无法划分出合理的星级池，程序会提示。</p>
+
+      <p style="margin-top:16px"><b>一言加载不出来？</b></p>
+      <p>一言来自 hitokoto.cn，该接口偶尔会变慢或超时。可以在「关于」页关闭一言，或稍等它自动重试。</p>
+
+      <p style="margin-top:16px"><b>能不能同时开多个？</b></p>
+      <p>不能。程序做了防多开处理——再次双击会把已在运行的窗口叫到前台，不会启动第二个实例。</p>
+
+    </div>
+  </section>
+
+  <!-- ================= 页脚 ================= -->
+  <footer>
+    <a href="https://github.com/SGlowQ/2026" target="_blank" rel="noopener">GitHub 源码</a>
+    <span class="sep">·</span>
+    <a href="privacy.html">隐私政策</a>
+    <span class="sep">·</span>
+    <a href="https://apps.microsoft.com/detail/9PF3KCM4KN1B" target="_blank" rel="noopener">Microsoft Store</a>
+    <p style="margin-top:12px; opacity:.7">祈愿与倒计时 · 界面字体 HarmonyOS Sans SC · MIT License</p>
+  </footer>
+
+</div>
+</body>
+</html>

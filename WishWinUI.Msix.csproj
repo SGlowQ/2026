@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    MSIX 安装包专用工程配置：复用同一份源码，只把打包方式换成「带包身份的 MSIX」。
+    用法：
+      dotnet publish WishWinUI.Msix.csproj -c Release -p:AppxPackageSigningEnabled=false -p:AppxTestCertificate=true
+    生成 msix输出/ 下的 .msix 与自签名 .cer。
+  -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>WishWinUI</RootNamespace>
+    <AssemblyName>祈愿与倒计时</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon Condition="Exists('Assets\AppIcon.ico')">Assets\AppIcon.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>MSIX</WindowsPackageType>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxTestCertificate>true</AppxTestCertificate>
+    <AppxBundle>Never</AppxBundle>
+    <AppxDefaultResourceQualifiers>Language=zh-CN</AppxDefaultResourceQualifiers>
+    <!-- 不生成符号包（.appxsym）：生成它需要 VS 的 mspdbcmf.exe，
+         命令行环境里没有这个工具，会导致 MSB6011 报错并连带 StoreUpload 容器打包失败。
+         上架商店不需要符号包，关掉即可。 -->
+    <AppxSymbolPackageEnabled>false</AppxSymbolPackageEnabled>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.1.4</Version>
+    <Product>祈愿与倒计时</Product>
+    <Company>星梦捕光</Company>
+    <FileVersion>2.1.4.0</FileVersion>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <!-- 单文件发布时把 Assets 解压到 exe 旁边，任务栏图标才能找到 -->
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\AppIcon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-regular.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-light.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-black.ttf" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 锁定版本：BuildTools 用 "*" 会浮动到最新版，最新版自带的 MSIX 打包任务依赖
+         System.Security.Permissions 8.0，实际运行时加载不到会报 MSB6011，
+         所以这里钉死到已知可用的版本。 -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+  </ItemGroup>
+</Project>

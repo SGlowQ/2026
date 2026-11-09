@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WishWinUI (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WishWinUI (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

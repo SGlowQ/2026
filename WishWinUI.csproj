@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows10.0.26100.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <RootNamespace>WishWinUI</RootNamespace>
+    <AssemblyName>祈愿与倒计时</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon Condition="Exists('Assets\AppIcon.ico')">Assets\AppIcon.ico</ApplicationIcon>
+    <Platforms>x64;ARM64</Platforms>
+    <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'AnyCPU'">x64</Platform>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == '' and '$(Platform)' == 'ARM64'">win-arm64</RuntimeIdentifier>
+    <UseWinUI>true</UseWinUI>
+    <EnableMsixTooling>true</EnableMsixTooling>
+    <WindowsPackageType>None</WindowsPackageType>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <!--
+      默认不内嵌 Windows App SDK（VS 里构建/调试走框架依赖，避免
+      “WindowsAppSDKSelfContained requires a supported Windows architecture” 报错）。
+      只有发布单文件独立 exe 时，由 publish 命令显式传 -p:WindowsAppSDKSelfContained=true。
+    -->
+    <WindowsAppSDKSelfContained Condition="'$(WindowsAppSDKSelfContained)' == ''">false</WindowsAppSDKSelfContained>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.1.4</Version>
+    <Product>祈愿与倒计时</Product>
+    <Company>星梦捕光</Company>
+    <FileVersion>2.1.4.0</FileVersion>
+    <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <PublishReadyToRun>false</PublishReadyToRun>
+    <PublishTrimmed>false</PublishTrimmed>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- 单文件发布时把 Assets 解压到 exe 旁边，任务栏图标才能找到 -->
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\AppIcon.ico" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-regular.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-light.ttf" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\Fonts\harmony-black.ttf" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 这些是构建产物目录，绝不能当成源文件收进来（否则发布时会把 msix 打进 exe，体积暴涨、首次启动解压极慢） -->
+    <Compile Remove="发布\**;安装包\**;商店包\**;bundle输入\**;AppPackages\**;bin\**;obj\**;msix输出\**" />
+    <Content Remove="发布\**;安装包\**;商店包\**;bundle输入\**;AppPackages\**;bin\**;obj\**;msix输出\**" />
+    <None Remove="发布\**;安装包\**;商店包\**;bundle输入\**;AppPackages\**;bin\**;obj\**;msix输出\**" />
+    <EmbeddedResource Remove="发布\**;安装包\**;商店包\**;bundle输入\**;AppPackages\**;bin\**;obj\**;msix输出\**" />
+    <Page Remove="发布\**;安装包\**;商店包\**;bundle输入\**;AppPackages\**;bin\**;obj\**;msix输出\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Manifest Include="$(ApplicationManifest)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 锁定版本，避免 "*" 浮动到最新版后构建产物变化或引入兼容问题 -->
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
+  </ItemGroup>
+</Project>

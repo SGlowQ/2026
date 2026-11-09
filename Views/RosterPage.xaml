@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="WishWinUI.Views.RosterPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <!-- 角色池卡片模板：Border 里放元素图标 + 名字，内容在 ElementPrepared 里填 -->
+        <DataTemplate x:Key="CharacterChipTemplate">
+            <Border
+                CornerRadius="6"
+                Padding="10,4"
+                HorizontalAlignment="Stretch"
+                Background="{ThemeResource SubtleFillColorSecondaryBrush}">
+                <Grid ColumnSpacing="4" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon
+                        Grid.Column="0"
+                        FontFamily="{StaticResource SymbolFont}"
+                        FontSize="14"
+                        Glyph="&#xE783;"
+                        VerticalAlignment="Center" />
+                    <!-- 名字：默认最多显示 3 个汉字宽度，超长收尾省略号，鼠标悬停看全名 -->
+                    <TextBlock
+                        Grid.Column="1"
+                        MaxWidth="66"
+                        MaxLines="1"
+                        FontFamily="{StaticResource UiRegularFont}"
+                        FontSize="14"
+                        TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap"
+                        VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="28,12,28,0">
+
+                <TextBlock
+                    FontFamily="{StaticResource UiBlackFont}"
+                    FontSize="28"
+                    Text="名单与角色池" FontWeight="Black" />
+                <TextBlock
+                    FontFamily="{StaticResource UiLightFont}"
+                    FontWeight="Light"
+                    FontSize="13"
+                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                    Margin="0,2,0,16"
+                    Text="粘贴或导入班级名单（一行一个，至少 10 个名字）。点「应用名单」后会重新生成角色池和本期 UP。" />
+
+                <!-- 名单分组 -->
+                <Border Style="{StaticResource SettingCardStyle}" Margin="0,0,0,12">
+                    <StackPanel Spacing="10">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="名单分组" FontWeight="Black" />
+                        <Grid ColumnSpacing="8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox
+                                x:Name="GroupPicker"
+                                Grid.Column="0"
+                                HorizontalAlignment="Stretch"
+                                SelectionChanged="GroupPicker_SelectionChanged"
+                                ToolTipService.ToolTip="切换要使用的名单" />
+
+                            <Button
+                                Grid.Column="1"
+                                Click="NewGroup_Click"
+                                ToolTipService.ToolTip="新建一个空名单"
+                                Content="新建分组" />
+
+                            <Button
+                                Grid.Column="2"
+                                Click="RenameGroup_Click"
+                                ToolTipService.ToolTip="重命名当前分组"
+                                Content="重命名" />
+
+                            <Button
+                                Grid.Column="3"
+                                Click="DeleteGroup_Click"
+                                ToolTipService.ToolTip="删除当前分组"
+                                Content="删除分组" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 编辑 -->
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="10">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="名字列表（一行一个）" FontWeight="Black" />
+                        <TextBox
+                            x:Name="NamesBox"
+                            AcceptsReturn="True"
+                            Height="240"
+                            PlaceholderText="一行一个名字，空行会被忽略"
+                            TextWrapping="Wrap"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button
+                                Style="{StaticResource AccentButtonStyle}"
+                                Click="Apply_Click"
+                                Content="应用名单" />
+                            <Button Click="Reset_Click" Content="清空名单" />
+                            <Button Click="Import_Click" Content="导入 TXT…" />
+                            <Button Click="ExportTxt_Click" Content="导出 TXT…" />
+                            <Button
+                                Click="CleanNames_Click"
+                                ToolTipService.ToolTip="去掉空行和重复名字"
+                                Content="整理" />
+                            <Button
+                                Click="SortNames_Click"
+                                ToolTipService.ToolTip="按名字排序"
+                                Content="排序" />
+                            <TextBlock
+                                x:Name="NameCountText"
+                                VerticalAlignment="Center"
+                                Style="{StaticResource CaptionStyle}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- 角色池 -->
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="12">
+                        <Grid>
+                            <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="角色池" FontWeight="Black" />
+                            <Button
+                                HorizontalAlignment="Right"
+                                Click="Reroll_Click"
+                                Content="重新洗牌" />
+                        </Grid>
+                        <StackPanel x:Name="PoolPanel" Spacing="14" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
