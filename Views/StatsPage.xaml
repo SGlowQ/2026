@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Page
+    x:Class="WishWinUI.Views.StatsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:WishWinUI.Views"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="28,12,28,0" Spacing="12">
+
+                <StackPanel>
+                    <TextBlock
+                        FontFamily="{StaticResource UiBlackFont}"
+                        FontSize="28"
+                        Text="抽卡统计" FontWeight="Black" />
+                    <TextBlock
+                        x:Name="CaptionText"
+                        FontFamily="{StaticResource UiLightFont}"
+                        FontWeight="Light"
+                        FontSize="13"
+                        TextWrapping="Wrap"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Margin="0,2,0,4"
+                        Text="统计全部历史记录" />
+                </StackPanel>
+
+                <!-- 总览 -->
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="14">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="总览" FontWeight="Black" />
+                        <Grid ColumnSpacing="12" RowSpacing="14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Spacing="2">
+                                <TextBlock x:Name="TotalDraws" FontFamily="{StaticResource UiBlackFont}" FontSize="26" Text="0" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="总抽数" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="2">
+                                <TextBlock x:Name="TotalWeeks" FontFamily="{StaticResource UiBlackFont}" FontSize="26" Text="0" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="覆盖周数" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="2" Spacing="2">
+                                <TextBlock x:Name="AvgPerWeek" FontFamily="{StaticResource UiBlackFont}" FontSize="26" Text="0" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="平均每周" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 星级分布 -->
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="14">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="星级分布" FontWeight="Black" />
+
+                        <!-- 圆环 + 右侧图例：每段占比 = 该星级次数 / 总抽数 -->
+                        <Grid ColumnSpacing="28">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <local:DonutChart
+                                x:Name="RarityDonut"
+                                Grid.Column="0"
+                                Diameter="170"
+                                Thickness="24" />
+
+                            <StackPanel
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Spacing="12">
+
+                                <!-- 五星 -->
+                                <Grid ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <Ellipse Width="10" Height="10" VerticalAlignment="Center" Fill="{ThemeResource RarityFiveBrush}" />
+                                        <TextBlock FontSize="14" VerticalAlignment="Center" Text="五星" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" Foreground="{ThemeResource RarityFiveBrush}" />
+                                    </StackPanel>
+                                    <TextBlock x:Name="FivePityText" Grid.Column="1" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" />
+                                </Grid>
+
+                                <!-- 四星 -->
+                                <Grid ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <Ellipse Width="10" Height="10" VerticalAlignment="Center" Fill="{ThemeResource RarityFourBrush}" />
+                                        <TextBlock FontSize="14" VerticalAlignment="Center" Text="四星" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" Foreground="{ThemeResource RarityFourBrush}" />
+                                    </StackPanel>
+                                    <TextBlock x:Name="FourPityText" Grid.Column="1" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" />
+                                </Grid>
+
+                                <!-- 三星 -->
+                                <Grid ColumnSpacing="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                                        <Ellipse Width="10" Height="10" VerticalAlignment="Center" Fill="{ThemeResource RarityThreeBrush}" />
+                                        <TextBlock FontSize="14" VerticalAlignment="Center" Text="三星" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" Foreground="{ThemeResource RarityThreeBrush}" />
+                                    </StackPanel>
+                                    <TextBlock x:Name="ThreePityText" Grid.Column="1" FontSize="14" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" FontFamily="{StaticResource UiLightFont}" FontWeight="Light" />
+                                </Grid>
+
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- 保底与 UP -->
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="14">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="出货与保底" FontWeight="Black" />
+                        <Grid ColumnSpacing="12" RowSpacing="14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Grid.Column="0" Spacing="2">
+                                <TextBlock x:Name="AvgFivePity" FontFamily="{StaticResource UiBlackFont}" FontSize="22" Foreground="{ThemeResource RarityFiveBrush}" Text="—" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="平均多少抽出五星" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Spacing="2">
+                                <TextBlock x:Name="BestFivePity" FontFamily="{StaticResource UiBlackFont}" FontSize="22" Foreground="{ThemeResource RarityFiveBrush}" Text="—" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="最快出货（抽数）" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Grid.Column="0" Spacing="2">
+                                <TextBlock x:Name="UpRate" FontFamily="{StaticResource UiBlackFont}" FontSize="22" Text="—" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="五星 UP 命中率" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1" Spacing="2">
+                                <TextBlock x:Name="CaptureLightCount" FontFamily="{StaticResource UiBlackFont}" FontSize="22" Text="0" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="捕获明光触发次数" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="2" Grid.Column="0" Spacing="2">
+                                <TextBlock x:Name="AvgFourPity" FontFamily="{StaticResource UiBlackFont}" FontSize="22" Foreground="{ThemeResource RarityFourBrush}" Text="—" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="平均多少抽出四星" />
+                            </StackPanel>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Spacing="2">
+                                <TextBlock x:Name="BusiestWeek" FontFamily="{StaticResource UiBlackFont}" FontSize="18" Text="—" FontWeight="Black" />
+                                <TextBlock Style="{StaticResource CaptionStyle}" Text="抽得最多的一周" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource SettingCardStyle}">
+                    <StackPanel Spacing="10">
+                        <TextBlock FontFamily="{StaticResource UiBlackFont}" FontSize="16" Text="说明" FontWeight="Black" />
+                        <TextBlock
+                            Style="{StaticResource BodyStyle}"
+                            TextWrapping="Wrap"
+                            Text="统计基于本机保存的全部历史记录（不限于本周）。理论概率：五星 0.6%（含保底综合约 1.6%）、四星 5.1%。" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
