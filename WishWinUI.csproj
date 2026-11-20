@@ -35,6 +35,8 @@
     <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
     <!-- 单文件发布时把 Assets 解压到 exe 旁边，任务栏图标才能找到 -->
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <!-- 固定 pri 文件名，exe 改名后仍能找到资源（官方 workaround） -->
+    <ProjectPriFileName>resources.pri</ProjectPriFileName>
   </PropertyGroup>
 
   <ItemGroup>

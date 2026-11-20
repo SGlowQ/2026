@@ -38,6 +38,8 @@
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
     <InvariantGlobalization>false</InvariantGlobalization>
     <PublishReadyToRun>false</PublishReadyToRun>
+    <!-- 固定 pri 文件名，与主工程保持一致（官方 workaround，见 WindowsAppSDK #6248） -->
+    <ProjectPriFileName>resources.pri</ProjectPriFileName>
     <PublishTrimmed>false</PublishTrimmed>
     <!-- 单文件发布时把 Assets 解压到 exe 旁边，任务栏图标才能找到 -->
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
