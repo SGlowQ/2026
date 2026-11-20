@@ -456,7 +456,7 @@
         <span class="badge">WinUI 3</span>
         <span class="badge">Windows 10 / 11</span>
         <span class="badge">触屏友好</span>
-        <span class="badge ok">v2.1.5.0</span>
+        <span class="badge ok">v2.1.6.0</span>
       </div>
     </div>
   </div>
@@ -526,7 +526,7 @@
         <div class="feat-icon">🎲</div>
         <div class="feat-body">
           <strong>祈愿（随机点名）</strong>
-          <span>名单自动划分为五星 / 四星 / 三星角色池，还原真实抽卡概率；支持单抽与十连，五星四星双保底，还有「捕获明光」机制。<b>十连时 0.5 秒内连点两次「继续」可一键跳过全部结果。</b></span>
+          <span>名单自动划分为五星 / 四星 / 三星角色池，完整还原官方公示概率：五星基础 0.600%、四星 5.100%、三星 94.300%，含双保底与大小保底。<b>捕获明光按官方算法实现</b>，小保底 UP 率精确为 55.000%。支持单抽与十连，<b>按数字键 1 / 0 可直接抽卡并自动跳过结果</b>。</span>
         </div>
       </div>
 
@@ -550,7 +550,7 @@
         <div class="feat-icon">📊</div>
         <div class="feat-body">
           <strong>抽卡统计</strong>
-          <span>星级分布用<b>圆环图</b>展示，一眼看清出货占比；真实出货率、平均保底抽数、UP 命中率、捕获明光次数，与理论概率实时对比。</span>
+          <span>接近第三方抽卡分析工具的详细程度：星级分布<b>圆环图</b>、五星抽数分布直方图、每周抽卡量趋势、出货排行，以及平均 / 最快 / 最慢出货抽数、当前保底进度、UP 命中率、捕获明光触发占比、吃满 90 抽次数等多维度数据，全部与官方概率实时对比。</span>
         </div>
       </div>
 
@@ -592,10 +592,14 @@
     <h2>快捷键</h2>
     <div class="card">
       <table>
-        <tr><td><code>1</code></td><td>抽一次（自动跳到「祈愿」页）</td></tr>
-        <tr><td><code>0</code></td><td>连抽十次</td></tr>
+        <tr><td><code>1</code></td><td>抽一次（自动跳到「祈愿」页，结果自动跳过）</td></tr>
+        <tr><td><code>0</code></td><td>连抽十次（逐张自动跳过，无需点按）</td></tr>
         <tr><td><code>Ctrl</code> + <code>1</code> ~ <code>6</code></td><td>切换页面</td></tr>
       </table>
+      <div class="note info">
+        <span>💡</span>
+        <div>在输入框里打字时数字键不会触发抽卡。鼠标点击「祈愿」「十连」按钮仍可正常使用，此时需要手动点「继续」查看后续结果。</div>
+      </div>
     </div>
   </section>
 
@@ -628,6 +632,15 @@
 
       <p style="margin-top:16px"><b>能不能同时开多个？</b></p>
       <p>不能。程序做了防多开处理——再次双击会把已在运行的窗口叫到前台，不会启动第二个实例。</p>
+
+      <p style="margin-top:16px"><b>统计页的 UP 命中率为什么比 55% 高？</b></p>
+      <p>官方公示的 55.000% 指的是「<b>小保底</b>阶段出五星时是 UP 的比例」。因为大保底必定出 UP，
+        所以全部五星里 UP 的占比会稳定在 <b>69% 左右</b>，两者统计口径不同，都属于正常。
+        抽数较少时（比如只有十几个五星）这个比例波动会很大。</p>
+
+      <p style="margin-top:16px"><b>绿色版可以改名吗？</b></p>
+      <p>可以。程序内部资源标识已固定为 <code>WishCountdown</code>，把 exe 随意改名不会影响运行。
+        改名后首次启动会重新解压，所以第一次会稍慢，属正常现象。</p>
 
     </div>
   </section>
