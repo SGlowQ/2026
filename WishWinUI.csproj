@@ -57,6 +57,25 @@
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
+  <!--
+    WinUI 3 的 ms-appx:/// 资源（包括系统主题 themeresources.xaml）靠 resources.pri 索引。
+    dotnet publish 不会自动把编译出来的 .pri 带进输出目录，导致绿色版 / 安装包启动时
+    报「Cannot locate resource from 'ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml'」。
+    这里在发布后把 *.pri 全部补拷过去。单文件发布时跳过（内容已经打进 exe）。
+  -->
+  <Target Name="CopyPriToPublish"
+          AfterTargets="Publish"
+          Condition="'$(PublishSingleFile)' != 'true'">
+    <ItemGroup>
+      <_PriFilesToCopy Include="$(OutputPath)*.pri" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PriFilesToCopy)"
+          DestinationFolder="$(PublishDir)"
+          SkipUnchangedFiles="true"
+          Condition="'@(_PriFilesToCopy)' != ''" />
+    <Message Importance="high" Text="已复制 @(_PriFilesToCopy->'%(Filename)%(Extension)') 到 $(PublishDir)" />
+  </Target>
+
   <ItemGroup>
     <!-- 锁定版本，避免 "*" 浮动到最新版后构建产物变化或引入兼容问题 -->
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
