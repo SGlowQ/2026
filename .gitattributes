@@ -1,0 +1,34 @@
+# 统一换行符：源码用 LF，Windows 脚本用 CRLF
+* text=auto eol=lf
+
+*.cs        text eol=lf
+*.xaml      text eol=lf
+*.csproj    text eol=lf
+*.slnx      text eol=lf
+*.json      text eol=lf
+*.md        text eol=lf
+*.xml       text eol=lf
+*.manifest  text eol=lf
+*.ps1       text eol=crlf
+*.bat       text eol=crlf
+
+# 二进制文件：不能让 git 做换行符转换，否则文件会损坏
+*.ttf       binary
+*.otf       binary
+*.ico       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.zip       binary
+*.msix      binary
+*.msixupload binary
+*.appx      binary
+*.appxbundle binary
+
+# 让 GitHub 语言统计把 .cs 认成 C#
+*.cs        linguist-language=C#
+*.xaml      linguist-language=C#
+
+# 字体文件在 diff / 统计里单独标出来
+Assets/Fonts/*.ttf linguist-detectable=false

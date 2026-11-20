@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="ARM64" />
+  </Configurations>
+  <Project Path="WishWinUI.csproj" />
+  <Project Path="WishWinUI.Msix.csproj" />
+</Solution>

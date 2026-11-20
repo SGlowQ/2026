@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ===== 星级三色 =====
+         用 ThemeDictionaries 按主题分别定义，XAML 里直接 {ThemeResource RarityFiveBrush}
+         就会自动取当前主题对应的版本。 -->
+    <ResourceDictionary.ThemeDictionaries>
+
+        <!-- 深色主题：亮金 / 亮紫 / 亮蓝 -->
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="RarityFiveBrush" Color="#E8B923" />
+            <SolidColorBrush x:Key="RarityFourBrush" Color="#9B6DE8" />
+            <SolidColorBrush x:Key="RarityThreeBrush" Color="#3FA9F5" />
+
+            <SolidColorBrush x:Key="RarityFiveDimBrush" Color="#FFEB3B" />
+            <SolidColorBrush x:Key="RarityFourDimBrush" Color="#BB86FC" />
+            <SolidColorBrush x:Key="RarityThreeDimBrush" Color="#03A9F4" />
+        </ResourceDictionary>
+
+        <!-- 浅色主题：金褐 / 深紫 / 深青蓝，白底上也清楚 -->
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="RarityFiveBrush" Color="#8A6100" />
+            <SolidColorBrush x:Key="RarityFourBrush" Color="#6B3FA0" />
+            <SolidColorBrush x:Key="RarityThreeBrush" Color="#0B6FA8" />
+
+            <SolidColorBrush x:Key="RarityFiveDimBrush" Color="#7A5600" />
+            <SolidColorBrush x:Key="RarityFourDimBrush" Color="#5E3592" />
+            <SolidColorBrush x:Key="RarityThreeDimBrush" Color="#0A6394" />
+        </ResourceDictionary>
+
+    </ResourceDictionary.ThemeDictionaries>
+
+
+
+    <!-- ===== 全局字体：鸿蒙 HarmonyOS Sans SC（随程序打包，断网/无该字体的机器也能正常显示） =====
+         只打包两个字重：常规 Regular(400) 和 黑体 Black(900)。
+         同一个族名下的不同字重，必须靠 FontWeight 指定，光换 FontFamily 不会变粗。 -->
+    <FontFamily x:Key="UiRegularFont">ms-appx:///Assets/Fonts/#HarmonyOS Sans SC</FontFamily>
+    <FontFamily x:Key="UiBlackFont">ms-appx:///Assets/Fonts/#HarmonyOS Sans SC</FontFamily>
+    <!-- 细体：小字号（说明、单位、页脚）用它，避免笔画糊成一团 -->
+    <FontFamily x:Key="UiLightFont">ms-appx:///Assets/Fonts/#HarmonyOS Sans SC</FontFamily>
+    <FontFamily x:Key="SymbolFont">Segoe UI Emoji, Segoe UI Symbol, HarmonyOS Sans SC</FontFamily>
+
+    <!-- 一言那句大字用的字体 -->
+    <FontFamily x:Key="QuoteFont">ms-appx:///Assets/Fonts/#HarmonyOS Sans SC</FontFamily>
+
+    <!-- 所有控件（按钮、导航、输入框等）的默认字体，靠覆盖主题字典里的 ContentControlThemeFontFamily 生效 -->
+    <FontFamily x:Key="ContentControlThemeFontFamily">ms-appx:///Assets/Fonts/#HarmonyOS Sans SC</FontFamily>
+
+
+    <!-- ===== 覆盖 Fluent 的排版样式，让标题栏等依靠主题样式的控件也用鸿蒙 ===== -->
+    <Style x:Key="CaptionTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="LineHeight" Value="16" />
+    </Style>
+    <Style x:Key="BodyTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+    <Style x:Key="SubtitleTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="LineHeight" Value="28" />
+    </Style>
+    <Style x:Key="TitleTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="LineHeight" Value="36" />
+    </Style>
+    <Style x:Key="TitleLargeTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="40" />
+        <Setter Property="LineHeight" Value="52" />
+    </Style>
+    <Style x:Key="DisplayTextBlockStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource ContentControlThemeFontFamily}" />
+        <Setter Property="FontSize" Value="68" />
+        <Setter Property="LineHeight" Value="92" />
+    </Style>
+
+    <!-- ===== 卡片（Windows 设置风格：Fluent 卡片背景 + 1px 描边 + 8px 圆角） ===== -->
+    <Style x:Key="SettingCardStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16" />
+    </Style>
+
+    <Style x:Key="StatTileStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource SubtleFillColorSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14,8" />
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="MinWidth" Value="92" />
+        <!-- 在 Grid 星号列里撑满整列，宽窗口下四格均匀分布 -->
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style x:Key="CaptionStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiLightFont}" />
+        <Setter Property="FontWeight" Value="Light" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+    </Style>
+
+    <Style x:Key="BodyStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiRegularFont}" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- 大号倒计时数字 -->
+    <Style x:Key="CountdownNumberStyle" TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{StaticResource UiRegularFont}" />
+        <Setter Property="FontSize" Value="30" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <!-- 数字宽度固定，避免每帧跳字 -->
+        <Setter Property="MinWidth" Value="52" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+    </Style>
+
+    <!-- 毫秒比秒/分/时更宽，单独一套 -->
+    <Style x:Key="CountdownMillisStyle" TargetType="TextBlock" BasedOn="{StaticResource CountdownNumberStyle}">
+        <Setter Property="MinWidth" Value="64" />
+    </Style>
+</ResourceDictionary>
